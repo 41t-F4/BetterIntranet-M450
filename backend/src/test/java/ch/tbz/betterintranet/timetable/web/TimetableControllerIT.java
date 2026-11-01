@@ -1,7 +1,9 @@
 package ch.tbz.betterintranet.timetable.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -100,8 +102,7 @@ class TimetableControllerIT {
         @Test
         @DisplayName("without from/to the current ISO week Monday..Friday is requested")
         void defaultsToCurrentWeek() throws Exception {
-            given(client.fetchLessons(anyLong(), org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.any()))
-                    .willReturn(List.of());
+            given(client.fetchLessons(anyLong(), any(), any())).willReturn(List.of());
 
             mockMvc.perform(get("/api/timetable").queryParam("classId", "7471"))
                     .andExpect(status().isOk())
@@ -109,7 +110,7 @@ class TimetableControllerIT {
 
             ArgumentCaptor<LocalDate> from = ArgumentCaptor.forClass(LocalDate.class);
             ArgumentCaptor<LocalDate> to = ArgumentCaptor.forClass(LocalDate.class);
-            verify(client).fetchLessons(org.mockito.ArgumentMatchers.eq(AP24B), from.capture(), to.capture());
+            verify(client).fetchLessons(eq(AP24B), from.capture(), to.capture());
             LocalDate today = LocalDate.now(ZoneId.of("Europe/Zurich"));
             assertThat(from.getValue().getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
             assertThat(to.getValue()).isEqualTo(from.getValue().plusDays(4));

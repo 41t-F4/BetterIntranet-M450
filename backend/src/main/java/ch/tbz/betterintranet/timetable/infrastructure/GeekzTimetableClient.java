@@ -25,11 +25,10 @@ import org.springframework.web.client.RestClientException;
 @Component
 public class GeekzTimetableClient implements TimetableClient {
 
-    static final String UPSTREAM = "timetable";
-    static final String FILTER_PATH = "/api/rest/view/v1/timetable/filter";
-    static final String ENTRIES_PATH = "/api/rest/view/v1/timetable/entries";
-    static final String HOLIDAYS_PATH = "/holidays";
-
+    private static final String UPSTREAM = "timetable";
+    private static final String FILTER_PATH = "/api/rest/view/v1/timetable/filter";
+    private static final String ENTRIES_PATH = "/api/rest/view/v1/timetable/entries";
+    private static final String HOLIDAYS_PATH = "/holidays";
     private static final String RESOURCE_TYPE_CLASS = "CLASS";
     private static final String TIMETABLE_TYPE_STANDARD = "STANDARD";
     private static final int CLASSES_LOOKAHEAD_DAYS = 6;

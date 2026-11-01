@@ -23,6 +23,15 @@ class WeekRangeTest {
     }
 
     @Test
+    @DisplayName("a range may start on any day and then spans five days")
+    void startingAtAnyDay() {
+        WeekRange range = WeekRange.startingAt(LocalDate.of(2026, 11, 4));
+
+        assertThat(range.from()).isEqualTo(LocalDate.of(2026, 11, 4));
+        assertThat(range.to()).isEqualTo(LocalDate.of(2026, 11, 8));
+    }
+
+    @Test
     @DisplayName("a week never crosses a year boundary the wrong way")
     void yearBoundary() {
         WeekRange week = WeekRange.containing(LocalDate.of(2027, 1, 1));

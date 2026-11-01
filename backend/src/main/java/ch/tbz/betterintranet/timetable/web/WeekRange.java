@@ -3,14 +3,18 @@ package ch.tbz.betterintranet.timetable.web;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
-/** Monday to Friday of one ISO week: the default range of {@code GET /api/timetable}. */
+/** Five school days starting on a given day; the default range of {@code GET /api/timetable}. */
 record WeekRange(LocalDate from, LocalDate to) {
 
-    private static final int SCHOOL_DAYS_AFTER_MONDAY = 4;
+    private static final int SCHOOL_DAYS_AFTER_START = 4;
 
     /** The school week (Monday..Friday) that contains {@code day}; a weekend belongs to the week before it. */
     static WeekRange containing(LocalDate day) {
-        LocalDate monday = day.with(DayOfWeek.MONDAY);
-        return new WeekRange(monday, monday.plusDays(SCHOOL_DAYS_AFTER_MONDAY));
+        return startingAt(day.with(DayOfWeek.MONDAY));
+    }
+
+    /** Five days beginning with {@code from}, e.g. Monday..Friday or Wednesday..Sunday. */
+    static WeekRange startingAt(LocalDate from) {
+        return new WeekRange(from, from.plusDays(SCHOOL_DAYS_AFTER_START));
     }
 }

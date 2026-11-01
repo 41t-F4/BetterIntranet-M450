@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TimetableController {
 
     private static final ZoneId SCHOOL_ZONE = ZoneId.of("Europe/Zurich");
-    private static final int DEFAULT_RANGE_DAYS_AFTER_FROM = 4;
 
     private final QueryGateway queries;
 
@@ -50,14 +49,14 @@ public class TimetableController {
 
     /**
      * Lessons of one class. Without {@code from} the Monday of the current school week is used, without
-     * {@code to} the fourth day after {@code from} (i.e. Friday for a Monday).
+     * {@code to} the school week starting at {@code from} (i.e. Monday..Friday by default).
      */
     @GetMapping
     public List<Lesson> timetable(@RequestParam long classId,
                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         LocalDate start = from != null ? from : WeekRange.containing(LocalDate.now(SCHOOL_ZONE)).from();
-        LocalDate end = to != null ? to : start.plusDays(DEFAULT_RANGE_DAYS_AFTER_FROM);
+        LocalDate end = to != null ? to : WeekRange.startingAt(start).to();
         return queries.ask(new GetTimetableQuery(classId, start, end));
     }
 

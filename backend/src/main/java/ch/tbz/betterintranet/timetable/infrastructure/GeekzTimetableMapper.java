@@ -83,12 +83,16 @@ public class GeekzTimetableMapper {
                 day.date(),
                 entry.duration().start().toLocalTime(),
                 entry.duration().end().toLocalTime(),
-                subject == null ? null : subject.shortName(),
+                shortName(subject),
                 subject == null ? null : subject.longName(),
-                teacher == null ? null : teacher.shortName(),
-                room == null ? null : room.shortName(),
+                shortName(teacher),
+                shortName(room),
                 toStatus(entry.status()),
                 entry.lessonInfo());
+    }
+
+    private static String shortName(GeekzEntriesResponse.Resource resource) {
+        return resource == null ? null : resource.shortName();
     }
 
     private static GeekzEntriesResponse.Resource first(List<Position> positions) {

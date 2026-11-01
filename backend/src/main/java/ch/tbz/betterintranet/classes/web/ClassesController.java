@@ -1,5 +1,6 @@
 package ch.tbz.betterintranet.classes.web;
 
+import ch.tbz.betterintranet.classes.api.GetMyClassesQuery;
 import ch.tbz.betterintranet.classes.api.SchoolClassMembership;
 import ch.tbz.betterintranet.core.gateway.QueryGateway;
 import ch.tbz.betterintranet.core.web.CurrentUser;
@@ -21,6 +22,6 @@ public class ClassesController {
 
     @GetMapping
     public List<SchoolClassMembership> myClasses(CurrentUser user) {
-        throw new UnsupportedOperationException("not implemented");
+        return queries.ask(new GetMyClassesQuery(user.username()));
     }
 }

@@ -9,4 +9,10 @@ import java.util.List;
  * @param username the user whose classes are requested, e.g. {@code nicola.wehrli}
  */
 public record GetMyClassesQuery(String username) implements Query<List<SchoolClassMembership>> {
+
+    public GetMyClassesQuery {
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("username must not be blank");
+        }
+    }
 }

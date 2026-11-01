@@ -56,14 +56,14 @@ function DayColumn({ day, holiday, lessons, isToday }: DayColumnProps) {
       </h3>
       {holiday ? (
         <p className={styles.holiday}>{holiday.name}</p>
+      ) : lessons.length > 0 ? (
+        <ul className={styles.lessons}>
+          {lessons.map((lesson) => (
+            <LessonBlock key={`${lesson.start}-${lesson.subject}`} lesson={lesson} />
+          ))}
+        </ul>
       ) : (
-        lessons.length > 0 && (
-          <ul className={styles.lessons}>
-            {lessons.map((lesson) => (
-              <LessonBlock key={`${lesson.start}-${lesson.subject}`} lesson={lesson} />
-            ))}
-          </ul>
-        )
+        <p className={styles.free}>Kein Unterricht</p>
       )}
     </section>
   )

@@ -1,0 +1,8 @@
+[
+  { "id": 1, "schoolPart": "TBZ", "subject": "Modul 117 Informatik- und Netzinfrastruktur für ein kleines Unternehmen realisieren", "semester": "HS 2026", "title": "LB1 Netzwerkgrundlagen",       "date": "2026-09-24", "grade": 4.5, "weight": 1.0 },
+  { "id": 2, "schoolPart": "TBZ", "subject": "Modul 117 Informatik- und Netzinfrastruktur für ein kleines Unternehmen realisieren", "semester": "HS 2026", "title": "LB2 Subnetting",               "date": "2026-10-29", "grade": 5.0, "weight": 1.0 },
+  { "id": 3, "schoolPart": "TBZ", "subject": "Modul 162 Daten analysieren und modellieren",                                        "semester": "HS 2026", "title": "LB1 Entity-Relationship-Modell", "date": "2026-10-06", "grade": 5.5, "weight": 1.0 },
+  { "id": 4, "schoolPart": "TBZ", "subject": "Allgemeinbildung Sprache und Kommunikation",                                         "semester": "HS 2026", "title": "Bewerbungsdossier",             "date": "2026-09-30", "grade": 5.0, "weight": 1.0 },
+  { "id": 5, "schoolPart": "TBZ", "subject": "Allgemeinbildung Gesellschaft",                                                      "semester": "HS 2026", "title": "Prüfung Lehrvertrag und Recht", "date": "2026-10-20", "grade": 4.0, "weight": 1.0 },
+  { "id": 6, "schoolPart": "UEK", "subject": "ÜK 187 ICT-Arbeitsplatz mit Standardsoftware betriebsbereit machen",                 "semester": "HS 2026", "title": "Kompetenznachweis",             "date": "2026-10-23", "grade": 5.0, "weight": 1.0 }
+]

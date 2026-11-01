@@ -1,0 +1,142 @@
+[
+  {
+    "id": "M450",
+    "code": "M450",
+    "name": "Applikationen testen",
+    "teacher": "STU",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-512",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "M320",
+    "code": "M320",
+    "name": "Objektorientiert programmieren",
+    "teacher": "KOL",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-514",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "M322",
+    "code": "M322",
+    "name": "Benutzerschnittstellen implementieren",
+    "teacher": "BRA",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-510",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "M323",
+    "code": "M323",
+    "name": "Funktional programmieren",
+    "teacher": "KOL",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-514",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "GES",
+    "code": "GES",
+    "name": "Allgemeinbildung Gesellschaft",
+    "teacher": "ROS",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 2,
+    "room": "AU-210",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "SPO",
+    "code": "SPO",
+    "name": "Sport",
+    "teacher": "HAL",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 2,
+    "room": "Turnhalle 1",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "BM-D",
+    "code": "D",
+    "name": "Deutsch",
+    "teacher": "WEB",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-305",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "BM-E",
+    "code": "E",
+    "name": "Englisch",
+    "teacher": "MID",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-305",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "BM-M",
+    "code": "M",
+    "name": "Mathematik",
+    "teacher": "FRE",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-306",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "BM-F",
+    "code": "F",
+    "name": "Französisch",
+    "teacher": "DUB",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 2,
+    "room": "AU-305",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "BM-NW",
+    "code": "NW",
+    "name": "Naturwissenschaften",
+    "teacher": "KEL",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 2,
+    "room": "AU-401",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "BM-GP",
+    "code": "GP",
+    "name": "Geschichte und Politik",
+    "teacher": "ROS",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 2,
+    "room": "AU-305",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "UK335",
+    "code": "ÜK 335",
+    "name": "Mobile-Applikation realisieren",
+    "teacher": "ZLI-HUB",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 8,
+    "room": "ZLI Zürich-Oerlikon",
+    "schoolPart": "UEK"
+  },
+  {
+    "id": "UK306",
+    "code": "ÜK 306",
+    "name": "Kleinprojekte im eigenen Berufsumfeld abwickeln",
+    "teacher": "ZLI-MEI",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 8,
+    "room": "ZLI Zürich-Oerlikon",
+    "schoolPart": "UEK"
+  }
+]

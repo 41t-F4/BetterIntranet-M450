@@ -1,0 +1,90 @@
+[
+  {
+    "id": 1,
+    "date": "2026-10-12",
+    "lessonStart": "08:10",
+    "lessonEnd": "09:45",
+    "subject": "Englisch",
+    "teacher": "MID",
+    "status": "OPEN",
+    "reason": null,
+    "reportedAt": "2026-10-12T10:00:00"
+  },
+  {
+    "id": 2,
+    "date": "2026-09-30",
+    "lessonStart": "12:40",
+    "lessonEnd": "14:15",
+    "subject": "Modul 320 Objektorientiert programmieren",
+    "teacher": "KOL",
+    "status": "OPEN",
+    "reason": null,
+    "reportedAt": "2026-09-30T14:30:00"
+  },
+  {
+    "id": 3,
+    "date": "2026-09-21",
+    "lessonStart": "10:05",
+    "lessonEnd": "11:40",
+    "subject": "Modul 450 Applikationen testen",
+    "teacher": "STU",
+    "status": "EXCUSED",
+    "reason": "Arztbesuch",
+    "reportedAt": "2026-09-21T12:00:00"
+  },
+  {
+    "id": 4,
+    "date": "2026-09-14",
+    "lessonStart": "14:35",
+    "lessonEnd": "16:10",
+    "subject": "Mathematik",
+    "teacher": "FRE",
+    "status": "UNEXCUSED",
+    "reason": null,
+    "reportedAt": "2026-09-14T16:30:00"
+  },
+  {
+    "id": 5,
+    "date": "2026-08-31",
+    "lessonStart": "08:10",
+    "lessonEnd": "11:40",
+    "subject": "Modul 322 Benutzerschnittstellen implementieren",
+    "teacher": "BRA",
+    "status": "EXCUSED",
+    "reason": "Militärische Rekrutierung",
+    "reportedAt": "2026-08-31T12:00:00"
+  },
+  {
+    "id": 6,
+    "date": "2026-06-15",
+    "lessonStart": "08:10",
+    "lessonEnd": "09:45",
+    "subject": "Deutsch",
+    "teacher": "WEB",
+    "status": "EXCUSED",
+    "reason": "Krankheit",
+    "reportedAt": "2026-06-15T10:15:00"
+  },
+  {
+    "id": 7,
+    "date": "2026-05-27",
+    "lessonStart": "10:05",
+    "lessonEnd": "11:40",
+    "subject": "Allgemeinbildung Gesellschaft",
+    "teacher": "ROS",
+    "status": "UNEXCUSED",
+    "reason": null,
+    "reportedAt": "2026-05-27T12:00:00"
+  },
+  {
+    "id": 8,
+    "date": "2026-04-20",
+    "lessonStart": "12:40",
+    "lessonEnd": "14:15",
+    "subject": "Französisch",
+    "teacher": "DUB",
+    "status": "EXCUSED",
+    "reason": "Zahnarzt",
+    "reportedAt": "2026-04-20T14:30:00"
+  }
+]

@@ -57,11 +57,11 @@ describe('App', () => {
     expect(await navLinks()).toContain('Klassen & Kurse')
   })
 
-  it('renders the dashboard placeholder on the start page', async () => {
+  it('renders the dashboard with greeting and newsticker on the start page', async () => {
     renderApp('/')
 
-    expect(await screen.findByRole('heading', { name: 'Home' })).toBeInTheDocument()
-    expect(screen.getByText('Dieses Modul ist in Arbeit.')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: /^Guten (Morgen|Tag|Abend), Nicola$/ })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Newsticker' })).toBeInTheDocument()
   })
 
   it('renders the page of an enabled module with its breadcrumb', async () => {

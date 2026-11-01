@@ -1,20 +1,7 @@
-/* Shared styles of the dashboard cards: Marks-style white card with a thin accent line on top. */
+/* Shared styles of the dashboard cards. */
 
 .card {
-  border-top: 3px solid var(--card-accent, var(--color-teal));
   height: 100%;
-}
-
-.accentTeal {
-  --card-accent: var(--color-teal);
-}
-
-.accentBlue {
-  --card-accent: var(--color-blue);
-}
-
-.accentViolet {
-  --card-accent: var(--color-violet);
 }
 
 .list {
@@ -25,12 +12,13 @@
 
 .empty {
   margin: 0;
-  color: var(--color-text-muted);
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-sm);
 }
 
 .date {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
+  color: var(--color-text-subtle);
+  font-size: var(--font-size-xs);
   font-variant-numeric: tabular-nums;
 }
 
@@ -44,4 +32,10 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.body {
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
 }

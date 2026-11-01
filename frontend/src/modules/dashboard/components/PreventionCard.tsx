@@ -10,8 +10,8 @@ export interface PreventionCardProps {
 /** «Prävention»: hint box with an external link (147.ch). */
 export function PreventionCard({ prevention }: PreventionCardProps) {
   return (
-    <Card title={prevention.title} className={`${shared.card} ${shared.accentViolet}`}>
-      <p>{prevention.text}</p>
+    <Card title={prevention.title} className={shared.card}>
+      <p className={shared.body}>{prevention.text}</p>
       <ExternalLink href={prevention.url}>{prevention.linkText}</ExternalLink>
     </Card>
   )

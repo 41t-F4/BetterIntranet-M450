@@ -6,12 +6,13 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .greeting {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-1);
 }
 
 .status {
@@ -26,7 +27,7 @@
     'news'
     'events'
     'side';
-  gap: var(--space-4);
+  gap: var(--space-5);
   align-items: start;
 }
 
@@ -42,11 +43,12 @@
   grid-area: side;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 .error {
-  border-top: 3px solid var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 35%, var(--color-border));
+  background: var(--color-danger-soft);
 }
 
 .errorTitle {

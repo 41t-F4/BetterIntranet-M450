@@ -13,7 +13,7 @@ export interface LinksCardProps {
 /** Link list used for «Meine Links» and «Quick Links». External links open in a new tab. */
 export function LinksCard({ title, links }: LinksCardProps) {
   return (
-    <Card title={title} className={`${shared.card} ${shared.accentTeal}`}>
+    <Card title={title} className={shared.card}>
       {links.length === 0 ? (
         <p className={shared.empty}>Keine Links vorhanden.</p>
       ) : (

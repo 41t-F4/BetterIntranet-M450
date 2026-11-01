@@ -25,33 +25,29 @@
 
 .title {
   grid-area: title;
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
 }
 
 .badge {
   grid-area: badge;
   justify-self: end;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--badge-color);
-  background: color-mix(in srgb, var(--badge-color) 14%, var(--color-surface));
-  color: var(--color-text);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--badge-bg);
+  color: var(--badge-color);
   font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
-  line-height: 1.6;
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  white-space: nowrap;
 }
 
 .badgeHoliday {
-  --badge-color: var(--color-teal);
+  --badge-color: var(--color-holiday);
+  --badge-bg: var(--color-holiday-soft);
 }
 
 .badgeEvent {
-  --badge-color: var(--color-violet);
-}
-
-@media (min-width: 1024px) {
-  .item {
-    grid-template-columns: 13rem minmax(0, 1fr) auto;
-    grid-template-areas: 'date title badge';
-  }
+  --badge-color: var(--color-primary);
+  --badge-bg: var(--color-primary-soft);
 }

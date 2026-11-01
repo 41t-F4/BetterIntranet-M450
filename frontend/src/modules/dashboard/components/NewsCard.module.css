@@ -19,11 +19,12 @@
 
 .title {
   margin: var(--space-1) 0;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-bold);
 }
 
 .text {
   margin: 0;
   font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
 }

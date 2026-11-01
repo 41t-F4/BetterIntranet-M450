@@ -17,7 +17,7 @@ const BADGE_CLASS: Record<EventKind, string> = {
 /** «Termine der Schule»: upcoming school events and holidays (order as delivered by the backend). */
 export function EventsCard({ events }: EventsCardProps) {
   return (
-    <Card title="Termine der Schule" className={`${shared.card} ${shared.accentBlue}`}>
+    <Card title="Termine der Schule" className={shared.card}>
       {events.length === 0 ? (
         <p className={shared.empty}>Keine Kalendereinträge gefunden.</p>
       ) : (

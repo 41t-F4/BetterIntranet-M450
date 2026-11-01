@@ -1,3 +1,4 @@
+import { createContext, useContext } from 'react'
 import type { CurrentUser, ModuleName, ModuleStatus } from '../../shared/api/types'
 
 export type AppDataStatus = 'loading' | 'ready' | 'error'
@@ -14,14 +15,24 @@ export interface AppData {
   isModuleEnabled(name: ModuleName): boolean
 }
 
+export const AppDataContext = createContext<AppData | null>(null)
+
+/** Startup data (user, module statuses) and its loading state. Must be used below `AppDataProvider`. */
 export function useAppData(): AppData {
-  throw new Error('not implemented')
+  const data = useContext(AppDataContext)
+  if (data === null) {
+    throw new Error('useAppData must be used within an AppDataProvider')
+  }
+  return data
 }
 
+/** The logged-in user, or `null` until loaded. */
 export function useCurrentUser(): CurrentUser | null {
-  throw new Error('not implemented')
+  return useAppData().user
 }
 
+/** Module statuses from `GET /api/modules` and a helper to check a single module. */
 export function useModules(): Pick<AppData, 'modules' | 'isModuleEnabled'> {
-  throw new Error('not implemented')
+  const { modules, isModuleEnabled } = useAppData()
+  return { modules, isModuleEnabled }
 }

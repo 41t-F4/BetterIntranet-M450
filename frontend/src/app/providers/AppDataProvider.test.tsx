@@ -12,13 +12,13 @@ function Probe() {
   const { isModuleEnabled } = useModules()
   return (
     <dl>
-      <dt>status</dt>
+      <dt>Status</dt>
       <dd>{status}</dd>
-      <dt>error</dt>
+      <dt>Fehler</dt>
       <dd>{error?.message ?? '-'}</dd>
-      <dt>user</dt>
+      <dt>Benutzer</dt>
       <dd>{user?.username ?? '-'}</dd>
-      <dt>grades</dt>
+      <dt>Modul Noten</dt>
       <dd>{isModuleEnabled('grades') ? 'enabled' : 'disabled'}</dd>
     </dl>
   )
@@ -37,7 +37,7 @@ describe('AppDataProvider', () => {
     renderProbe()
 
     expect(screen.getByText('loading')).toBeInTheDocument()
-    expect(screen.getByText('-', { selector: 'dd' })).toBeInTheDocument()
+    expect(screen.getAllByText('-')).toHaveLength(2)
   })
 
   it('provides the user and module statuses once both requests succeeded', async () => {

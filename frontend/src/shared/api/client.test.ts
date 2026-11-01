@@ -1,5 +1,5 @@
 import { HttpResponse, http } from 'msw'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { server } from '../../test/msw/server'
 import { ApiError, apiGet } from './client'
 import type { ProblemDetail } from './types'
@@ -89,11 +89,16 @@ describe('apiGet', () => {
   })
 
   it('falls back to a generic title when the response has neither body nor status text', async () => {
-    server.use(http.get('/api/grades', () => new HttpResponse(null, { status: 500 })))
+    // MSW always fills in a status text, so this edge case is produced with a bare Response.
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 599 }))
 
-    const error = await apiGet('/api/grades').catch((e: unknown) => e)
+    try {
+      const error = await apiGet('/api/grades').catch((e: unknown) => e)
 
-    expect(error).toBeInstanceOf(ApiError)
-    expect((error as ApiError).title).toBe('HTTP 500')
+      expect(error).toBeInstanceOf(ApiError)
+      expect((error as ApiError).title).toBe('HTTP 599')
+    } finally {
+      fetchSpy.mockRestore()
+    }
   })
 })

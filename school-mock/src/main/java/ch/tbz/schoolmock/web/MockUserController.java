@@ -14,32 +14,40 @@ import ch.tbz.schoolmock.api.SchoolClass;
 import ch.tbz.schoolmock.repository.UserFixtureRepository;
 
 /**
- * Read-only REST endpoints that simulate the school systems BetterIntranet has no access to.
+ * Read-only REST endpoints that simulate the school systems BetterIntranet has no access to
+ * (class administration, course enrolment, absences and grades).
+ *
+ * <p>All resources are served per user below {@code /mock/users/{username}} straight from the
+ * fixture repository. The controller contains no logic of its own so that the main backend can
+ * rely on a stable, predictable contract.
  */
 @RestController
 @RequestMapping("/mock/users/{username}")
 public class MockUserController {
 
+	private final UserFixtureRepository repository;
+
 	public MockUserController(UserFixtureRepository repository) {
+		this.repository = repository;
 	}
 
 	@GetMapping("/classes")
 	public List<SchoolClass> classes(@PathVariable String username) {
-		throw new UnsupportedOperationException("not implemented");
+		return repository.findClasses(username);
 	}
 
 	@GetMapping("/courses")
 	public List<Course> courses(@PathVariable String username) {
-		throw new UnsupportedOperationException("not implemented");
+		return repository.findCourses(username);
 	}
 
 	@GetMapping("/absences")
 	public List<Absence> absences(@PathVariable String username) {
-		throw new UnsupportedOperationException("not implemented");
+		return repository.findAbsences(username);
 	}
 
 	@GetMapping("/grades")
 	public List<Grade> grades(@PathVariable String username) {
-		throw new UnsupportedOperationException("not implemented");
+		return repository.findGrades(username);
 	}
 }

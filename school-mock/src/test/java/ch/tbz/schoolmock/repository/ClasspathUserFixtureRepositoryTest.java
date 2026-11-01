@@ -3,6 +3,8 @@ package ch.tbz.schoolmock.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.endsWith;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -29,6 +31,7 @@ import ch.tbz.schoolmock.api.Course;
 import ch.tbz.schoolmock.api.Grade;
 import ch.tbz.schoolmock.api.SchoolClass;
 import ch.tbz.schoolmock.api.SchoolPart;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
@@ -200,17 +203,20 @@ class ClasspathUserFixtureRepositoryTest {
 	}
 
 	@Test
+	@DisplayName("a malformed fixture file is reported by name, other files of the user stay readable")
 	void shouldWrapMalformedJsonInFixtureLoadException() throws IOException {
-		ResourceLoader resourceLoader = mock(ResourceLoader.class);
+		ResourceLoader resourceLoader = spy(new DefaultResourceLoader());
 		Resource malformed = mock(Resource.class);
 		when(malformed.exists()).thenReturn(true);
 		when(malformed.getInputStream())
 				.thenReturn(new ByteArrayInputStream("this is not json".getBytes(StandardCharsets.UTF_8)));
-		when(resourceLoader.getResource(anyString())).thenReturn(malformed);
+		doReturn(malformed).when(resourceLoader).getResource(endsWith("/courses.json"));
 		ClasspathUserFixtureRepository failing = new ClasspathUserFixtureRepository(objectMapper, resourceLoader);
 
 		assertThatThrownBy(() -> failing.findCourses(NICOLA))
 				.isInstanceOf(FixtureLoadException.class)
-				.hasMessageContaining("courses.json");
+				.hasMessageContaining("courses.json")
+				.hasMessageContaining(NICOLA)
+				.hasCauseInstanceOf(JacksonException.class);
 	}
 }

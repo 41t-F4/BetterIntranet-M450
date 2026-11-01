@@ -14,6 +14,7 @@ import ch.tbz.betterintranet.grades.api.SchoolPartGrades;
 import ch.tbz.betterintranet.grades.api.SubjectGrades;
 import ch.tbz.betterintranet.grades.domain.GradeAverageCalculator;
 import ch.tbz.betterintranet.grades.domain.WeightedGrade;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
@@ -43,7 +44,7 @@ public class GetGradesOverviewHandler implements QueryHandler<GetGradesOverviewQ
 
     private static final Comparator<SubjectGrades> BY_SUBJECT_THEN_NEWEST_SEMESTER =
             comparing(SubjectGrades::subject)
-                    .thenComparing(subject -> subject.grades().getFirst().date(), reverseOrder())
+                    .thenComparing(GetGradesOverviewHandler::latestEntryDate, reverseOrder())
                     .thenComparing(SubjectGrades::semester, reverseOrder());
 
     private final GradesClient client;
@@ -85,6 +86,11 @@ public class GetGradesOverviewHandler implements QueryHandler<GetGradesOverviewQ
                 .toList());
         Double reportGrade = average.isPresent() ? GradeAverageCalculator.roundToSwissHalf(average.getAsDouble()) : null;
         return new SubjectGrades(key.subject(), key.semester(), nullable(average), reportGrade, entries);
+    }
+
+    /** Semesters have no reliable natural order ("HS 2026" vs "FS 2026"), so the most recent entry decides. */
+    private static LocalDate latestEntryDate(SubjectGrades subject) {
+        return subject.grades().stream().map(GradeEntry::date).max(Comparator.naturalOrder()).orElseThrow();
     }
 
     /** Plain mean of the non-null averages, {@code null} when there is none. */

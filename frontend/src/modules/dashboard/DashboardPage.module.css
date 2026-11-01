@@ -1,0 +1,81 @@
+/*
+ * Dashboard layout like the old intranet: newsticker | school events (wider) | side column.
+ * One column on phones, two columns from 768 px, three columns from 1024 px.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.greeting {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+}
+
+.status {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'news'
+    'events'
+    'side';
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.news {
+  grid-area: news;
+}
+
+.events {
+  grid-area: events;
+}
+
+.side {
+  grid-area: side;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.error {
+  border-top: 3px solid var(--color-danger);
+}
+
+.errorTitle {
+  font-weight: var(--font-weight-bold);
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'news events'
+      'side side';
+    align-items: stretch;
+  }
+
+  .side {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+    grid-template-areas: 'news events side';
+    align-items: start;
+  }
+
+  .side {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

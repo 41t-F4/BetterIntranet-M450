@@ -1,0 +1,22 @@
+[
+  {
+    "username": "nicola.wehrli",
+    "displayName": "Nicola Wehrli",
+    "firstName": "Nicola",
+    "lastName": "Wehrli",
+    "email": "nicola.wehrli@tbz.ch",
+    "className": "AP 24b",
+    "classId": 7471,
+    "role": "STUDENT"
+  },
+  {
+    "username": "max.muster",
+    "displayName": "Max Muster",
+    "firstName": "Max",
+    "lastName": "Muster",
+    "email": "max.muster@tbz.ch",
+    "className": "PE 26a",
+    "classId": 7372,
+    "role": "STUDENT"
+  }
+]

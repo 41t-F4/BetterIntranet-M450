@@ -7,18 +7,59 @@ export type ResolvedTheme = 'light' | 'dark'
 export const THEME_STORAGE_KEY = 'betterintranet.theme'
 export const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
-export function resolveTheme(_preference: ThemePreference, _systemPrefersDark: boolean): ResolvedTheme {
-  throw new Error('not implemented')
+type ReadableStorage = Pick<Storage, 'getItem'>
+type WritableStorage = Pick<Storage, 'setItem' | 'removeItem'>
+
+/** `localStorage` if the browser allows access to it (private modes may throw), otherwise `null`. */
+function defaultStorage(): Storage | null {
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
 }
 
-export function readPreference(_storage?: Pick<Storage, 'getItem'> | null): ThemePreference {
-  throw new Error('not implemented')
+export function resolveTheme(preference: ThemePreference, systemPrefersDark: boolean): ResolvedTheme {
+  if (preference === 'system') {
+    return systemPrefersDark ? 'dark' : 'light'
+  }
+  return preference
 }
 
-export function storePreference(_preference: ThemePreference, _storage?: Pick<Storage, 'setItem' | 'removeItem'> | null): void {
-  throw new Error('not implemented')
+/** Stored preference, or «system» when nothing valid is stored or storage is unavailable. */
+export function readPreference(storage: ReadableStorage | null = defaultStorage()): ThemePreference {
+  try {
+    const stored = storage?.getItem(THEME_STORAGE_KEY)
+    return stored === 'light' || stored === 'dark' ? stored : 'system'
+  } catch {
+    return 'system'
+  }
 }
 
-export function applyTheme(_theme: ResolvedTheme, _root?: HTMLElement): void {
-  throw new Error('not implemented')
+/** Remembers an explicit choice; «system» clears it. Storage failures are ignored on purpose. */
+export function storePreference(preference: ThemePreference, storage: WritableStorage | null = defaultStorage()): void {
+  try {
+    if (preference === 'system') {
+      storage?.removeItem(THEME_STORAGE_KEY)
+    } else {
+      storage?.setItem(THEME_STORAGE_KEY, preference)
+    }
+  } catch {
+    // Without storage the choice simply lasts for the current page view.
+  }
+}
+
+/**
+ * Applies the theme to the root element. CSS tokens switch on `data-theme`; `color-scheme` makes
+ * native controls and scrollbars match. The inline script in `index.html` does the same before the
+ * first paint to avoid a flash of the wrong theme.
+ */
+export function applyTheme(theme: ResolvedTheme, root: HTMLElement = document.documentElement): void {
+  root.dataset.theme = theme
+  root.style.colorScheme = theme
+}
+
+/** Whether the operating system currently asks for a dark scheme; `false` where `matchMedia` is missing. */
+export function systemPrefersDark(): boolean {
+  return typeof window.matchMedia === 'function' && window.matchMedia(DARK_SCHEME_QUERY).matches
 }

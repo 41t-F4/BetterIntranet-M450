@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { CurrentUser } from '../../shared/api/types'
+import { ThemeToggle } from '../../shared/theme/ThemeToggle'
 import styles from './TopBar.module.css'
 
 export interface TopBarProps {
@@ -28,6 +29,7 @@ export function TopBar({ user, children }: TopBarProps) {
         </div>
         {children && <div className={styles.nav}>{children}</div>}
         <div className={styles.user}>
+          <ThemeToggle />
           {user && (
             <span className={styles.avatar} aria-hidden="true">
               {initials(user.displayName)}

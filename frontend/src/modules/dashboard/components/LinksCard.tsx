@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Card } from '../../../shared/ui/Card'
 import type { DashboardLink } from '../types'
+import { ExternalLink } from './ExternalLink'
 import shared from './DashboardCard.module.css'
 import styles from './LinksCard.module.css'
 
@@ -20,10 +21,7 @@ export function LinksCard({ title, links }: LinksCardProps) {
           {links.map((link) => (
             <li key={link.url} className={styles.item}>
               {link.external ? (
-                <a href={link.url} target="_blank" rel="noopener noreferrer">
-                  {link.label}{' '}
-                  <span className={shared.visuallyHidden}>(öffnet in neuem Tab)</span>
-                </a>
+                <ExternalLink href={link.url}>{link.label}</ExternalLink>
               ) : (
                 <Link to={link.url}>{link.label}</Link>
               )}

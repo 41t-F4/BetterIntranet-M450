@@ -97,14 +97,31 @@ describe('TimetablePage', () => {
   it('shows time range, subject, teacher and room of every lesson', async () => {
     renderPage()
 
+    const tuesday = await findDay('Dienstag, 3. Nov.')
+    expect(within(tuesday).getAllByRole('listitem')).toHaveLength(4)
+    expect(within(tuesday).getByText('08:10 – 09:45')).toBeInTheDocument()
+    expect(within(tuesday).getByText('ENG')).toHaveAttribute('title', 'Englisch')
+    expect(within(tuesday).getByText('MID')).toBeInTheDocument()
+    expect(within(tuesday).getByText('AU-512')).toBeInTheDocument()
+    expect(within(tuesday).getByText('10:05 – 12:30')).toBeInTheDocument()
+    expect(within(tuesday).getByText('GES')).toHaveAttribute('title', 'Allgemeinbildung Gesellschaft')
+    expect(within(tuesday).getByText('RIA')).toBeInTheDocument()
+    expect(within(tuesday).getByText('AU-202')).toBeInTheDocument()
+    expect(within(tuesday).getByText('13:25 – 15:00')).toBeInTheDocument()
+    expect(within(tuesday).getByText('15:20 – 16:55')).toBeInTheDocument()
+    expect(within(tuesday).getAllByText('M450')).toHaveLength(2)
+    expect(within(tuesday).getAllByText('M450')[0]).toHaveAttribute('title', '450 Applikationen testen')
+    expect(within(tuesday).getAllByText('VAJ')).toHaveLength(2)
+    expect(within(tuesday).getByText('AU-060')).toBeInTheDocument()
+  })
+
+  it('shows days without lessons as empty columns', async () => {
+    renderPage()
+
     const monday = await findDay('Montag, 2. Nov.')
-    expect(within(monday).getAllByRole('listitem')).toHaveLength(2)
-    expect(within(monday).getByText('08:10 – 09:45')).toBeInTheDocument()
-    expect(within(monday).getByText('117')).toHaveAttribute('title', '117 Informatik- und Netzinfrastruktur')
-    expect(within(monday).getByText('CAL')).toBeInTheDocument()
-    expect(within(monday).getByText('AU-U60')).toBeInTheDocument()
-    expect(within(monday).getByText('10:05 – 11:40')).toBeInTheDocument()
-    expect(within(monday).getByText('M450')).toBeInTheDocument()
+    expect(within(monday).queryAllByRole('listitem')).toHaveLength(0)
+    expect(within(await findDay('Freitag, 6. Nov.')).queryAllByRole('listitem')).toHaveLength(0)
+    expect(screen.queryByText('Keine Lektionen in dieser Woche.')).not.toBeInTheDocument()
   })
 
   it('shows the lesson info as additional text', async () => {
@@ -118,7 +135,7 @@ describe('TimetablePage', () => {
     renderPage()
 
     const tuesday = await findDay('Dienstag, 3. Nov.')
-    const cancelled = within(tuesday).getByText('DEU').closest('li')
+    const cancelled = within(tuesday).getByText('GES').closest('li')
     expect(cancelled).not.toBeNull()
     expect(within(cancelled as HTMLElement).getByText('Ausfall')).toBeInTheDocument()
     expect(within(tuesday).getByText('ENG').closest('li')).not.toHaveTextContent('Ausfall')
@@ -127,10 +144,12 @@ describe('TimetablePage', () => {
   it('marks a changed lesson with the badge «Änderung»', async () => {
     renderPage()
 
-    const wednesday = await findDay('Mittwoch, 4. Nov.')
-    const changed = within(wednesday).getByText('SPO').closest('li')
+    const tuesday = await findDay('Dienstag, 3. Nov.')
+    const changed = within(tuesday).getByText('15:20 – 16:55').closest('li')
     expect(within(changed as HTMLElement).getByText('Änderung')).toBeInTheDocument()
     expect(within(changed as HTMLElement).getByText('Raumänderung')).toBeInTheDocument()
+    expect(within(changed as HTMLElement).getByText('AU-057')).toBeInTheDocument()
+    expect(within(tuesday).getByText('13:25 – 15:00').closest('li')).not.toHaveTextContent('Änderung')
   })
 
   it('shows the holiday name instead of the lessons on a holiday', async () => {
@@ -138,7 +157,7 @@ describe('TimetablePage', () => {
 
     const thursday = await findDay('Donnerstag, 5. Nov.')
     expect(within(thursday).getByText('Tag der Schule')).toBeInTheDocument()
-    expect(within(thursday).queryByText('MAT')).not.toBeInTheDocument()
+    expect(within(thursday).queryByText('ENG')).not.toBeInTheDocument()
     expect(within(thursday).queryAllByRole('listitem')).toHaveLength(0)
   })
 

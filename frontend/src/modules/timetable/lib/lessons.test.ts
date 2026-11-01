@@ -58,11 +58,11 @@ describe('groupLessonsByDay', () => {
   it('assigns every fixture lesson to its day', () => {
     const grouped = groupLessonsByDay(lessonsFixture, days)
 
-    expect(grouped.get('2026-11-02')?.map((l) => l.subject)).toEqual(['117', 'M450'])
-    expect(grouped.get('2026-11-03')?.map((l) => l.subject)).toEqual(['ENG', 'DEU'])
-    expect(grouped.get('2026-11-04')?.map((l) => l.subject)).toEqual(['SPO'])
-    expect(grouped.get('2026-11-05')?.map((l) => l.subject)).toEqual(['MAT'])
-    expect(grouped.get('2026-11-06')?.map((l) => l.subject)).toEqual(['M320'])
+    expect(grouped.get('2026-11-02')).toEqual([])
+    expect(grouped.get('2026-11-03')?.map((l) => l.subject)).toEqual(['ENG', 'GES', 'M450', 'M450'])
+    expect(grouped.get('2026-11-04')).toEqual([])
+    expect(grouped.get('2026-11-05')?.map((l) => l.subject)).toEqual(['ENG'])
+    expect(grouped.get('2026-11-06')).toEqual([])
   })
 
   it('sorts the lessons of a day by start time, regardless of input order and time format', () => {

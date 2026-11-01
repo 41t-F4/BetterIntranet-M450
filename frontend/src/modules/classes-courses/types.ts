@@ -23,5 +23,6 @@ export interface Course {
   semester: string
   lessonsPerWeek: number
   room: string
-  schoolPart: SchoolPart
+  /** @deprecated No longer delivered by `GET /api/courses`; the intranet only covers the TBZ. */
+  schoolPart?: SchoolPart
 }

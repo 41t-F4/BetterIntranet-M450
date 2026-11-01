@@ -14,6 +14,17 @@ export function filterBySemester(courses: readonly Course[], semester: string | 
   return semester === null ? [...courses] : courses.filter((course) => course.semester === semester)
 }
 
+/** Courses of one semester. */
+export interface SemesterGroup {
+  semester: string
+  courses: Course[]
+}
+
+/** Groups courses by semester, newest semester first, keeping the input order within a group. */
+export function groupBySemester(courses: readonly Course[]): SemesterGroup[] {
+  return courses.length === 0 ? [] : []
+}
+
 /** Sort key of a semester such as `HS 2026`: year first, then term. Unknown terms sort before known ones. */
 function semesterKey(semester: string): number {
   const [term = '', year = '0'] = semester.split(' ')

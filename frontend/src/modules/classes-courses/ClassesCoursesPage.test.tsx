@@ -70,7 +70,7 @@ describe('ClassesCoursesPage', () => {
     expect(within(coursesCard()).getByRole('status')).toHaveTextContent('Laden')
 
     await screen.findByRole('row', { name: /AP 24b/ })
-    await screen.findByRole('row', { name: /Deutsch/ })
+    await screen.findByRole('row', { name: /Applikationen testen/ })
     expect(screen.queryByRole('status')).not.toBeInTheDocument()
   })
 
@@ -142,7 +142,7 @@ describe('ClassesCoursesPage', () => {
       renderPage()
 
       expect(await within(classesCard()).findByText(DISABLED_TEXT)).toBeInTheDocument()
-      expect(await screen.findByRole('row', { name: /Deutsch/ })).toBeInTheDocument()
+      expect(await screen.findByRole('row', { name: /Applikationen testen/ })).toBeInTheDocument()
       expect(classesRequested).not.toHaveBeenCalled()
       expect(within(classesCard()).queryByRole('alert')).not.toBeInTheDocument()
     })
@@ -157,50 +157,51 @@ describe('ClassesCoursesPage', () => {
       renderPage()
 
       expect(await within(classesCard()).findByText(DISABLED_TEXT)).toBeInTheDocument()
-      expect(await screen.findByRole('row', { name: /Deutsch/ })).toBeInTheDocument()
+      expect(await screen.findByRole('row', { name: /Applikationen testen/ })).toBeInTheDocument()
       expect(within(classesCard()).queryByRole('alert')).not.toBeInTheDocument()
     })
   })
 
   describe('«Meine Kurse»', () => {
-    it('groups the courses by school part with a count badge per group', async () => {
+    it('shows the courses of the newest semester in one table with a course count by default', async () => {
       renderPage()
-      await screen.findByRole('row', { name: /Deutsch/ })
+      await screen.findByRole('row', { name: /Applikationen testen/ })
 
       const card = coursesCard()
-      const groups = within(card).getAllByRole('region')
 
-      expect(groups.map((group) => within(group).getByRole('heading', { level: 3 }).textContent)).toEqual([
-        'BMS',
-        'TBZ',
-        'ÜK',
-      ])
-      expect(within(within(card).getByRole('region', { name: 'BMS' })).getByText('3 Kurse')).toBeInTheDocument()
-      expect(within(within(card).getByRole('region', { name: 'TBZ' })).getByText('2 Kurse')).toBeInTheDocument()
-      expect(within(within(card).getByRole('region', { name: 'ÜK' })).getByText('2 Kurse')).toBeInTheDocument()
+      expect(screen.getByRole('combobox', { name: 'Semester' })).toHaveValue('HS 2026')
+      expect(within(card).getAllByRole('table')).toHaveLength(1)
+      expect(within(card).queryAllByRole('heading', { level: 3 })).toHaveLength(0)
+      expect(within(card).getByText('4 Kurse')).toBeInTheDocument()
+      expect(dataRows(card).map((row) => cellTexts(row)[0])).toEqual(['306', '450', 'ENG', 'GES'])
     })
 
-    it('renders one table per group with the expected columns and values', async () => {
+    it('renders the expected columns and values', async () => {
       renderPage()
-      const row = await screen.findByRole('row', { name: /Deutsch/ })
+      const row = await screen.findByRole('row', { name: /Applikationen testen/ })
 
-      const bms = within(coursesCard()).getByRole('region', { name: 'BMS' })
-
-      expect(columnHeaders(within(bms).getByRole('table'))).toEqual([
-        'Code',
-        'Kurs',
+      expect(columnHeaders(within(coursesCard()).getByRole('table'))).toEqual([
+        'Modul/Fach',
+        'Bezeichnung',
         'Lehrperson',
         'Semester',
         'Lektionen/Woche',
         'Raum',
       ])
-      expect(cellTexts(row)).toEqual(['D', 'Deutsch', 'WEB', 'HS 2026', '3', 'AU-305'])
-      expect(dataRows(coursesCard())).toHaveLength(7)
+      expect(cellTexts(row)).toEqual(['450', 'Applikationen testen', 'VAJ', 'HS 2026', '4', 'AU-060'])
+      expect(cellTexts(screen.getByRole('row', { name: /Englisch/ }))).toEqual([
+        'ENG',
+        'Englisch',
+        'MID',
+        'HS 2026',
+        '2',
+        'AU-512',
+      ])
     })
 
-    it('offers «Alle» and the distinct semesters, newest first, as filter', async () => {
+    it('offers «Alle» and the distinct semesters, newest first, with the newest selected', async () => {
       renderPage()
-      await screen.findByRole('row', { name: /Deutsch/ })
+      await screen.findByRole('row', { name: /Applikationen testen/ })
 
       const select = screen.getByRole('combobox', { name: 'Semester' })
 
@@ -209,8 +210,7 @@ describe('ClassesCoursesPage', () => {
         'HS 2026',
         'FS 2026',
       ])
-      expect(select).toHaveValue('')
-      expect(screen.getByRole('option', { name: 'Alle' })).toHaveProperty('selected', true)
+      expect(screen.getByRole('option', { name: 'HS 2026' })).toHaveProperty('selected', true)
     })
 
     it('filters the courses client-side by the selected semester', async () => {
@@ -223,20 +223,45 @@ describe('ClassesCoursesPage', () => {
       )
       const user = userEvent.setup()
       renderPage()
-      await screen.findByRole('row', { name: /Deutsch/ })
+      await screen.findByRole('row', { name: /Applikationen testen/ })
 
       await user.selectOptions(screen.getByRole('combobox', { name: 'Semester' }), 'FS 2026')
 
       const card = coursesCard()
-      expect(dataRows(card)).toHaveLength(3)
+      expect(dataRows(card).map((row) => cellTexts(row)[0])).toEqual(['320', '322', 'ENG', 'GES'])
       expect(dataRows(card).every((row) => cellTexts(row)[3] === 'FS 2026')).toBe(true)
-      expect(within(within(card).getByRole('region', { name: 'BMS' })).getByText('1 Kurs')).toBeInTheDocument()
-      expect(screen.queryByRole('row', { name: /Deutsch/ })).not.toBeInTheDocument()
+      expect(within(card).getByText('4 Kurse')).toBeInTheDocument()
+      expect(screen.queryByRole('row', { name: /Applikationen testen/ })).not.toBeInTheDocument()
+      expect(coursesRequested).toHaveBeenCalledTimes(1)
+    })
+
+    it('groups the rows by semester with a sub-heading when «Alle» is selected', async () => {
+      const user = userEvent.setup()
+      renderPage()
+      await screen.findByRole('row', { name: /Applikationen testen/ })
 
       await user.selectOptions(screen.getByRole('combobox', { name: 'Semester' }), 'Alle')
 
-      expect(dataRows(coursesCard())).toHaveLength(7)
-      expect(coursesRequested).toHaveBeenCalledTimes(1)
+      const card = coursesCard()
+      const groups = within(card).getAllByRole('region')
+      expect(groups.map((group) => within(group).getByRole('heading', { level: 3 }).textContent)).toEqual([
+        'HS 2026',
+        'FS 2026',
+      ])
+      expect(within(card).getByText('8 Kurse')).toBeInTheDocument()
+      expect(dataRows(card)).toHaveLength(8)
+      expect(dataRows(within(card).getByRole('region', { name: 'HS 2026' })).map((row) => cellTexts(row)[1])).toEqual([
+        'IT-Kleinprojekt abwickeln',
+        'Applikationen testen',
+        'Englisch',
+        'Allgemeinbildung Gesellschaft',
+      ])
+      expect(dataRows(within(card).getByRole('region', { name: 'FS 2026' })).map((row) => cellTexts(row)[1])).toEqual([
+        'Objektorientiert programmieren',
+        'Benutzerschnittstellen entwerfen und implementieren',
+        'Englisch',
+        'Allgemeinbildung Gesellschaft',
+      ])
     })
 
     it('shows an empty state when the user has no courses', async () => {

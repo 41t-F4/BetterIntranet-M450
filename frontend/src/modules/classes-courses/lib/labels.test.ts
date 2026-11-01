@@ -1,16 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { courseCountLabel, roleLabel, schoolPartLabel } from './labels'
-
-describe('schoolPartLabel', () => {
-  it('maps UEK to the German umlaut spelling', () => {
-    expect(schoolPartLabel('UEK')).toBe('ÜK')
-  })
-
-  it('keeps BMS and TBZ as they are', () => {
-    expect(schoolPartLabel('BMS')).toBe('BMS')
-    expect(schoolPartLabel('TBZ')).toBe('TBZ')
-  })
-})
+import { courseCountLabel, roleLabel } from './labels'
 
 describe('roleLabel', () => {
   it('translates the backend roles to German', () => {
@@ -27,6 +16,6 @@ describe('courseCountLabel', () => {
 
   it('uses the plural otherwise', () => {
     expect(courseCountLabel(0)).toBe('0 Kurse')
-    expect(courseCountLabel(6)).toBe('6 Kurse')
+    expect(courseCountLabel(4)).toBe('4 Kurse')
   })
 })

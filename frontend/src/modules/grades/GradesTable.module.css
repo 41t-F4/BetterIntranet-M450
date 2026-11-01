@@ -1,43 +1,20 @@
-/* Plain «Marks» table used inside the grades cards: grey header row, no borders, right-aligned numbers. */
+/* Grades tables inside the cards; base table styling comes from global.css. */
 
 .wrapper {
   overflow-x: auto;
-}
-
-.table {
-  font-size: var(--font-size-sm);
-}
-
-.table th,
-.table td {
-  padding: var(--space-2) var(--space-3);
-  text-align: left;
-  vertical-align: top;
-}
-
-.table thead th {
-  background: var(--color-surface-muted);
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
 }
 
 .table tbody th {
   font-weight: var(--font-weight-medium);
 }
 
-.table tbody tr + tr th,
-.table tbody tr + tr td {
-  border-top: 1px solid var(--color-border);
-}
-
 .table .numeric {
   text-align: right;
-  font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .table .muted {
-  color: var(--color-text-muted);
+  color: var(--color-text-subtle);
   white-space: nowrap;
 }

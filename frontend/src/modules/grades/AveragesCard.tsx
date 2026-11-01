@@ -39,7 +39,6 @@ export function AveragesCard({ overview }: AveragesCardProps) {
             </label>
             <select
               id={selectId}
-              className={styles.select}
               value={selected}
               onChange={(event) => setSelected(event.target.value)}
             >

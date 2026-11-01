@@ -26,7 +26,7 @@ export function AveragesChart({ data, width, height }: AveragesChartProps) {
       <CartesianGrid vertical={false} stroke="var(--color-border)" />
       <XAxis dataKey="label" tickLine={false} axisLine={{ stroke: 'var(--color-border)' }} tick={tickStyle} />
       <YAxis domain={[1, 6]} ticks={GRADE_TICKS} tickLine={false} axisLine={false} tick={tickStyle} />
-      <Tooltip cursor={{ fill: 'var(--color-surface-muted)' }} formatter={formatTooltipValue} />
+      <Tooltip cursor={{ fill: 'var(--color-surface-muted)' }} formatter={formatTooltipValue} contentStyle={tooltipStyle} labelStyle={tooltipLabelStyle} />
       <Legend iconType="square" iconSize={10} wrapperStyle={legendStyle} />
       <Bar dataKey="average" name="Durchschnitt" fill="var(--color-series-average)" radius={BAR_RADIUS} maxBarSize={40} isAnimationActive={false} />
       <Bar dataKey="reportGrade" name="Zeugnis" fill="var(--color-series-report)" radius={BAR_RADIUS} maxBarSize={40} isAnimationActive={false} />
@@ -48,6 +48,14 @@ export function AveragesChart({ data, width, height }: AveragesChartProps) {
 
 const BAR_RADIUS: [number, number, number, number] = [3, 3, 0, 0]
 const tickStyle = { fill: 'var(--color-text-subtle)', fontSize: 12 }
+const tooltipStyle = {
+  background: 'var(--color-surface)',
+  border: '1px solid var(--color-border)',
+  borderRadius: 8,
+  color: 'var(--color-text)',
+  fontSize: 13,
+}
+const tooltipLabelStyle = { color: 'var(--color-text)', fontWeight: 600 }
 const legendStyle = { fontSize: 13, color: 'var(--color-text-muted)', paddingTop: 8 }
 
 function formatTooltipValue(value: unknown): string {

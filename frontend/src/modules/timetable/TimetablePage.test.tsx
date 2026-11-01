@@ -234,6 +234,13 @@ describe('TimetablePage', () => {
     expect(await screen.findByText('KW 46 · 9. Nov. – 13. Nov. 2026')).toBeInTheDocument()
   })
 
+  it('falls back to the current week and the user class for invalid params', async () => {
+    renderPage('?week=gestern&classId=abc')
+
+    expect(await screen.findByText('KW 45 · 2. Nov. – 6. Nov. 2026')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByRole('combobox', { name: 'Klasse' })).toHaveValue('7471'))
+  })
+
   it('shows a message when the week has no lessons', async () => {
     renderPage('?week=2026-11-09')
 

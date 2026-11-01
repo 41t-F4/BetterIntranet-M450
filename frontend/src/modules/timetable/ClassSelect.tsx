@@ -11,16 +11,16 @@ export interface ClassSelectProps {
   onChange: (classId: number) => void
 }
 
+interface ClassOption {
+  id: number
+  label: string
+}
+
 const SELECT_ID = 'timetable-class'
 
 /** Class selector of the timetable; keeps the selected class visible while the class list loads. */
 export function ClassSelect({ classes, value, fallbackLabel, onChange }: ClassSelectProps) {
-  const options =
-    classes.status === 'ready'
-      ? classes.data.map((entry) => ({ id: entry.id, label: entry.shortName }))
-      : value === undefined
-        ? []
-        : [{ id: value, label: fallbackLabel ?? `Klasse ${value}` }]
+  const options = classOptions(classes, value, fallbackLabel)
 
   return (
     <div className={styles.field}>
@@ -43,4 +43,16 @@ export function ClassSelect({ classes, value, fallbackLabel, onChange }: ClassSe
       {classes.status === 'error' && <p className={styles.hint}>Klassenliste nicht verfügbar.</p>}
     </div>
   )
+}
+
+/** The loaded classes, or a single option for the selected class while the list is not available. */
+function classOptions(
+  classes: ResourceState<TimetableClass[]>,
+  value: number | undefined,
+  fallbackLabel: string | undefined,
+): ClassOption[] {
+  if (classes.status === 'ready') {
+    return classes.data.map((entry) => ({ id: entry.id, label: entry.shortName }))
+  }
+  return value === undefined ? [] : [{ id: value, label: fallbackLabel ?? `Klasse ${value}` }]
 }

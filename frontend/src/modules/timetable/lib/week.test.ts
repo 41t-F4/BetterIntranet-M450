@@ -16,6 +16,11 @@ describe('toIsoDate / parseIsoDate', () => {
   it('round-trips', () => {
     expect(toIsoDate(parseIsoDate('2026-02-28'))).toBe('2026-02-28')
   })
+
+  it('rejects anything that is not YYYY-MM-DD', () => {
+    expect(() => parseIsoDate('2.11.2026')).toThrow('Ungültiges Datum')
+    expect(() => parseIsoDate('')).toThrow('Ungültiges Datum')
+  })
 })
 
 describe('addDays', () => {

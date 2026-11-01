@@ -24,18 +24,19 @@ public class MockApiExceptionHandler {
 
 	@ExceptionHandler(UserNotFoundException.class)
 	public ProblemDetail handleUserNotFound(UserNotFoundException exception) {
-		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
-		problem.setType(USER_NOT_FOUND_TYPE);
-		problem.setTitle("User not found");
-		return problem;
+		return problem(HttpStatus.NOT_FOUND, USER_NOT_FOUND_TYPE, "User not found", exception.getMessage());
 	}
 
 	@ExceptionHandler(FixtureLoadException.class)
 	public ProblemDetail handleFixtureLoad(FixtureLoadException exception) {
-		ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR,
+		return problem(HttpStatus.INTERNAL_SERVER_ERROR, FIXTURE_UNREADABLE_TYPE, "Fixture data unreadable",
 				exception.getMessage());
-		problem.setType(FIXTURE_UNREADABLE_TYPE);
-		problem.setTitle("Fixture data unreadable");
+	}
+
+	private static ProblemDetail problem(HttpStatus status, URI type, String title, String detail) {
+		ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
+		problem.setType(type);
+		problem.setTitle(title);
 		return problem;
 	}
 }

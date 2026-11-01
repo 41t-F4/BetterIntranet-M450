@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/modules")
 public class ModulesController {
 
+    private final ModuleRegistry registry;
+
     public ModulesController(ModuleRegistry registry) {
-        throw new UnsupportedOperationException("not implemented");
+        this.registry = registry;
     }
 
     @GetMapping
     public List<ModuleDescriptor> modules() {
-        throw new UnsupportedOperationException("not implemented");
+        return registry.describeAll();
     }
 }

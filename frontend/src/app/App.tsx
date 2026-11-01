@@ -1,7 +1,4 @@
-/**
- * Application root. The router, layout and module registration are added by the
- * `feature/frontend-shell` branch; the scaffold only renders the product name.
- */
+/** Application root: data provider plus router. */
 export function App() {
-  return <h1>BetterIntranet</h1>
+  return null
 }

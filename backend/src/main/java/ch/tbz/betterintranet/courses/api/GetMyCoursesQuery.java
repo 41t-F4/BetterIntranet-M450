@@ -4,8 +4,8 @@ import ch.tbz.betterintranet.core.gateway.Query;
 import java.util.List;
 
 /**
- * All courses the given user attends, grouped by school part ({@code BMS}, {@code TBZ}, {@code UEK}) and
- * sorted by code. Optionally restricted to one semester.
+ * All courses the given user attends, newest semester first and then sorted by code. Optionally restricted to
+ * one semester.
  *
  * @param username the user whose courses are requested, e.g. {@code nicola.wehrli}
  * @param semester the semester to filter by, e.g. {@code HS 2026}; {@code null} or blank means all semesters

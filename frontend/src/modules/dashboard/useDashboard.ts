@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { fetchDashboard } from './dashboardApi'
 import type { Dashboard } from './types'
 
 export type DashboardState =
@@ -7,5 +9,25 @@ export type DashboardState =
 
 /** Loads `GET /api/dashboard` once and exposes its loading state. */
 export function useDashboard(): DashboardState {
-  return { status: 'loading' }
+  const [state, setState] = useState<DashboardState>({ status: 'loading' })
+
+  useEffect(() => {
+    let cancelled = false
+    fetchDashboard()
+      .then((data) => {
+        if (!cancelled) setState({ status: 'ready', data })
+      })
+      .catch((reason: unknown) => {
+        if (!cancelled) setState({ status: 'error', error: toError(reason) })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  return state
+}
+
+function toError(reason: unknown): Error {
+  return reason instanceof Error ? reason : new Error(String(reason))
 }

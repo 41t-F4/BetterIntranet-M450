@@ -1,6 +1,7 @@
+import { apiGet } from '../../shared/api/client'
 import type { Dashboard } from './types'
 
-/** Loads the dashboard content (news, school events, prevention box, links). */
+/** Loads the dashboard content (news, school events, prevention box, links). Throws `ApiError` on failure. */
 export function fetchDashboard(): Promise<Dashboard> {
-  return Promise.reject(new Error('not implemented'))
+  return apiGet<Dashboard>('/api/dashboard')
 }

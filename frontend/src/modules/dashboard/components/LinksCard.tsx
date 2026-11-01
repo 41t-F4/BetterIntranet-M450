@@ -1,11 +1,36 @@
+import { Link } from 'react-router-dom'
+import { Card } from '../../../shared/ui/Card'
 import type { DashboardLink } from '../types'
+import shared from './DashboardCard.module.css'
+import styles from './LinksCard.module.css'
 
 export interface LinksCardProps {
   title: string
   links: readonly DashboardLink[]
 }
 
-/** Link list used for «Meine Links» and «Quick Links». */
-export function LinksCard(_props: LinksCardProps) {
-  return null
+/** Link list used for «Meine Links» and «Quick Links». External links open in a new tab. */
+export function LinksCard({ title, links }: LinksCardProps) {
+  return (
+    <Card title={title} className={`${shared.card} ${shared.accentTeal}`}>
+      {links.length === 0 ? (
+        <p className={shared.empty}>Keine Links vorhanden.</p>
+      ) : (
+        <ul className={shared.list}>
+          {links.map((link) => (
+            <li key={link.url} className={styles.item}>
+              {link.external ? (
+                <a href={link.url} target="_blank" rel="noopener noreferrer">
+                  {link.label}{' '}
+                  <span className={shared.visuallyHidden}>(öffnet in neuem Tab)</span>
+                </a>
+              ) : (
+                <Link to={link.url}>{link.label}</Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  )
 }

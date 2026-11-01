@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import { ApiError } from '../../shared/api/client'
 import { Card } from '../../shared/ui/Card'
 import type { ModuleRegistry } from '../modules/registry'
 import { useAppData } from '../providers/useAppData'
@@ -28,7 +29,7 @@ export function AppLayout({ registry }: AppLayoutProps) {
         {status === 'error' && (
           <Card title="Die Anwendung konnte nicht geladen werden." headingLevel={1} role="alert">
             <p>{error?.message}</p>
-            {hasDetail(error) && <p>{error.detail}</p>}
+            {error instanceof ApiError && error.detail && <p>{error.detail}</p>}
           </Card>
         )}
         {status === 'ready' && (
@@ -42,8 +43,4 @@ export function AppLayout({ registry }: AppLayoutProps) {
       </main>
     </div>
   )
-}
-
-function hasDetail(error: unknown): error is { detail: string } {
-  return typeof error === 'object' && error !== null && typeof (error as { detail?: unknown }).detail === 'string'
 }

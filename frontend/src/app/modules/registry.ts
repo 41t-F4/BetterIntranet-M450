@@ -44,7 +44,7 @@ function annotateRoute(route: RouteObject, definition: ModuleDefinition): RouteO
     module: definition,
     breadcrumb: existing.breadcrumb ?? definition.navItem?.label,
   }
-  return { ...route, handle } as RouteObject
+  return { ...route, handle }
 }
 
 /** Registry with every feature module of the application. */

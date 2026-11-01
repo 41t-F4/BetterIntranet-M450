@@ -3,6 +3,7 @@ package ch.tbz.betterintranet.courses.web;
 import ch.tbz.betterintranet.core.gateway.QueryGateway;
 import ch.tbz.betterintranet.core.web.CurrentUser;
 import ch.tbz.betterintranet.courses.api.Course;
+import ch.tbz.betterintranet.courses.api.GetMyCoursesQuery;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,6 @@ public class CoursesController {
 
     @GetMapping
     public List<Course> myCourses(CurrentUser user, @RequestParam(required = false) String semester) {
-        throw new UnsupportedOperationException("not implemented");
+        return queries.ask(new GetMyCoursesQuery(user.username(), semester));
     }
 }

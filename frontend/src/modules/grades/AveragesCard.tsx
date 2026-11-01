@@ -1,7 +1,8 @@
+import { useId, useState } from 'react'
 import { Card } from '../../shared/ui/Card'
 import { AveragesChart } from './AveragesChart'
 import { GradeValue } from './GradeValue'
-import { chartData } from './lib/averages'
+import { chartData, semesters, subjectsOfSemester } from './lib/averages'
 import type { GradesOverview } from './types'
 import styles from './AveragesCard.module.css'
 import table from './GradesTable.module.css'
@@ -10,10 +11,14 @@ export interface AveragesCardProps {
   overview: GradesOverview
 }
 
-/** Top card «Notendurchschnitte»: overall average, bar chart and a summary table per school part. */
+/**
+ * Top card «Notendurchschnitte»: overall average, semester selector, bar chart and summary table
+ * with one entry per subject of the selected semester (newest semester by default).
+ */
 export function AveragesCard({ overview }: AveragesCardProps) {
-  const data = chartData(overview.subjects)
-  const hasGrades = data.length > 0
+  const available = semesters(overview)
+  const [selected, setSelected] = useState(available[0])
+  const selectId = useId()
 
   return (
     <Card className={styles.card}>
@@ -24,41 +29,68 @@ export function AveragesCard({ overview }: AveragesCardProps) {
         </p>
       </header>
 
-      {hasGrades ? (
-        <>
-          <AveragesChart data={data} />
-          <div className={table.wrapper}>
-            <table className={table.table} aria-label="Durchschnitte pro Schulteil">
-              <thead>
-                <tr>
-                  <th scope="col">Schulteil</th>
-                  <th scope="col" className={table.numeric}>
-                    Durchschnitt
-                  </th>
-                  <th scope="col" className={table.numeric}>
-                    Zeugnis
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.map((entry) => (
-                  <tr key={entry.subject}>
-                    <th scope="row">{entry.label}</th>
-                    <td className={table.numeric}>
-                      <GradeValue value={entry.average} />
-                    </td>
-                    <td className={table.numeric}>
-                      <GradeValue value={entry.reportGrade} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
-      ) : (
+      {selected === undefined ? (
         <p className={styles.empty}>Noch keine Noten vorhanden.</p>
+      ) : (
+        <>
+          <div className={styles.filter}>
+            <label htmlFor={selectId} className={styles.filterLabel}>
+              Semester
+            </label>
+            <select
+              id={selectId}
+              className={styles.select}
+              value={selected}
+              onChange={(event) => setSelected(event.target.value)}
+            >
+              {available.map((semester) => (
+                <option key={semester} value={semester}>
+                  {semester}
+                </option>
+              ))}
+            </select>
+          </div>
+          <SemesterAverages data={chartData(subjectsOfSemester(overview, selected))} />
+        </>
       )}
     </Card>
+  )
+}
+
+function SemesterAverages({ data }: { data: ReturnType<typeof chartData> }) {
+  return (
+    <>
+      <AveragesChart data={data} />
+      <div className={table.wrapper}>
+        <table className={table.table} aria-label="Durchschnitte pro Fach">
+          <thead>
+            <tr>
+              <th scope="col">Fach</th>
+              <th scope="col" className={table.numeric}>
+                Durchschnitt
+              </th>
+              <th scope="col" className={table.numeric}>
+                Zeugnis
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((entry) => (
+              <tr key={entry.subject}>
+                <th scope="row">
+                  {entry.label === entry.subject ? entry.label : <abbr title={entry.subject}>{entry.label}</abbr>}
+                </th>
+                <td className={table.numeric}>
+                  <GradeValue value={entry.average} />
+                </td>
+                <td className={table.numeric}>
+                  <GradeValue value={entry.reportGrade} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   )
 }

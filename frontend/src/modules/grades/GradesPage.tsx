@@ -1,9 +1,11 @@
 import { ApiError } from '../../shared/api/client'
 import { AveragesCard } from './AveragesCard'
+import { SemesterSection } from './SemesterSection'
+import { semesters, subjectsOfSemester } from './lib/averages'
 import { useGrades } from './useGrades'
 import styles from './GradesPage.module.css'
 
-/** Page «Noten»: averages card on top, then one section per school part with subject cards. */
+/** Page «Noten»: averages card on top, then one section per semester (newest first) with subject cards. */
 export function GradesPage() {
   const state = useGrades()
 
@@ -26,6 +28,9 @@ export function GradesPage() {
   return (
     <div className={styles.page}>
       <AveragesCard overview={state.overview} />
+      {semesters(state.overview).map((semester) => (
+        <SemesterSection key={semester} semester={semester} subjects={subjectsOfSemester(state.overview, semester)} />
+      ))}
     </div>
   )
 }

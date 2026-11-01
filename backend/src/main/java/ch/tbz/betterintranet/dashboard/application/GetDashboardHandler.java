@@ -54,6 +54,10 @@ public class GetDashboardHandler implements QueryHandler<GetDashboardQuery, Dash
         this.clock = clock;
     }
 
+    /**
+     * The content is the same for every user for now; the query still names the user so that links and news
+     * can be personalised later without changing the contract.
+     */
     @Override
     public Dashboard handle(GetDashboardQuery query) {
         return new Dashboard(latestNews(), upcomingEvents(), content.prevention(), content.myLinks(),

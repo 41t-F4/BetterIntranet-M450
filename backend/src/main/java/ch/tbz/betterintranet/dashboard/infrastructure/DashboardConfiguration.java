@@ -9,7 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DashboardConfiguration {
 
-    /** The wall clock used to decide which events are still upcoming. Tests replace it with a fixed clock. */
+    /**
+     * The wall clock used to decide which events are still upcoming. Tests replace it with a fixed
+     * {@code @Primary} clock; another module that already provides a {@link Clock} wins over this fallback.
+     */
     @Bean
     @ConditionalOnMissingBean(Clock.class)
     Clock clock() {

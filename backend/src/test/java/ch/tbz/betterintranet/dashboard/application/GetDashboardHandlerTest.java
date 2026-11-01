@@ -89,8 +89,8 @@ class GetDashboardHandlerTest {
     @DisplayName("at most the next eight events are shown")
     void limitsToEightEvents() {
         List<SchoolEvent> tenEvents = IntStream.rangeClosed(1, 10)
-                .mapToObj(day -> event("Termin " + day, "2026-11-" + (day < 10 ? "0" + day : day),
-                        "2026-11-" + (day < 10 ? "0" + day : day)))
+                .mapToObj(day -> new SchoolEvent("Termin " + day, TODAY.plusDays(day), TODAY.plusDays(day),
+                        EventKind.EVENT))
                 .toList();
         givenContent(List.of(), tenEvents);
         givenHolidays(List.of());

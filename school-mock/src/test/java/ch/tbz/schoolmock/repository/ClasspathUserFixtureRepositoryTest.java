@@ -81,9 +81,7 @@ class ClasspathUserFixtureRepositoryTest {
 		assertThat(courses).extracting(Course::code).allMatch(NICOLA_COURSE_CODES::contains);
 		assertThat(courses).extracting(Course::semester).containsOnly("HS 2026", "FS 2026");
 		assertThat(courses.getFirst()).isEqualTo(
-				courseFromJson("""
-						{ "id": "450-HS26", "code": "450", "name": "Applikationen testen", "teacher": "VAJ",
-						  "semester": "HS 2026", "lessonsPerWeek": 4, "room": "AU-060" }"""));
+				new Course("450-HS26", "450", "Applikationen testen", "VAJ", "HS 2026", 4, "AU-060"));
 		assertThat(courses)
 				.filteredOn(course -> course.code().equals("ENG") && course.semester().equals("HS 2026"))
 				.singleElement()
@@ -96,7 +94,7 @@ class ClasspathUserFixtureRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("courses and grades carry no school part, the intranet only knows the TBZ Berufsschule")
+	@DisplayName("course and grade records expose exactly the fields of the TBZ contract")
 	void shouldExposeOnlyTbzFieldsOnCourseAndGradeRecords() {
 		assertThat(Course.class.getRecordComponents())
 				.extracting(RecordComponent::getName)
@@ -278,9 +276,5 @@ class ClasspathUserFixtureRepositoryTest {
 				.hasMessageContaining("courses.json")
 				.hasMessageContaining(NICOLA)
 				.hasCauseInstanceOf(JacksonException.class);
-	}
-
-	private Course courseFromJson(String json) {
-		return objectMapper.readValue(json, Course.class);
 	}
 }

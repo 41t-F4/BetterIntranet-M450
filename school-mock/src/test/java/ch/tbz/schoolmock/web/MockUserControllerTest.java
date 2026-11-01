@@ -33,8 +33,6 @@ import ch.tbz.schoolmock.api.SchoolClass;
 import ch.tbz.schoolmock.repository.FixtureLoadException;
 import ch.tbz.schoolmock.repository.UserFixtureRepository;
 import ch.tbz.schoolmock.repository.UserNotFoundException;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Web-layer tests for {@link MockUserController} and {@link MockApiExceptionHandler}. The
@@ -45,8 +43,6 @@ import tools.jackson.databind.json.JsonMapper;
 class MockUserControllerTest {
 
 	private static final String NICOLA = "nicola.wehrli";
-
-	private static final ObjectMapper JSON = JsonMapper.builder().build();
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -75,12 +71,8 @@ class MockUserControllerTest {
 	@Test
 	void shouldReturnCoursesOfUserAsJson() throws Exception {
 		when(repository.findCourses(NICOLA)).thenReturn(List.of(
-				fromJson(Course.class, """
-						{ "id": "450-HS26", "code": "450", "name": "Applikationen testen", "teacher": "VAJ",
-						  "semester": "HS 2026", "lessonsPerWeek": 4, "room": "AU-060" }"""),
-				fromJson(Course.class, """
-						{ "id": "ENG-HS26", "code": "ENG", "name": "Englisch", "teacher": "MID",
-						  "semester": "HS 2026", "lessonsPerWeek": 2, "room": "AU-512" }""")));
+				new Course("450-HS26", "450", "Applikationen testen", "VAJ", "HS 2026", 4, "AU-060"),
+				new Course("ENG-HS26", "ENG", "Englisch", "MID", "HS 2026", 2, "AU-512")));
 
 		mockMvc.perform(get("/mock/users/{username}/courses", NICOLA))
 				.andExpect(status().isOk())
@@ -93,7 +85,6 @@ class MockUserControllerTest {
 				.andExpect(jsonPath("$[0].semester").value("HS 2026"))
 				.andExpect(jsonPath("$[0].lessonsPerWeek").value(4))
 				.andExpect(jsonPath("$[0].room").value("AU-060"))
-				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
 				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder("id", "code", "name", "teacher", "semester",
 						"lessonsPerWeek", "room")))
 				.andExpect(jsonPath("$[1].code").value("ENG"))
@@ -129,19 +120,16 @@ class MockUserControllerTest {
 	@Test
 	void shouldReturnGradesOfUserAsJson() throws Exception {
 		when(repository.findGrades(NICOLA)).thenReturn(List.of(
-				fromJson(Grade.class, """
-						{ "id": 1, "subject": "450 Applikationen testen", "semester": "HS 2026",
-						  "title": "LB1 Testkonzept", "date": "2026-09-29", "grade": 5.5, "weight": 1.0 }"""),
-				fromJson(Grade.class, """
-						{ "id": 9, "subject": "Allgemeinbildung Gesellschaft", "semester": "HS 2026",
-						  "title": "Prüfung Recht und Vertrag", "date": "2026-10-27", "grade": 3.5, "weight": 1.0 }""")));
+				new Grade(1L, "450 Applikationen testen", "HS 2026", "LB1 Testkonzept", LocalDate.of(2026, 9, 29), 5.5,
+						1.0),
+				new Grade(9L, "Allgemeinbildung Gesellschaft", "HS 2026", "Prüfung Recht und Vertrag",
+						LocalDate.of(2026, 10, 27), 3.5, 1.0)));
 
 		mockMvc.perform(get("/mock/users/{username}/grades", NICOLA))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.length()").value(2))
 				.andExpect(jsonPath("$[0].id").value(1))
-				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
 				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder("id", "subject", "semester", "title", "date",
 						"grade", "weight")))
 				.andExpect(jsonPath("$[0].subject").value("450 Applikationen testen"))
@@ -196,9 +184,5 @@ class MockUserControllerTest {
 				.andExpect(jsonPath("$.title").value("Fixture data unreadable"))
 				.andExpect(jsonPath("$.status").value(500))
 				.andExpect(jsonPath("$.detail").value("Cannot read grades.json"));
-	}
-
-	private static <T> T fromJson(Class<T> type, String json) {
-		return JSON.readValue(json, type);
 	}
 }

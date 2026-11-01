@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * backend.
  *
  * @param id         identifier of the assessment
- * @param subject    subject or module name, e.g. {@code Modul 450 Applikationen testen}
+ * @param subject    subject or module name, e.g. {@code 450 Applikationen testen} or {@code Englisch}
  * @param semester   semester of the assessment, e.g. {@code HS 2026} or {@code FS 2026}
  * @param title      title of the assessment, e.g. {@code LB1 Testkonzept}
  * @param date       day of the assessment

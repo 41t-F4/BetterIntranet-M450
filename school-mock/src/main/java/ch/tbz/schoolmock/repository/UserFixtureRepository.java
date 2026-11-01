@@ -44,7 +44,7 @@ public interface UserFixtureRepository {
 	List<Absence> findAbsences(String username);
 
 	/**
-	 * Returns all grades of the user as a flat list across school parts and semesters.
+	 * Returns all grades of the user as a flat list across subjects and semesters.
 	 *
 	 * @param username login name of the user
 	 * @return the grades, never {@code null}

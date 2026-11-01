@@ -73,7 +73,6 @@ class SchoolMockApiIT {
 				.andExpect(jsonPath("$[0].semester").value("HS 2026"))
 				.andExpect(jsonPath("$[0].lessonsPerWeek").value(4))
 				.andExpect(jsonPath("$[0].room").value("AU-060"))
-				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
 				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder(COURSE_FIELDS)))
 				.andExpect(jsonPath("$[*].code", everyItem(is(in(NICOLA_COURSE_CODES)))))
 				.andExpect(jsonPath("$[?(@.code == 'ENG' && @.semester == 'HS 2026')].room").value("AU-512"))
@@ -112,7 +111,6 @@ class SchoolMockApiIT {
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.length()").value(19))
 				.andExpect(jsonPath("$[0].id").value(1))
-				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
 				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder(GRADE_FIELDS)))
 				.andExpect(jsonPath("$[0].subject").value("450 Applikationen testen"))
 				.andExpect(jsonPath("$[0].semester").value("HS 2026"))
@@ -145,12 +143,10 @@ class SchoolMockApiIT {
 				.andExpect(jsonPath("$[0].name").value("Informatik- und Netzinfrastruktur"))
 				.andExpect(jsonPath("$[0].teacher").value("CAL"))
 				.andExpect(jsonPath("$[0].room").value("AU-U60"))
-				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
 				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder(COURSE_FIELDS)));
 		mockMvc.perform(get("/mock/users/max.muster/grades"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.length()").value(4))
-				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
 				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder(GRADE_FIELDS)))
 				.andExpect(jsonPath("$[*].subject", everyItem(is(in(MAX_SUBJECTS)))));
 		mockMvc.perform(get("/mock/users/max.muster/absences"))

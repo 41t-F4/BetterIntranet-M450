@@ -1,6 +1,7 @@
 package ch.tbz.betterintranet.dashboard.web;
 
 import static org.hamcrest.Matchers.everyItem;
+import static org.mockito.Mockito.when;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -12,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ch.tbz.betterintranet.core.error.UpstreamUnavailableException;
 import ch.tbz.betterintranet.timetable.api.Holiday;
-import ch.tbz.betterintranet.timetable.application.FakeHolidaysQueryHandler;
+import ch.tbz.betterintranet.timetable.application.TimetableClient;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -29,11 +30,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
  * {@code GET /api/dashboard} through controller, gateway, handler and the JSON-backed repository. The
- * timetable module is replaced by {@link FakeHolidaysQueryHandler}; the clock is fixed to 2026-11-01 so the
+ * timetable module runs for real, only its upstream port {@link TimetableClient} is mocked; the clock is fixed to 2026-11-01 so the
  * shipped mock events are all upcoming.
  */
 class DashboardControllerIT {
@@ -43,11 +45,6 @@ class DashboardControllerIT {
 
     @TestConfiguration
     static class TimetableStub {
-
-        @Bean
-        FakeHolidaysQueryHandler fakeHolidaysQueryHandler() {
-            return new FakeHolidaysQueryHandler();
-        }
 
         @Bean
         @Primary
@@ -65,12 +62,12 @@ class DashboardControllerIT {
         @Autowired
         private MockMvc mockMvc;
 
-        @Autowired
-        private FakeHolidaysQueryHandler holidays;
+        @MockitoBean
+        private TimetableClient timetableClient;
 
         @BeforeEach
         void holidaysFromTimetable() {
-            holidays.answerWith(List.of(
+            when(timetableClient.fetchHolidays()).thenReturn(List.of(
                     new Holiday("Herbstferien", LocalDate.of(2026, 10, 5), LocalDate.of(2026, 10, 18)),
                     new Holiday("Weihnachtsferien", LocalDate.of(2026, 12, 21), LocalDate.of(2027, 1, 2)),
                     new Holiday("Sportferien", LocalDate.of(2027, 2, 8), LocalDate.of(2027, 2, 20))));
@@ -134,7 +131,8 @@ class DashboardControllerIT {
         @Test
         @DisplayName("when the timetable upstream is down the dashboard still renders with its own events")
         void degradesWhenTimetableIsUnavailable() throws Exception {
-            holidays.failWith(new UpstreamUnavailableException("timetable", "connection refused"));
+            when(timetableClient.fetchHolidays())
+                    .thenThrow(new UpstreamUnavailableException("timetable", "connection refused"));
 
             mockMvc.perform(get("/api/dashboard"))
                     .andExpect(status().isOk())
@@ -151,6 +149,9 @@ class DashboardControllerIT {
 
         @Autowired
         private MockMvc mockMvc;
+
+        @MockitoBean
+        private TimetableClient timetableClient;
 
         @Test
         @DisplayName("a switched-off timetable module leaves the dashboard with its own events only")

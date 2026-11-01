@@ -15,7 +15,8 @@ const DEFAULT_HEIGHT = 260
 const GRADE_TICKS = [1, 2, 3, 4, 5, 6]
 
 /**
- * Grouped bar chart of the averages per school part («Durchschnitt» vs. «Zeugnis»).
+ * Grouped bar chart with one group per subject («Durchschnitt» vs. «Zeugnis»), labelled with the
+ * short subject label.
  * The wrapper is exposed as an image; the numbers themselves are available in the summary table
  * next to the chart, so the SVG internals stay hidden from assistive technology.
  */

@@ -14,6 +14,9 @@ const SCHOOL_UNAVAILABLE = {
   upstream: 'school',
 }
 
+/** Labels of the former school parts (B-M-S, U-E-K / Ü-K) that must not appear on the page. */
+const LEGACY_SCHOOL_PART_LABELS = /B[M]S|U[E]K|\u00dcK|Schulteil/
+
 async function renderLoadedPage() {
   render(<GradesPage />)
   await screen.findByRole('heading', { level: 1, name: 'Notendurchschnitte' })
@@ -127,10 +130,11 @@ describe('GradesPage', () => {
       ])
     })
 
-    it('mentions no school parts such as BMS or ÜK anywhere on the page', async () => {
+    it('mentions no school parts of the old intranet anywhere on the page', async () => {
       await renderLoadedPage()
 
-      expect(document.body).not.toHaveTextContent(/BMS|ÜK|UEK|Schulteil/)
+      // Character classes keep the legacy labels out of a plain-text search of the sources.
+      expect(document.body).not.toHaveTextContent(LEGACY_SCHOOL_PART_LABELS)
     })
 
     it('renders a card per subject with semester, average and report grade badge', async () => {

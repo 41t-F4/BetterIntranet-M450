@@ -2,7 +2,7 @@ import { useId, useState } from 'react'
 import { Card } from '../../shared/ui/Card'
 import { AveragesChart } from './AveragesChart'
 import { GradeValue } from './GradeValue'
-import { chartData, semesters, subjectsOfSemester } from './lib/averages'
+import { chartData, semesters, subjectsOfSemester, type AveragesChartDatum } from './lib/averages'
 import type { GradesOverview } from './types'
 import styles from './AveragesCard.module.css'
 import table from './GradesTable.module.css'
@@ -57,7 +57,8 @@ export function AveragesCard({ overview }: AveragesCardProps) {
   )
 }
 
-function SemesterAverages({ data }: { data: ReturnType<typeof chartData> }) {
+/** Chart and summary table of the subjects of one semester. */
+function SemesterAverages({ data }: { data: AveragesChartDatum[] }) {
   return (
     <>
       <AveragesChart data={data} />

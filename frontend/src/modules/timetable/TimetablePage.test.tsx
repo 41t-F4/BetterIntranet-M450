@@ -11,7 +11,7 @@ import { TimetablePage } from './TimetablePage'
 /** Exposes the current URL so tests can assert the search params the page writes. */
 function LocationProbe() {
   const { pathname, search } = useLocation()
-  return <output data-testid="location">{pathname + search}</output>
+  return <span data-testid="location">{pathname + search}</span>
 }
 
 function renderPage(search = '') {

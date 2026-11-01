@@ -1,16 +1,30 @@
 import { HttpResponse, http } from 'msw'
+import type { InternalAxiosRequestConfig } from 'axios'
 import { describe, expect, it } from 'vitest'
-import { ApiError } from '../../shared/api/client'
+import { ApiError, apiClient } from '../../shared/api/client'
 import { server } from '../../test/msw/server'
-import { absencesUrl, fetchAbsences } from './absencesApi'
+import { ABSENCES_API, fetchAbsences } from './absencesApi'
 
-describe('absencesUrl', () => {
-  it('is the plain endpoint without a filter', () => {
-    expect(absencesUrl()).toBe('/api/absences')
-  })
+describe('absences request', () => {
+  it('defines the base path once and hands the status filter to axios as a query parameter', async () => {
+    const requests: InternalAxiosRequestConfig[] = []
+    const interceptor = apiClient.interceptors.request.use((config) => {
+      requests.push(config)
+      return config
+    })
 
-  it('adds the status as query parameter', () => {
-    expect(absencesUrl('OPEN')).toBe('/api/absences?status=OPEN')
+    try {
+      await fetchAbsences('OPEN')
+      await fetchAbsences()
+    } finally {
+      apiClient.interceptors.request.eject(interceptor)
+    }
+
+    expect(ABSENCES_API).toBe('/api/absences')
+    expect(requests.map((request) => [request.url, request.params])).toEqual([
+      [ABSENCES_API, { status: 'OPEN' }],
+      [ABSENCES_API, undefined],
+    ])
   })
 })
 

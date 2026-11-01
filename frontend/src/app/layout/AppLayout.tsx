@@ -18,8 +18,7 @@ export function AppLayout({ registry }: AppLayoutProps) {
 
   return (
     <div className={styles.page}>
-      <TopBar user={user} />
-      {status === 'ready' && <MainNav items={registry.getNavItems(modules)} />}
+      <TopBar user={user}>{status === 'ready' && <MainNav items={registry.getNavItems(modules)} />}</TopBar>
       <main className={styles.main}>
         {status === 'loading' && (
           <p className={styles.status} role="status">

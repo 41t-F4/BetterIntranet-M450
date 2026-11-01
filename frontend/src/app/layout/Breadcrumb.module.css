@@ -1,9 +1,9 @@
 .breadcrumb {
   max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: var(--space-3) var(--space-4) 0;
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  padding: var(--space-5) var(--space-5) 0;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-subtle);
 }
 
 .list {
@@ -16,15 +16,22 @@
 }
 
 .item + .item::before {
-  content: '>';
+  content: '/';
   margin-right: var(--space-2);
+  color: var(--color-border-strong);
 }
 
 .item a {
-  color: var(--color-text-muted);
+  color: var(--color-text-subtle);
 }
 
 .item [aria-current='page'] {
-  color: var(--color-text);
+  color: var(--color-text-muted);
   font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 767px) {
+  .breadcrumb {
+    padding: var(--space-4) var(--space-4) 0;
+  }
 }

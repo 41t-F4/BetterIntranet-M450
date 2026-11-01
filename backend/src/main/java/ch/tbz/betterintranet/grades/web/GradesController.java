@@ -2,6 +2,7 @@ package ch.tbz.betterintranet.grades.web;
 
 import ch.tbz.betterintranet.core.gateway.QueryGateway;
 import ch.tbz.betterintranet.core.web.CurrentUser;
+import ch.tbz.betterintranet.grades.api.GetGradesOverviewQuery;
 import ch.tbz.betterintranet.grades.api.GradesOverview;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,6 @@ public class GradesController {
 
     @GetMapping
     public GradesOverview grades(CurrentUser user) {
-        throw new UnsupportedOperationException("not implemented");
+        return queries.ask(new GetGradesOverviewQuery(user.username()));
     }
 }

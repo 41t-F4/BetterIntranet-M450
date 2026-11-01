@@ -67,7 +67,7 @@ describe('App', () => {
   it('renders the page of an enabled module with its breadcrumb', async () => {
     renderApp('/noten')
 
-    expect(await screen.findByRole('heading', { name: 'Noten' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Notendurchschnitte' })).toBeInTheDocument()
     const breadcrumb = screen.getByRole('navigation', { name: 'Breadcrumb' })
     expect(within(breadcrumb).getAllByRole('listitem').map((item) => item.textContent)).toEqual(['Home', 'Noten'])
   })

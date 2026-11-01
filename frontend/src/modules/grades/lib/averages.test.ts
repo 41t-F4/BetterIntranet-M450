@@ -37,7 +37,7 @@ describe('chartData', () => {
   it('uses the school part average and the mean of the report grades', () => {
     const [bms] = chartData(gradesOverviewFixture)
 
-    expect(bms).toEqual({ schoolPart: 'BMS', label: 'BMS', average: 4.88, reportGrade: 5.0 })
+    expect(bms).toEqual({ schoolPart: 'BMS', label: 'BMS', average: 4.94, reportGrade: 5.0 })
   })
 
   it('passes null averages through', () => {

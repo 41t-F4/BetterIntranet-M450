@@ -6,20 +6,20 @@ import type { GradesOverview } from '../../modules/grades/types'
  * without any grades (`average: null`).
  */
 export const gradesOverviewFixture: GradesOverview = {
-  overallAverage: 5.07,
+  overallAverage: 5.09,
   schoolParts: [
     {
       schoolPart: 'BMS',
       label: 'BMS',
-      average: 4.88,
+      average: 4.94,
       subjects: [
         {
           subject: 'Deutsch',
           semester: 'HS 2026',
-          average: 5.75,
+          average: 5.88,
           reportGrade: 6.0,
           grades: [
-            { id: 3, title: 'Aufsatz Erörterung', date: '2026-10-21', grade: 5.75, weight: 2.0 },
+            { id: 3, title: 'Aufsatz Erörterung', date: '2026-10-21', grade: 6.0, weight: 2.0 },
             { id: 2, title: 'Vortrag Literatur', date: '2026-09-30', grade: 6.0, weight: 1.0 },
             { id: 1, title: 'Grammatiktest', date: '2026-09-09', grade: 5.5, weight: 1.0 },
           ],

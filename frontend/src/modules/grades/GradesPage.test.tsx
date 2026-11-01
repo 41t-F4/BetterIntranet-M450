@@ -27,9 +27,9 @@ function rowCells(table: HTMLElement): string[][] {
     .getAllByRole('row')
     .slice(1)
     .map((row) =>
-      within(row)
-        .getAllByRole('cell')
-        .map((cell) => cell.textContent ?? ''),
+      [...within(row).queryAllByRole('rowheader'), ...within(row).getAllByRole('cell')].map(
+        (cell) => cell.textContent ?? '',
+      ),
     )
 }
 
@@ -44,7 +44,7 @@ describe('GradesPage', () => {
     it('shows the overall average next to the title', async () => {
       await renderLoadedPage()
 
-      expect(screen.getByText('Gesamt')).toHaveTextContent('Gesamt 5.07')
+      expect(screen.getByText('Gesamt')).toHaveTextContent('Gesamt 5.09')
       expect(screen.queryByRole('status')).not.toBeInTheDocument()
     })
 
@@ -60,7 +60,7 @@ describe('GradesPage', () => {
       const table = screen.getByRole('table', { name: 'Durchschnitte pro Schulteil' })
 
       expect(rowCells(table)).toEqual([
-        ['BMS', '4.88', '5.0'],
+        ['BMS', '4.94', '5.0'],
         ['TBZ', '5.0', '5.0'],
         ['ÜK', '5.33', '5.5'],
       ])
@@ -73,7 +73,7 @@ describe('GradesPage', () => {
 
       const headings = screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
 
-      expect(headings).toEqual(['BMS 4.88', 'TBZ 5.0', 'ÜK 5.33'])
+      expect(headings).toEqual(['BMS 4.94', 'TBZ 5.0', 'ÜK 5.33'])
     })
 
     it('renders a card per subject with semester, average and report grade badge', async () => {
@@ -82,7 +82,7 @@ describe('GradesPage', () => {
       const deutsch = subjectCard('Deutsch HS 2026')
       expect(deutsch.getByRole('heading', { level: 3, name: 'Deutsch' })).toBeInTheDocument()
       expect(deutsch.getByText('HS 2026')).toBeInTheDocument()
-      expect(deutsch.getByText('5.75')).toBeInTheDocument()
+      expect(deutsch.getByText('5.88')).toBeInTheDocument()
       expect(deutsch.getByText('Zeugnis 6.0')).toBeInTheDocument()
 
       const uek = subjectCard('ÜK 294 Frontend-Applikation FS 2026')
@@ -102,7 +102,7 @@ describe('GradesPage', () => {
         'Gewichtung',
       ])
       expect(rowCells(table)).toEqual([
-        ['Aufsatz Erörterung', '21.10.2026', '5.75', '2.0'],
+        ['Aufsatz Erörterung', '21.10.2026', '6.0', '2.0'],
         ['Vortrag Literatur', '30.09.2026', '6.0', '1.0'],
         ['Grammatiktest', '09.09.2026', '5.5', '1.0'],
       ])

@@ -1,8 +1,18 @@
-import type { Holiday, Lesson, TimetableClass } from '../../modules/timetable/types'
+import { addDays } from '../../modules/timetable/lib/week'
+import type { Holiday, IsoDate, Lesson, TimetableClass } from '../../modules/timetable/types'
 
-/** Monday of the fixture week (KW 45 2026). */
-export const FIXTURE_WEEK_START = '2026-11-02'
-export const FIXTURE_WEEK_END = '2026-11-06'
+/**
+ * Monday of the fixture week (KW 45 2026). Every date in the timetable fixtures is derived from it,
+ * and tests freeze the clock inside this week (see `test/clock.ts`). Neither the real date nor the
+ * real timetable is ever used, so these tests do not age.
+ */
+export const FIXTURE_WEEK_START: IsoDate = '2026-11-02'
+export const FIXTURE_WEEK_END: IsoDate = addDays(FIXTURE_WEEK_START, 4)
+export const FIXTURE_TUESDAY: IsoDate = addDays(FIXTURE_WEEK_START, 1)
+export const FIXTURE_THURSDAY: IsoDate = addDays(FIXTURE_WEEK_START, 3)
+export const NEXT_WEEK_START: IsoDate = addDays(FIXTURE_WEEK_START, 7)
+export const NEXT_WEEK_END: IsoDate = addDays(NEXT_WEEK_START, 4)
+export const PREVIOUS_WEEK_START: IsoDate = addDays(FIXTURE_WEEK_START, -7)
 
 /** `GET /api/timetable/classes`, sorted by short name like the backend does. */
 export const timetableClassesFixture: TimetableClass[] = [
@@ -18,7 +28,7 @@ export const timetableClassesFixture: TimetableClass[] = [
  */
 export const lessonsFixture: Lesson[] = [
   {
-    date: '2026-11-03',
+    date: FIXTURE_TUESDAY,
     start: '08:10:00',
     end: '09:45:00',
     subject: 'ENG',
@@ -29,7 +39,7 @@ export const lessonsFixture: Lesson[] = [
     info: 'oB',
   },
   {
-    date: '2026-11-03',
+    date: FIXTURE_TUESDAY,
     start: '10:05',
     end: '12:30',
     subject: 'GES',
@@ -40,7 +50,7 @@ export const lessonsFixture: Lesson[] = [
     info: 'Lehrperson abwesend',
   },
   {
-    date: '2026-11-03',
+    date: FIXTURE_TUESDAY,
     start: '13:25:00',
     end: '15:00:00',
     subject: 'M450',
@@ -51,7 +61,7 @@ export const lessonsFixture: Lesson[] = [
     info: null,
   },
   {
-    date: '2026-11-03',
+    date: FIXTURE_TUESDAY,
     start: '15:20:00',
     end: '16:55:00',
     subject: 'M450',
@@ -62,7 +72,7 @@ export const lessonsFixture: Lesson[] = [
     info: 'Raumänderung',
   },
   {
-    date: '2026-11-05',
+    date: FIXTURE_THURSDAY,
     start: '08:10:00',
     end: '09:45:00',
     subject: 'ENG',
@@ -77,6 +87,6 @@ export const lessonsFixture: Lesson[] = [
 /** `GET /api/timetable/holidays`: the autumn holidays and a one-day holiday on the fixture Thursday. */
 export const holidaysFixture: Holiday[] = [
   { name: 'Herbstferien', startDate: '2026-10-05', endDate: '2026-10-18' },
-  { name: 'Tag der Schule', startDate: '2026-11-05', endDate: '2026-11-05' },
+  { name: 'Tag der Schule', startDate: FIXTURE_THURSDAY, endDate: FIXTURE_THURSDAY },
   { name: 'Weihnachtsferien', startDate: '2026-12-21', endDate: '2027-01-03' },
 ]

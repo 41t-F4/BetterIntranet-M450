@@ -12,7 +12,8 @@ public enum AbsenceStatus {
         this.label = label;
     }
 
+    /** German label for the UI, e.g. "Entschuldigt". */
     public String label() {
-        throw new UnsupportedOperationException("not implemented");
+        return label;
     }
 }

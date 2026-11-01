@@ -10,6 +10,12 @@ import ch.tbz.betterintranet.core.gateway.Query;
  */
 public record GetAbsencesQuery(String username, AbsenceStatus status) implements Query<AbsencesOverview> {
 
+    public GetAbsencesQuery {
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("username must not be blank");
+        }
+    }
+
     public GetAbsencesQuery(String username) {
         this(username, null);
     }

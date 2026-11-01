@@ -148,7 +148,6 @@ class GetDashboardHandlerTest {
     @Test
     @DisplayName("unexpected gateway errors are not swallowed")
     void propagatesUnexpectedErrors() {
-        givenContent(List.of(), List.of());
         when(queries.ask(new GetHolidaysQuery())).thenThrow(new HandlerNotFoundException(GetHolidaysQuery.class));
 
         assertThatThrownBy(() -> handler.handle(QUERY)).isInstanceOf(HandlerNotFoundException.class);

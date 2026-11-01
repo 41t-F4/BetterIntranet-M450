@@ -10,6 +10,8 @@ export type ModuleResourceState<T> =
   | { status: 'ready'; data: T }
   | { status: 'error'; error: Error }
 
+const DISABLED: ModuleResourceState<never> = { status: 'disabled' }
+
 /**
  * Loads data of a backend module once the startup data is available. When `GET /api/modules`
  * reports the module as disabled, no request is made and the state is `disabled`. A 503 for the
@@ -18,20 +20,14 @@ export type ModuleResourceState<T> =
  */
 export function useModuleResource<T>(module: ModuleName, load: () => Promise<T>): ModuleResourceState<T> {
   const { status: appStatus, isModuleEnabled } = useAppData()
-  const enabled = isModuleEnabled(module)
+  const shouldLoad = appStatus === 'ready' && isModuleEnabled(module)
   const [state, setState] = useState<ModuleResourceState<T>>({ status: 'loading' })
 
   useEffect(() => {
-    if (appStatus !== 'ready') {
+    if (!shouldLoad) {
       return
     }
-    if (!enabled) {
-      setState({ status: 'disabled' })
-      return
-    }
-
     let cancelled = false
-    setState({ status: 'loading' })
     load()
       .then((data) => {
         if (!cancelled) setState({ status: 'ready', data })
@@ -42,14 +38,17 @@ export function useModuleResource<T>(module: ModuleName, load: () => Promise<T>)
     return () => {
       cancelled = true
     }
-  }, [appStatus, enabled, load, module])
+  }, [shouldLoad, load, module])
 
+  if (appStatus === 'ready' && !shouldLoad) {
+    return DISABLED
+  }
   return state
 }
 
 function toFailureState<T>(reason: unknown, module: ModuleName): ModuleResourceState<T> {
   if (reason instanceof ApiError && reason.status === 503 && reason.module === module) {
-    return { status: 'disabled' }
+    return DISABLED
   }
   return { status: 'error', error: reason instanceof Error ? reason : new Error(String(reason)) }
 }

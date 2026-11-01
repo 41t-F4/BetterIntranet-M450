@@ -1,0 +1,267 @@
+{
+ "resourceType": "CLASS",
+ "preSelected": null,
+ "buildings": [],
+ "departments": [
+  {
+   "id": 17,
+   "shortName": "AT",
+   "longName": "Automobiltechnik",
+   "displayName": "Automobiltechnik"
+  },
+  {
+   "id": 19,
+   "shortName": "EE",
+   "longName": "Elektro / Elektronik",
+   "displayName": "Elektro / Elektronik"
+  },
+  {
+   "id": 12,
+   "shortName": "IT",
+   "longName": "Informationstechnik",
+   "displayName": "Informationstechnik"
+  },
+  {
+   "id": 22,
+   "shortName": "WB",
+   "longName": "Weiterbildung",
+   "displayName": "Weiterbildung"
+  }
+ ],
+ "roomGroups": [],
+ "resourceTypes": [],
+ "assignmentGroups": [],
+ "classes": [
+  {
+   "class": {
+    "id": 7372,
+    "shortName": "PE 26a",
+    "longName": "Informatiker/innen Plattformentwicklung",
+    "displayName": "PE 26a (Informatiker/innen Plattformentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 51,
+    "shortName": "",
+    "longName": "",
+    "displayName": "CAL"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7375,
+    "shortName": "PE 26b",
+    "longName": "Informatiker/innen Plattformentwicklung",
+    "displayName": "PE 26b (Informatiker/innen Plattformentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 51,
+    "shortName": "",
+    "longName": "",
+    "displayName": "CAL"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7378,
+    "shortName": "PE 26c",
+    "longName": "Informatiker/innen Plattformentwicklung",
+    "displayName": "PE 26c (Informatiker/innen Plattformentwicklung)"
+   },
+   "classTeacher1": null,
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7381,
+    "shortName": "PE 26d",
+    "longName": "Informatiker/innen Plattformentwicklung",
+    "displayName": "PE 26d (Informatiker/innen Plattformentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 121,
+    "shortName": "",
+    "longName": "",
+    "displayName": "GAR"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7384,
+    "shortName": "PE 26e",
+    "longName": "Informatiker/innen Plattformentwicklung",
+    "displayName": "PE 26e (Informatiker/innen Plattformentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 201,
+    "shortName": "",
+    "longName": "",
+    "displayName": "KES"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7387,
+    "shortName": "PE 26f",
+    "longName": "Informatiker/innen Plattformentwicklung",
+    "displayName": "PE 26f (Informatiker/innen Plattformentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 261,
+    "shortName": "",
+    "longName": "",
+    "displayName": "NUY"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7468,
+    "shortName": "AP 24a",
+    "longName": "Informatiker/innen Applikationsentwicklung",
+    "displayName": "AP 24a (Informatiker/innen Applikationsentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 251,
+    "shortName": "",
+    "longName": "",
+    "displayName": "MUH"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7471,
+    "shortName": "AP 24b",
+    "longName": "Informatiker/innen Applikationsentwicklung",
+    "displayName": "AP 24b (Informatiker/innen Applikationsentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 1208,
+    "shortName": "",
+    "longName": "",
+    "displayName": "VAJ"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7474,
+    "shortName": "AP 24c",
+    "longName": "Informatiker/innen Applikationsentwicklung",
+    "displayName": "AP 24c (Informatiker/innen Applikationsentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 251,
+    "shortName": "",
+    "longName": "",
+    "displayName": "MUH"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7477,
+    "shortName": "AP 24e",
+    "longName": "Informatiker/innen Applikationsentwicklung",
+    "displayName": "AP 24e (Informatiker/innen Applikationsentwicklung)"
+   },
+   "classTeacher1": {
+    "id": 191,
+    "shortName": "",
+    "longName": "",
+    "displayName": "KAS"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 12,
+    "shortName": "IT",
+    "longName": "Informationstechnik",
+    "displayName": "Informationstechnik"
+   }
+  },
+  {
+   "class": {
+    "id": 7898,
+    "shortName": "EXPE 26",
+    "longName": "Elektro- und Sicherheitsexperten",
+    "displayName": "EXPE 26 (Elektro- und Sicherheitsexperten)"
+   },
+   "classTeacher1": {
+    "id": 1644,
+    "shortName": "",
+    "longName": "",
+    "displayName": "MAA"
+   },
+   "classTeacher2": null,
+   "department": {
+    "id": 19,
+    "shortName": "EE",
+    "longName": "Elektro / Elektronik",
+    "displayName": "Elektro / Elektronik"
+   }
+  }
+ ],
+ "resources": [],
+ "rooms": [],
+ "subjects": [],
+ "students": [],
+ "teachers": []
+}

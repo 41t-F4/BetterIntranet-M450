@@ -4,9 +4,9 @@ import { AveragesChart } from './AveragesChart'
 import type { AveragesChartDatum } from './lib/averages'
 
 const data: AveragesChartDatum[] = [
-  { schoolPart: 'BMS', label: 'BMS', average: 4.88, reportGrade: 5.0 },
-  { schoolPart: 'TBZ', label: 'TBZ', average: 5.0, reportGrade: 5.0 },
-  { schoolPart: 'UEK', label: 'ÜK', average: null, reportGrade: null },
+  { subject: '450 Applikationen testen', label: 'M450', average: 5.17, reportGrade: 5.0 },
+  { subject: 'Allgemeinbildung Gesellschaft', label: 'ABU', average: 4.0, reportGrade: 4.0 },
+  { subject: 'Englisch', label: 'Englisch', average: null, reportGrade: null },
 ]
 
 describe('AveragesChart', () => {
@@ -24,11 +24,11 @@ describe('AveragesChart', () => {
     expect(screen.getByText('Zeugnis')).toBeInTheDocument()
   })
 
-  it('renders one axis tick per school part', () => {
+  it('renders one axis tick per subject with its short label', () => {
     render(<AveragesChart data={data} width={600} height={300} />)
 
-    expect(screen.getByText('BMS')).toBeInTheDocument()
-    expect(screen.getByText('TBZ')).toBeInTheDocument()
-    expect(screen.getByText('ÜK')).toBeInTheDocument()
+    expect(screen.getByText('M450')).toBeInTheDocument()
+    expect(screen.getByText('ABU')).toBeInTheDocument()
+    expect(screen.getByText('Englisch')).toBeInTheDocument()
   })
 })

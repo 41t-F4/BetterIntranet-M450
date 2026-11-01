@@ -1,6 +1,5 @@
 import { ApiError } from '../../shared/api/client'
 import { AveragesCard } from './AveragesCard'
-import { SchoolPartSection } from './SchoolPartSection'
 import { useGrades } from './useGrades'
 import styles from './GradesPage.module.css'
 
@@ -27,9 +26,6 @@ export function GradesPage() {
   return (
     <div className={styles.page}>
       <AveragesCard overview={state.overview} />
-      {state.overview.schoolParts.map((part) => (
-        <SchoolPartSection key={part.schoolPart} part={part} />
-      ))}
     </div>
   )
 }

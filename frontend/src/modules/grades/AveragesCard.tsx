@@ -12,7 +12,7 @@ export interface AveragesCardProps {
 
 /** Top card «Notendurchschnitte»: overall average, bar chart and a summary table per school part. */
 export function AveragesCard({ overview }: AveragesCardProps) {
-  const data = chartData(overview)
+  const data = chartData(overview.subjects)
   const hasGrades = data.length > 0
 
   return (
@@ -42,7 +42,7 @@ export function AveragesCard({ overview }: AveragesCardProps) {
               </thead>
               <tbody>
                 {data.map((entry) => (
-                  <tr key={entry.schoolPart}>
+                  <tr key={entry.subject}>
                     <th scope="row">{entry.label}</th>
                     <td className={table.numeric}>
                       <GradeValue value={entry.average} />

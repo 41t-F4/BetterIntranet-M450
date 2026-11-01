@@ -1,8 +1,5 @@
 /** Types of the `GET /api/grades` contract. */
 
-/** School part identifiers as reported by the backend. */
-export type SchoolPart = 'BMS' | 'TBZ' | 'UEK'
-
 /** A single graded exam or assignment. */
 export interface Grade {
   id: number
@@ -16,6 +13,7 @@ export interface Grade {
 /** All grades of one subject in one semester. */
 export interface SubjectGrades {
   subject: string
+  /** Semester label, e.g. `HS 2026` or `FS 2026`. */
   semester: string
   /** Weighted average, `null` when it cannot be computed. */
   average: number | null
@@ -25,19 +23,9 @@ export interface SubjectGrades {
   grades: Grade[]
 }
 
-/** Grades of one school part (BMS, TBZ, ÜK). */
-export interface SchoolPartGrades {
-  schoolPart: SchoolPart
-  /** Display label (`BMS`, `TBZ`, `ÜK`). */
-  label: string
-  average: number | null
-  /** Sorted by subject A–Z, then newest semester first. */
-  subjects: SubjectGrades[]
-}
-
 /** Response of `GET /api/grades`. */
 export interface GradesOverview {
   overallAverage: number | null
-  /** Only school parts with grades, ordered BMS, TBZ, UEK. */
-  schoolParts: SchoolPartGrades[]
+  /** Sorted newest semester first, then subject A–Z. */
+  subjects: SubjectGrades[]
 }

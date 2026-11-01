@@ -1,0 +1,14 @@
+[
+  { "id": 1, "schoolPart": "BMS", "subject": "Deutsch", "semester": "HS 2026", "title": "Aufsatz", "date": "2026-09-15", "grade": 5.0, "weight": 1.0 },
+  { "id": 2, "schoolPart": "BMS", "subject": "Deutsch", "semester": "HS 2026", "title": "Grammatiktest", "date": "2026-10-20", "grade": 4.5, "weight": 0.5 },
+  { "id": 3, "schoolPart": "BMS", "subject": "Mathematik", "semester": "HS 2026", "title": "Prüfung 1 Algebra", "date": "2026-09-22", "grade": 5.5, "weight": 1.0 },
+  { "id": 4, "schoolPart": "BMS", "subject": "Mathematik", "semester": "HS 2026", "title": "Prüfung 2 Funktionen", "date": "2026-10-27", "grade": 4.0, "weight": 1.0 },
+  { "id": 5, "schoolPart": "BMS", "subject": "Englisch", "semester": "FS 2026", "title": "Listening Comprehension", "date": "2026-03-10", "grade": 5.0, "weight": 1.0 },
+  { "id": 6, "schoolPart": "TBZ", "subject": "Modul 450 Applikationen testen", "semester": "HS 2026", "title": "LB1 Testkonzept", "date": "2026-09-30", "grade": 5.5, "weight": 1.0 },
+  { "id": 7, "schoolPart": "TBZ", "subject": "Modul 450 Applikationen testen", "semester": "HS 2026", "title": "LB2 Projektarbeit", "date": "2026-10-28", "grade": 5.0, "weight": 2.0 },
+  { "id": 8, "schoolPart": "TBZ", "subject": "Modul 320 Objektorientiert programmieren", "semester": "HS 2026", "title": "LB1 Klassendesign", "date": "2026-10-05", "grade": 6.0, "weight": 1.0 },
+  { "id": 9, "schoolPart": "TBZ", "subject": "Modul 320 Objektorientiert programmieren", "semester": "HS 2026", "title": "Übung (unbewertet)", "date": "2026-09-10", "grade": 4.0, "weight": 0.0 },
+  { "id": 10, "schoolPart": "TBZ", "subject": "Modul 117 Informatik- und Netzinfrastruktur", "semester": "FS 2026", "title": "LB1 Netzwerk", "date": "2026-04-14", "grade": 4.5, "weight": 1.0 },
+  { "id": 11, "schoolPart": "UEK", "subject": "ÜK 335 Mobile-Applikation realisieren", "semester": "FS 2026", "title": "Kompetenznachweis", "date": "2026-05-20", "grade": 5.0, "weight": 1.0 },
+  { "id": 12, "schoolPart": "UEK", "subject": "ÜK 295 Backend für Applikationen realisieren", "semester": "HS 2026", "title": "Kompetenznachweis", "date": "2026-10-15", "grade": 4.5, "weight": 1.0 }
+]

@@ -1,5 +1,6 @@
 package ch.tbz.betterintranet.architecture;
 
+import static com.tngtech.archunit.base.DescribedPredicate.alwaysTrue;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideOutsideOfPackage;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
@@ -20,16 +21,12 @@ import com.tngtech.archunit.lang.ArchRule;
 class ModuleBoundariesTest {
 
     @ArchTest
-    static final ArchRule modules_only_depend_on_core_and_other_modules_api_packages = noClasses()
-            .that().resideInAPackage("ch.tbz.betterintranet.(*)..")
-            .and().resideOutsideOfPackage("ch.tbz.betterintranet.core..")
-            .should().dependOnClassesThat()
-            .resideInAnyPackage("ch.tbz.betterintranet.(*).application..",
-                    "ch.tbz.betterintranet.(*).domain..",
-                    "ch.tbz.betterintranet.(*).infrastructure..",
-                    "ch.tbz.betterintranet.(*).web..")
-            .as("a module may only use another module's 'api' package")
-            .allowEmptyShould(true);
+    static final ArchRule modules_only_depend_on_core_and_other_modules_api_packages = slices()
+            .matching("ch.tbz.betterintranet.(*)..")
+            .should().notDependOnEachOther()
+            .ignoreDependency(alwaysTrue(), resideInAPackage("ch.tbz.betterintranet.core.."))
+            .ignoreDependency(alwaysTrue(), resideInAPackage("..api.."))
+            .as("a module may only use core and other modules' 'api' packages");
 
     @ArchTest
     static final ArchRule core_does_not_depend_on_feature_modules = noClasses()

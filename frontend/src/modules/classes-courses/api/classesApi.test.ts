@@ -3,10 +3,11 @@ import { describe, expect, it } from 'vitest'
 import { myClassesFixture } from '../../../test/fixtures/classes'
 import { server } from '../../../test/msw/server'
 import { ApiError } from '../../../shared/api/client'
-import { fetchMyClasses } from './classesApi'
+import { CLASSES_API, fetchMyClasses } from './classesApi'
 
 describe('fetchMyClasses', () => {
   it('loads the classes of the logged-in user from /api/classes', async () => {
+    expect(CLASSES_API).toBe('/api/classes')
     await expect(fetchMyClasses()).resolves.toEqual(myClassesFixture)
   })
 

@@ -46,7 +46,7 @@ class GeekzTimetableMapperTest {
             assertThat(lessons.get(0)).isEqualTo(new Lesson(TUESDAY, LocalTime.of(8, 10), LocalTime.of(9, 45),
                     "ENG", "Englisch", "MID", "AU-512", LessonStatus.REGULAR, "oB"));
             assertThat(lessons.get(1)).isEqualTo(new Lesson(TUESDAY, LocalTime.of(10, 5), LocalTime.of(12, 30),
-                    "GES", "Geschichte und Politik", "RIA", "AU-202", LessonStatus.REGULAR, "oB"));
+                    "GES", "Allgemeinbildung Gesellschaft", "RIA", "AU-202", LessonStatus.REGULAR, "oB"));
             assertThat(lessons.get(2)).isEqualTo(new Lesson(TUESDAY, LocalTime.of(13, 25), LocalTime.of(15, 0),
                     "450", "450 Applikationen testen", "VAJ", "AU-060", LessonStatus.REGULAR, "bili"));
             assertThat(lessons.get(3).start()).isEqualTo(LocalTime.of(15, 20));

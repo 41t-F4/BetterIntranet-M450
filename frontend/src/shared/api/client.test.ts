@@ -1,7 +1,8 @@
 import { HttpResponse, http } from 'msw'
-import { describe, expect, it, vi } from 'vitest'
+import type { AxiosAdapter } from 'axios'
+import { describe, expect, it } from 'vitest'
 import { server } from '../../test/msw/server'
-import { ApiError, apiGet } from './client'
+import { ApiError, apiClient, apiGet } from './client'
 import type { ProblemDetail } from './types'
 
 describe('apiGet', () => {
@@ -89,8 +90,14 @@ describe('apiGet', () => {
   })
 
   it('falls back to a generic title when the response has neither body nor status text', async () => {
-    // MSW always fills in a status text, so this edge case is produced with a bare Response.
-    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 599 }))
+    // MSW always fills in a status text, so this edge case is produced with a stub adapter.
+    const bareResponse: AxiosAdapter = async (config) => {
+      const { AxiosError } = await import('axios')
+      const response = { data: '', status: 599, statusText: '', headers: {}, config }
+      throw new AxiosError('Request failed', 'ERR_BAD_RESPONSE', config, null, response)
+    }
+    const previousAdapter = apiClient.defaults.adapter
+    apiClient.defaults.adapter = bareResponse
 
     try {
       const error = await apiGet('/api/grades').catch((e: unknown) => e)
@@ -98,7 +105,53 @@ describe('apiGet', () => {
       expect(error).toBeInstanceOf(ApiError)
       expect((error as ApiError).title).toBe('HTTP 599')
     } finally {
-      fetchSpy.mockRestore()
+      apiClient.defaults.adapter = previousAdapter
     }
+  })
+
+  it('sends query parameters through axios', async () => {
+    let requestedUrl = ''
+    server.use(
+      http.get('/api/timetable', ({ request }) => {
+        requestedUrl = request.url
+        return HttpResponse.json([])
+      }),
+    )
+
+    await apiGet('/api/timetable', { classId: 7471, from: '2026-11-02', to: '2026-11-06' })
+
+    const url = new URL(requestedUrl)
+    expect(url.pathname).toBe('/api/timetable')
+    expect(url.searchParams.get('classId')).toBe('7471')
+    expect(url.searchParams.get('from')).toBe('2026-11-02')
+    expect(url.searchParams.get('to')).toBe('2026-11-06')
+  })
+
+  it('sends every request through the shared axios instance', async () => {
+    const seen: string[] = []
+    const interceptor = apiClient.interceptors.request.use((config) => {
+      seen.push(config.url ?? '')
+      return config
+    })
+    server.use(http.get('/api/me', () => HttpResponse.json({})))
+
+    try {
+      await apiGet('/api/me')
+    } finally {
+      apiClient.interceptors.request.eject(interceptor)
+    }
+
+    expect(seen).toEqual(['/api/me'])
+  })
+
+  it('turns a network failure into an ApiError with status 0', async () => {
+    server.use(http.get('/api/me', () => HttpResponse.error()))
+
+    const error = await apiGet('/api/me').catch((e: unknown) => e)
+
+    expect(error).toBeInstanceOf(ApiError)
+    expect((error as ApiError).status).toBe(0)
+    expect((error as ApiError).title).toBe('Netzwerkfehler')
+    expect((error as ApiError).detail).toBe('Der Server ist nicht erreichbar.')
   })
 })

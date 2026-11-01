@@ -1,3 +1,4 @@
+import axios from 'axios'
 import type { ModuleName, ProblemDetail } from './types'
 
 /** Error thrown by the API client for every non-2xx response. */
@@ -22,7 +23,10 @@ export class ApiError extends Error {
  * development and by nginx in the container) and returns the parsed JSON body.
  * Non-2xx responses are turned into an `ApiError` built from the RFC 9457 ProblemDetail body.
  */
-export async function apiGet<T>(path: string): Promise<T> {
+/** Shared axios instance for all backend calls (skeleton, wired up in the green step). */
+export const apiClient = axios.create()
+
+export async function apiGet<T>(path: string, _params?: Record<string, string | number>): Promise<T> {
   const response = await fetch(path, { headers: { Accept: 'application/json' } })
   if (!response.ok) {
     throw await toApiError(response)

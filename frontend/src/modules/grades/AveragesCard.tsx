@@ -4,6 +4,7 @@ import { GradeValue } from './GradeValue'
 import { chartData } from './lib/averages'
 import type { GradesOverview } from './types'
 import styles from './AveragesCard.module.css'
+import table from './GradesTable.module.css'
 
 export interface AveragesCardProps {
   overview: GradesOverview
@@ -26,15 +27,15 @@ export function AveragesCard({ overview }: AveragesCardProps) {
       {hasGrades ? (
         <>
           <AveragesChart data={data} />
-          <div className={styles.tableWrapper}>
-            <table className={styles.table} aria-label="Durchschnitte pro Schulteil">
+          <div className={table.wrapper}>
+            <table className={table.table} aria-label="Durchschnitte pro Schulteil">
               <thead>
                 <tr>
                   <th scope="col">Schulteil</th>
-                  <th scope="col" className={styles.numeric}>
+                  <th scope="col" className={table.numeric}>
                     Durchschnitt
                   </th>
-                  <th scope="col" className={styles.numeric}>
+                  <th scope="col" className={table.numeric}>
                     Zeugnis
                   </th>
                 </tr>
@@ -43,10 +44,10 @@ export function AveragesCard({ overview }: AveragesCardProps) {
                 {data.map((entry) => (
                   <tr key={entry.schoolPart}>
                     <th scope="row">{entry.label}</th>
-                    <td className={styles.numeric}>
+                    <td className={table.numeric}>
                       <GradeValue value={entry.average} />
                     </td>
-                    <td className={styles.numeric}>
+                    <td className={table.numeric}>
                       <GradeValue value={entry.reportGrade} />
                     </td>
                   </tr>

@@ -49,43 +49,6 @@
   white-space: nowrap;
 }
 
-.tableWrapper {
-  overflow-x: auto;
-}
-
-.table {
-  font-size: var(--font-size-sm);
-}
-
-.table th,
-.table td {
-  padding: var(--space-2) var(--space-3);
-  text-align: left;
-  vertical-align: top;
-}
-
-.table thead th {
-  background: var(--color-surface-muted);
-  color: var(--color-text-muted);
-  font-weight: var(--font-weight-medium);
-  white-space: nowrap;
-}
-
-.table tbody tr + tr td {
-  border-top: 1px solid var(--color-border);
-}
-
-.date {
-  white-space: nowrap;
-  color: var(--color-text-muted);
-}
-
-.numeric {
-  text-align: right !important;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
 .empty {
   margin: 0;
   color: var(--color-text-muted);

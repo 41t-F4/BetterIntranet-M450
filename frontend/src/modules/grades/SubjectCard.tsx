@@ -3,6 +3,7 @@ import { GradeValue } from './GradeValue'
 import { formatDate, formatGrade } from './lib/format'
 import type { SubjectGrades } from './types'
 import styles from './SubjectCard.module.css'
+import table from './GradesTable.module.css'
 
 export interface SubjectCardProps {
   subject: SubjectGrades
@@ -28,16 +29,16 @@ export function SubjectCard({ subject }: SubjectCardProps) {
       {subject.grades.length === 0 ? (
         <p className={styles.empty}>Noch keine Noten.</p>
       ) : (
-        <div className={styles.tableWrapper}>
-          <table className={styles.table}>
+        <div className={table.wrapper}>
+          <table className={table.table}>
             <thead>
               <tr>
                 <th scope="col">Titel</th>
                 <th scope="col">Datum</th>
-                <th scope="col" className={styles.numeric}>
+                <th scope="col" className={table.numeric}>
                   Note
                 </th>
-                <th scope="col" className={styles.numeric}>
+                <th scope="col" className={table.numeric}>
                   Gewichtung
                 </th>
               </tr>
@@ -46,11 +47,11 @@ export function SubjectCard({ subject }: SubjectCardProps) {
               {subject.grades.map((grade) => (
                 <tr key={grade.id}>
                   <td>{grade.title}</td>
-                  <td className={styles.date}>{formatDate(grade.date)}</td>
-                  <td className={styles.numeric}>
+                  <td className={table.muted}>{formatDate(grade.date)}</td>
+                  <td className={table.numeric}>
                     <GradeValue value={grade.grade} />
                   </td>
-                  <td className={styles.numeric}>{formatGrade(grade.weight)}</td>
+                  <td className={table.numeric}>{formatGrade(grade.weight)}</td>
                 </tr>
               ))}
             </tbody>

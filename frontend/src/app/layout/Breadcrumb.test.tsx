@@ -16,7 +16,7 @@ const routes: RouteObject[] = [
         path: '/noten',
         element: null,
         handle: handle('Noten'),
-        children: [{ path: 'bms', element: null, handle: handle('BMS') }],
+        children: [{ path: 'hs-2026', element: null, handle: handle('HS 2026') }],
       },
       { path: '/stundenplan', element: null },
     ],
@@ -58,11 +58,11 @@ describe('Breadcrumb', () => {
   })
 
   it('shows nested crumbs for nested routes and links the intermediate ones', () => {
-    renderAt('/noten/bms')
+    renderAt('/noten/hs-2026')
 
     const items = within(screen.getByRole('navigation', { name: 'Breadcrumb' })).getAllByRole('listitem')
 
-    expect(items.map((item) => item.textContent)).toEqual(['Home', 'Noten', 'BMS'])
+    expect(items.map((item) => item.textContent)).toEqual(['Home', 'Noten', 'HS 2026'])
     expect(screen.getByRole('link', { name: 'Noten' })).toHaveAttribute('href', '/noten')
   })
 

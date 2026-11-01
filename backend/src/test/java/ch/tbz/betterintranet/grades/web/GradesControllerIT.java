@@ -1,5 +1,8 @@
 package ch.tbz.betterintranet.grades.web;
 
+import static org.hamcrest.Matchers.aMapWithSize;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -11,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import ch.tbz.betterintranet.core.error.NotFoundException;
 import ch.tbz.betterintranet.core.error.UpstreamUnavailableException;
-import ch.tbz.betterintranet.grades.api.SchoolPart;
 import ch.tbz.betterintranet.grades.application.GradesClient;
 import ch.tbz.betterintranet.grades.application.RawGrade;
 import java.time.LocalDate;
@@ -41,36 +43,35 @@ class GradesControllerIT {
         private GradesClient client;
 
         @Test
-        @DisplayName("GET /api/grades returns the grouped overview as JSON")
+        @DisplayName("GET /api/grades returns a flat subject list, newest semester first, as JSON")
         void shouldReturnOverviewJson() throws Exception {
             when(client.fetchGrades("nicola.wehrli")).thenReturn(List.of(
-                    new RawGrade(6, SchoolPart.TBZ, "Modul 450 Applikationen testen", "HS 2026", "LB1 Testkonzept",
-                            LocalDate.of(2026, 9, 30), 5.5, 1.0),
-                    new RawGrade(7, SchoolPart.TBZ, "Modul 450 Applikationen testen", "HS 2026", "LB2 Projektarbeit",
-                            LocalDate.of(2026, 10, 28), 5.0, 2.0),
-                    new RawGrade(1, SchoolPart.BMS, "Deutsch", "HS 2026", "Aufsatz",
-                            LocalDate.of(2026, 9, 15), 5.0, 1.0)));
+                    new RawGrade(1, "Englisch", "FS 2026", "Listening", LocalDate.of(2026, 5, 21), 5.0, 1.0),
+                    new RawGrade(6, "450 Applikationen testen", "HS 2026", "LB1 Testkonzept",
+                            LocalDate.of(2026, 9, 29), 5.5, 1.0),
+                    new RawGrade(7, "450 Applikationen testen", "HS 2026", "LB2 Projektarbeit",
+                            LocalDate.of(2026, 10, 27), 5.0, 2.0)));
 
             mockMvc.perform(get("/api/grades"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$.overallAverage").value(5.09))
-                    .andExpect(jsonPath("$.schoolParts.length()").value(2))
-                    .andExpect(jsonPath("$.schoolParts[0].schoolPart").value("BMS"))
-                    .andExpect(jsonPath("$.schoolParts[0].label").value("BMS"))
-                    .andExpect(jsonPath("$.schoolParts[0].average").value(5.0))
-                    .andExpect(jsonPath("$.schoolParts[1].schoolPart").value("TBZ"))
-                    .andExpect(jsonPath("$.schoolParts[1].average").value(5.17))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].subject").value("Modul 450 Applikationen testen"))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].semester").value("HS 2026"))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].average").value(5.17))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].reportGrade").value(5.0))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].grades[0].id").value(7))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].grades[0].title").value("LB2 Projektarbeit"))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].grades[0].date").value("2026-10-28"))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].grades[0].grade").value(5.0))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].grades[0].weight").value(2.0))
-                    .andExpect(jsonPath("$.schoolParts[1].subjects[0].grades[1].id").value(6));
+                    .andExpect(jsonPath("$", allOf(aMapWithSize(2), hasKey("overallAverage"), hasKey("subjects"))))
+                    .andExpect(jsonPath("$.subjects.length()").value(2))
+                    .andExpect(jsonPath("$.subjects[0].subject").value("450 Applikationen testen"))
+                    .andExpect(jsonPath("$.subjects[0].semester").value("HS 2026"))
+                    .andExpect(jsonPath("$.subjects[0].average").value(5.17))
+                    .andExpect(jsonPath("$.subjects[0].reportGrade").value(5.0))
+                    .andExpect(jsonPath("$.subjects[0]", aMapWithSize(5)))
+                    .andExpect(jsonPath("$.subjects[0].grades[0].id").value(7))
+                    .andExpect(jsonPath("$.subjects[0].grades[0].title").value("LB2 Projektarbeit"))
+                    .andExpect(jsonPath("$.subjects[0].grades[0].date").value("2026-10-27"))
+                    .andExpect(jsonPath("$.subjects[0].grades[0].grade").value(5.0))
+                    .andExpect(jsonPath("$.subjects[0].grades[0].weight").value(2.0))
+                    .andExpect(jsonPath("$.subjects[0].grades[1].id").value(6))
+                    .andExpect(jsonPath("$.subjects[1].subject").value("Englisch"))
+                    .andExpect(jsonPath("$.subjects[1].semester").value("FS 2026"))
+                    .andExpect(jsonPath("$.subjects[1].average").value(5.0));
         }
 
         @Test
@@ -81,7 +82,7 @@ class GradesControllerIT {
             mockMvc.perform(get("/api/grades"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.overallAverage").value(nullValue()))
-                    .andExpect(jsonPath("$.schoolParts").isEmpty());
+                    .andExpect(jsonPath("$.subjects").isEmpty());
         }
 
         @Test

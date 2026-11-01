@@ -10,7 +10,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import ch.tbz.betterintranet.core.error.NotFoundException;
 import ch.tbz.betterintranet.core.error.UpstreamUnavailableException;
-import ch.tbz.betterintranet.grades.api.SchoolPart;
 import ch.tbz.betterintranet.grades.application.RawGrade;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.io.IOException;
@@ -57,12 +56,13 @@ class SchoolMockGradesClientIT {
         List<RawGrade> grades = client.fetchGrades("nicola.wehrli");
 
         assertThat(grades).hasSize(12);
-        assertThat(grades.getFirst()).isEqualTo(new RawGrade(1, SchoolPart.BMS, "Deutsch", "HS 2026", "Aufsatz",
-                LocalDate.of(2026, 9, 15), 5.0, 1.0));
-        assertThat(grades.get(5)).isEqualTo(new RawGrade(6, SchoolPart.TBZ, "Modul 450 Applikationen testen",
-                "HS 2026", "LB1 Testkonzept", LocalDate.of(2026, 9, 30), 5.5, 1.0));
-        assertThat(grades.get(8).weight()).isZero();
-        assertThat(grades.getLast().schoolPart()).isEqualTo(SchoolPart.UEK);
+        assertThat(grades.getFirst()).isEqualTo(new RawGrade(1, "Englisch", "HS 2026", "Unit 3 Vocabulary Test",
+                LocalDate.of(2026, 9, 18), 5.0, 1.0));
+        assertThat(grades.get(4)).isEqualTo(new RawGrade(5, "450 Applikationen testen", "HS 2026",
+                "LB1 Testkonzept", LocalDate.of(2026, 9, 29), 5.5, 1.0));
+        assertThat(grades.get(8).grade()).isEqualTo(3.5);
+        assertThat(grades.get(9).weight()).isZero();
+        assertThat(grades.getLast().subject()).isEqualTo("322 Benutzerschnittstellen entwerfen und implementieren");
         school.verify(getRequestedFor(urlPathEqualTo(GRADES_PATH)));
     }
 
@@ -81,13 +81,14 @@ class SchoolMockGradesClientIT {
         school.stubFor(get(urlPathEqualTo(GRADES_PATH))
                 .willReturn(aResponse().withStatus(200).withHeader("Content-Type", "application/json")
                         .withBody("""
-                                [{ "id": 7, "schoolPart": "TBZ", "subject": "Modul 450", "semester": "HS 2026",
+                                [{ "id": 7, "subject": "450 Applikationen testen", "semester": "HS 2026",
                                    "title": "LB1", "date": "2026-09-30", "grade": 5.5, "weight": 1.0, "teacher": "XY" }]
                                 """)));
 
         List<RawGrade> grades = client.fetchGrades("nicola.wehrli");
 
-        assertThat(grades).singleElement().extracting(RawGrade::id).isEqualTo(7L);
+        assertThat(grades).singleElement().isEqualTo(new RawGrade(7, "450 Applikationen testen", "HS 2026", "LB1",
+                LocalDate.of(2026, 9, 30), 5.5, 1.0));
     }
 
     @Test

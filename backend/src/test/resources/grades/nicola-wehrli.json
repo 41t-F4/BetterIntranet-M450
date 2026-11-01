@@ -1,14 +1,14 @@
 [
-  { "id": 1, "schoolPart": "BMS", "subject": "Deutsch", "semester": "HS 2026", "title": "Aufsatz", "date": "2026-09-15", "grade": 5.0, "weight": 1.0 },
-  { "id": 2, "schoolPart": "BMS", "subject": "Deutsch", "semester": "HS 2026", "title": "Grammatiktest", "date": "2026-10-20", "grade": 4.5, "weight": 0.5 },
-  { "id": 3, "schoolPart": "BMS", "subject": "Mathematik", "semester": "HS 2026", "title": "Prüfung 1 Algebra", "date": "2026-09-22", "grade": 5.5, "weight": 1.0 },
-  { "id": 4, "schoolPart": "BMS", "subject": "Mathematik", "semester": "HS 2026", "title": "Prüfung 2 Funktionen", "date": "2026-10-27", "grade": 4.0, "weight": 1.0 },
-  { "id": 5, "schoolPart": "BMS", "subject": "Englisch", "semester": "FS 2026", "title": "Listening Comprehension", "date": "2026-03-10", "grade": 5.0, "weight": 1.0 },
-  { "id": 6, "schoolPart": "TBZ", "subject": "Modul 450 Applikationen testen", "semester": "HS 2026", "title": "LB1 Testkonzept", "date": "2026-09-30", "grade": 5.5, "weight": 1.0 },
-  { "id": 7, "schoolPart": "TBZ", "subject": "Modul 450 Applikationen testen", "semester": "HS 2026", "title": "LB2 Projektarbeit", "date": "2026-10-28", "grade": 5.0, "weight": 2.0 },
-  { "id": 8, "schoolPart": "TBZ", "subject": "Modul 320 Objektorientiert programmieren", "semester": "HS 2026", "title": "LB1 Klassendesign", "date": "2026-10-05", "grade": 6.0, "weight": 1.0 },
-  { "id": 9, "schoolPart": "TBZ", "subject": "Modul 320 Objektorientiert programmieren", "semester": "HS 2026", "title": "Übung (unbewertet)", "date": "2026-09-10", "grade": 4.0, "weight": 0.0 },
-  { "id": 10, "schoolPart": "TBZ", "subject": "Modul 117 Informatik- und Netzinfrastruktur", "semester": "FS 2026", "title": "LB1 Netzwerk", "date": "2026-04-14", "grade": 4.5, "weight": 1.0 },
-  { "id": 11, "schoolPart": "UEK", "subject": "ÜK 335 Mobile-Applikation realisieren", "semester": "FS 2026", "title": "Kompetenznachweis", "date": "2026-05-20", "grade": 5.0, "weight": 1.0 },
-  { "id": 12, "schoolPart": "UEK", "subject": "ÜK 295 Backend für Applikationen realisieren", "semester": "HS 2026", "title": "Kompetenznachweis", "date": "2026-10-15", "grade": 4.5, "weight": 1.0 }
+  { "id": 1, "subject": "Englisch", "semester": "HS 2026", "title": "Unit 3 Vocabulary Test", "date": "2026-09-18", "grade": 5.0, "weight": 1.0 },
+  { "id": 2, "subject": "Englisch", "semester": "HS 2026", "title": "Presentation", "date": "2026-10-23", "grade": 5.5, "weight": 1.0 },
+  { "id": 3, "subject": "Allgemeinbildung Gesellschaft", "semester": "HS 2026", "title": "Vertragsrecht", "date": "2026-09-24", "grade": 4.5, "weight": 1.0 },
+  { "id": 4, "subject": "Allgemeinbildung Gesellschaft", "semester": "HS 2026", "title": "Vertiefungsarbeit Zwischenstand", "date": "2026-10-15", "grade": 5.0, "weight": 0.5 },
+  { "id": 5, "subject": "450 Applikationen testen", "semester": "HS 2026", "title": "LB1 Testkonzept", "date": "2026-09-29", "grade": 5.5, "weight": 1.0 },
+  { "id": 6, "subject": "450 Applikationen testen", "semester": "HS 2026", "title": "LB2 Projektarbeit", "date": "2026-10-27", "grade": 5.0, "weight": 2.0 },
+  { "id": 7, "subject": "Englisch", "semester": "FS 2026", "title": "Reading Comprehension", "date": "2026-03-12", "grade": 4.5, "weight": 1.0 },
+  { "id": 8, "subject": "Englisch", "semester": "FS 2026", "title": "Listening", "date": "2026-05-21", "grade": 5.0, "weight": 1.0 },
+  { "id": 9, "subject": "Allgemeinbildung Gesellschaft", "semester": "FS 2026", "title": "Steuern und Budget", "date": "2026-04-09", "grade": 3.5, "weight": 1.0 },
+  { "id": 10, "subject": "320 Objektorientiert programmieren", "semester": "FS 2026", "title": "Übung Interfaces (unbewertet)", "date": "2026-03-05", "grade": 4.0, "weight": 0.0 },
+  { "id": 11, "subject": "320 Objektorientiert programmieren", "semester": "FS 2026", "title": "LB1 Klassendesign", "date": "2026-04-02", "grade": 6.0, "weight": 1.0 },
+  { "id": 12, "subject": "322 Benutzerschnittstellen entwerfen und implementieren", "semester": "FS 2026", "title": "LB1 Prototyp", "date": "2026-06-04", "grade": 5.0, "weight": 1.0 }
 ]

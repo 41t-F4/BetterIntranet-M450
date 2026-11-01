@@ -1,7 +1,14 @@
-/**
- * Application root. The router, layout and module registration are added by the
- * `feature/frontend-shell` branch; the scaffold only renders the product name.
- */
+import { useState } from 'react'
+import { RouterProvider } from 'react-router-dom'
+import { AppDataProvider } from './providers/AppDataProvider'
+import { createAppRouter } from './router'
+
+/** Application root: startup data provider plus the router built from the module registry. */
 export function App() {
-  return <h1>BetterIntranet</h1>
+  const [router] = useState(createAppRouter)
+  return (
+    <AppDataProvider>
+      <RouterProvider router={router} />
+    </AppDataProvider>
+  )
 }

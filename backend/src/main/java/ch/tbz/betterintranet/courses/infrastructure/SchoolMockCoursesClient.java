@@ -16,7 +16,7 @@ import org.springframework.web.client.RestClientException;
  */
 public class SchoolMockCoursesClient implements CoursesClient {
 
-    static final String UPSTREAM = "school";
+    private static final String UPSTREAM = "school";
 
     private static final ParameterizedTypeReference<List<Course>> COURSE_LIST =
             new ParameterizedTypeReference<>() {

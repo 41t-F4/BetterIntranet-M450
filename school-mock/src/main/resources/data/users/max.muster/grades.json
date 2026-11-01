@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "subject": "117 Informatik- und Netzinfrastruktur",
+    "semester": "HS 2026",
+    "title": "LB1 Netzwerkgrundlagen",
+    "date": "2026-09-24",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 2,
+    "subject": "117 Informatik- und Netzinfrastruktur",
+    "semester": "HS 2026",
+    "title": "LB2 Subnetting",
+    "date": "2026-10-29",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 3,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Prüfung Lehrvertrag und Recht",
+    "date": "2026-10-22",
+    "grade": 4.0,
+    "weight": 1.0
+  },
+  {
+    "id": 4,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Placement Test",
+    "date": "2026-09-03",
+    "grade": 4.5,
+    "weight": 1.0
+  }
+]

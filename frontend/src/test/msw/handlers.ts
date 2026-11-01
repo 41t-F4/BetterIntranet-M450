@@ -9,7 +9,17 @@ export const shellHandlers: RequestHandler[] = [
 ]
 
 /**
- * Default request handlers shared by all tests.
- * Feature modules add their own handlers here (e.g. `...gradesHandlers`) once they exist.
+ * Every feature module ships its default handlers in `./<module>Handlers.ts` and exports them as a
+ * `RequestHandler[]`. They are discovered here so feature branches never have to edit this file,
+ * which keeps parallel module branches free of merge conflicts.
  */
-export const handlers: RequestHandler[] = [...shellHandlers]
+const moduleHandlerFiles = import.meta.glob<Record<string, RequestHandler[]>>('./*Handlers.ts', {
+  eager: true,
+})
+
+export const moduleHandlers: RequestHandler[] = Object.values(moduleHandlerFiles).flatMap((exports) =>
+  Object.values(exports).flat(),
+)
+
+/** Default request handlers shared by all tests. */
+export const handlers: RequestHandler[] = [...shellHandlers, ...moduleHandlers]

@@ -2,10 +2,19 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, http } from 'msw'
 import { useLocation } from 'react-router-dom'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { AppDataProvider } from '../../app/providers/AppDataProvider'
 import { server } from '../../test/msw/server'
+import { freezeClock, releaseClock } from '../../test/clock'
+import {
+  FIXTURE_WEEK_END,
+  FIXTURE_WEEK_START,
+  NEXT_WEEK_END,
+  NEXT_WEEK_START,
+  PREVIOUS_WEEK_START,
+} from '../../test/fixtures/timetable'
 import { renderWithRouter } from '../../test/render'
+import { addDays } from './lib/week'
 import { TimetablePage } from './TimetablePage'
 
 /** Exposes the current URL so tests can assert the search params the page writes. */
@@ -45,15 +54,10 @@ function recordLessonRequests(lessons: unknown[] = []) {
 }
 
 describe('TimetablePage', () => {
-  beforeEach(() => {
-    // Wednesday, 4. November 2026 (KW 45) – the fixture week.
-    vi.useFakeTimers({ toFake: ['Date'] })
-    vi.setSystemTime(new Date(2026, 10, 4, 10, 0))
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
+  // The clock is frozen inside the fixture week and the API is answered by MSW fixtures, so these
+  // tests never depend on the real date or the real timetable.
+  beforeEach(() => freezeClock())
+  afterEach(() => releaseClock())
 
   it('shows a loading indicator until the data arrived', () => {
     renderPage()
@@ -167,7 +171,7 @@ describe('TimetablePage', () => {
 
     await waitFor(() => expect(urls).toHaveLength(1))
     const params = new URL(urls[0] as string).searchParams
-    expect(Object.fromEntries(params)).toEqual({ classId: '7471', from: '2026-11-02', to: '2026-11-06' })
+    expect(Object.fromEntries(params)).toEqual({ classId: '7471', from: FIXTURE_WEEK_START, to: FIXTURE_WEEK_END })
   })
 
   it('refetches with the new class id and stores it in the URL when the class changes', async () => {
@@ -182,8 +186,8 @@ describe('TimetablePage', () => {
     await waitFor(() => expect(urls.at(-1)).toContain('classId=7372'))
     expect(Object.fromEntries(new URL(urls.at(-1) as string).searchParams)).toEqual({
       classId: '7372',
-      from: '2026-11-02',
-      to: '2026-11-06',
+      from: FIXTURE_WEEK_START,
+      to: FIXTURE_WEEK_END,
     })
     expect(select).toHaveValue('7372')
     expect(location()).toContain('classId=7372')
@@ -197,7 +201,7 @@ describe('TimetablePage', () => {
     await user.click(screen.getByRole('button', { name: 'Nächste Woche' }))
 
     expect(await screen.findByText('KW 46 · 9. Nov. – 13. Nov. 2026')).toBeInTheDocument()
-    expect(location()).toContain('week=2026-11-09')
+    expect(location()).toContain(`week=${NEXT_WEEK_START}`)
     expect(await findDay('Montag, 9. Nov.')).toBeInTheDocument()
   })
 
@@ -209,18 +213,18 @@ describe('TimetablePage', () => {
     await user.click(screen.getByRole('button', { name: 'Vorherige Woche' }))
 
     expect(await screen.findByText('KW 44 · 26. Okt. – 30. Okt. 2026')).toBeInTheDocument()
-    expect(location()).toContain('week=2026-10-26')
+    expect(location()).toContain(`week=${PREVIOUS_WEEK_START}`)
   })
 
   it('jumps back to the current week with «Heute»', async () => {
     const user = userEvent.setup()
-    renderPage('?week=2026-11-16')
+    renderPage(`?week=${addDays(FIXTURE_WEEK_START, 14)}`)
     await screen.findByText('KW 47 · 16. Nov. – 20. Nov. 2026')
 
     await user.click(screen.getByRole('button', { name: 'Heute' }))
 
     expect(await screen.findByText('KW 45 · 2. Nov. – 6. Nov. 2026')).toBeInTheDocument()
-    expect(location()).toContain('week=2026-11-02')
+    expect(location()).toContain(`week=${FIXTURE_WEEK_START}`)
   })
 
   it('requests the week from the URL when navigating', async () => {
@@ -234,13 +238,13 @@ describe('TimetablePage', () => {
     await waitFor(() => expect(urls).toHaveLength(2))
     expect(Object.fromEntries(new URL(urls[1] as string).searchParams)).toEqual({
       classId: '7471',
-      from: '2026-11-09',
-      to: '2026-11-13',
+      from: NEXT_WEEK_START,
+      to: NEXT_WEEK_END,
     })
   })
 
   it('reads class and week from the URL so the page is linkable', async () => {
-    renderPage('?classId=7372&week=2026-11-09')
+    renderPage(`?classId=7372&week=${NEXT_WEEK_START}`)
 
     expect(await screen.findByText('KW 46 · 9. Nov. – 13. Nov. 2026')).toBeInTheDocument()
     const select = screen.getByRole('combobox', { name: 'Klasse' })
@@ -248,7 +252,7 @@ describe('TimetablePage', () => {
   })
 
   it('normalizes a week param that is not a Monday to its week', async () => {
-    renderPage('?week=2026-11-11')
+    renderPage(`?week=${addDays(NEXT_WEEK_START, 2)}`)
 
     expect(await screen.findByText('KW 46 · 9. Nov. – 13. Nov. 2026')).toBeInTheDocument()
   })
@@ -261,7 +265,7 @@ describe('TimetablePage', () => {
   })
 
   it('shows a message when the week has no lessons', async () => {
-    renderPage('?week=2026-11-09')
+    renderPage(`?week=${NEXT_WEEK_START}`)
 
     expect(await screen.findByText('Keine Lektionen in dieser Woche.')).toBeInTheDocument()
     expect(screen.queryByRole('listitem')).not.toBeInTheDocument()

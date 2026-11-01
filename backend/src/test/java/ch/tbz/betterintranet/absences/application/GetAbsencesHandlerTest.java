@@ -41,10 +41,10 @@ class GetAbsencesHandlerTest {
     @DisplayName("absences are sorted by date descending, then by lesson start descending")
     void sortsNewestFirst() {
         when(client.fetchAbsences(USER)).thenReturn(List.of(
-                absence(1, LocalDate.of(2026, 9, 14), LocalTime.of(8, 10), OPEN),
-                absence(2, LocalDate.of(2026, 10, 12), LocalTime.of(8, 10), OPEN),
-                absence(3, LocalDate.of(2026, 10, 12), LocalTime.of(10, 5), EXCUSED),
-                absence(4, LocalDate.of(2026, 8, 31), LocalTime.of(13, 15), UNEXCUSED)));
+                absence(1, LocalDate.of(2026, 9, 15), LocalTime.of(8, 10), OPEN),
+                absence(2, LocalDate.of(2026, 10, 13), LocalTime.of(8, 10), OPEN),
+                absence(3, LocalDate.of(2026, 10, 13), LocalTime.of(10, 5), EXCUSED),
+                absence(4, LocalDate.of(2026, 9, 1), LocalTime.of(13, 25), UNEXCUSED)));
 
         AbsencesOverview overview = handler.handle(new GetAbsencesQuery(USER));
 
@@ -55,10 +55,10 @@ class GetAbsencesHandlerTest {
     @DisplayName("the summary counts every entry and the missed lessons")
     void computesSummary() {
         when(client.fetchAbsences(USER)).thenReturn(List.of(
-                absence(1, LocalDate.of(2026, 10, 12), LocalTime.of(8, 10), LocalTime.of(9, 45), OPEN),
-                absence(2, LocalDate.of(2026, 10, 12), LocalTime.of(10, 5), LocalTime.of(10, 50), EXCUSED),
-                absence(3, LocalDate.of(2026, 9, 14), LocalTime.of(8, 10), LocalTime.of(8, 55), UNEXCUSED),
-                absence(4, LocalDate.of(2026, 9, 7), LocalTime.of(8, 10), LocalTime.of(8, 55), EXCUSED)));
+                absence(1, LocalDate.of(2026, 10, 13), LocalTime.of(8, 10), LocalTime.of(9, 45), OPEN),
+                absence(2, LocalDate.of(2026, 10, 13), LocalTime.of(10, 5), LocalTime.of(10, 50), EXCUSED),
+                absence(3, LocalDate.of(2026, 9, 15), LocalTime.of(8, 10), LocalTime.of(8, 55), UNEXCUSED),
+                absence(4, LocalDate.of(2026, 9, 8), LocalTime.of(8, 10), LocalTime.of(8, 55), EXCUSED)));
 
         AbsencesOverview overview = handler.handle(new GetAbsencesQuery(USER));
 
@@ -69,10 +69,10 @@ class GetAbsencesHandlerTest {
     @DisplayName("a status filter keeps only matching entries but the summary still covers all of them")
     void filtersByStatus() {
         when(client.fetchAbsences(USER)).thenReturn(List.of(
-                absence(1, LocalDate.of(2026, 10, 12), LocalTime.of(8, 10), OPEN),
-                absence(2, LocalDate.of(2026, 9, 28), LocalTime.of(13, 15), EXCUSED),
-                absence(3, LocalDate.of(2026, 9, 14), LocalTime.of(8, 10), UNEXCUSED),
-                absence(4, LocalDate.of(2026, 8, 24), LocalTime.of(8, 10), EXCUSED)));
+                absence(1, LocalDate.of(2026, 10, 13), LocalTime.of(8, 10), OPEN),
+                absence(2, LocalDate.of(2026, 9, 29), LocalTime.of(13, 25), EXCUSED),
+                absence(3, LocalDate.of(2026, 9, 15), LocalTime.of(8, 10), UNEXCUSED),
+                absence(4, LocalDate.of(2026, 8, 25), LocalTime.of(8, 10), EXCUSED)));
 
         AbsencesOverview overview = handler.handle(new GetAbsencesQuery(USER, EXCUSED));
 
@@ -126,6 +126,23 @@ class GetAbsencesHandlerTest {
     }
 
     private static Absence absence(long id, LocalDate date, LocalTime start, LocalTime end, AbsenceStatus status) {
-        return new Absence(id, date, start, end, "Englisch", "MID", status, null, date.atTime(10, 0));
+        return new Absence(id, date, start, end, subjectAt(start), teacherAt(start), status, null,
+                date.atTime(10, 0));
+    }
+
+    /** Subject of the Tuesday block of class AP 24b (HS 2026) that starts at {@code start}. */
+    private static String subjectAt(LocalTime start) {
+        if (start.isBefore(LocalTime.of(10, 0))) {
+            return "Englisch";
+        }
+        return start.isBefore(LocalTime.of(13, 0)) ? "Allgemeinbildung Gesellschaft" : "450 Applikationen testen";
+    }
+
+    /** Teacher of the Tuesday block of class AP 24b (HS 2026) that starts at {@code start}. */
+    private static String teacherAt(LocalTime start) {
+        if (start.isBefore(LocalTime.of(10, 0))) {
+            return "MID";
+        }
+        return start.isBefore(LocalTime.of(13, 0)) ? "RIA" : "VAJ";
     }
 }

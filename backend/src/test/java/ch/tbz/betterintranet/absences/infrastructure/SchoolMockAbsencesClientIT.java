@@ -71,9 +71,9 @@ class SchoolMockAbsencesClientIT {
         List<Absence> absences = client.fetchAbsences("nicola.wehrli");
 
         assertThat(absences).hasSize(7);
-        assertThat(absences.getFirst()).isEqualTo(new Absence(1, LocalDate.of(2026, 10, 12), LocalTime.of(8, 10),
+        assertThat(absences.getFirst()).isEqualTo(new Absence(1, LocalDate.of(2026, 10, 13), LocalTime.of(8, 10),
                 LocalTime.of(9, 45), "Englisch", "MID", AbsenceStatus.OPEN, null,
-                LocalDateTime.of(2026, 10, 12, 10, 0)));
+                LocalDateTime.of(2026, 10, 13, 10, 0)));
         assertThat(absences).extracting(Absence::status)
                 .contains(AbsenceStatus.OPEN, AbsenceStatus.EXCUSED, AbsenceStatus.UNEXCUSED);
         assertThat(absences).filteredOn(a -> a.id() == 3).singleElement()
@@ -132,7 +132,7 @@ class SchoolMockAbsencesClientIT {
         SCHOOL.stubFor(get(urlEqualTo(PATH)).willReturn(aResponse()
                 .withStatus(200)
                 .withHeader("Content-Type", "application/json")
-                .withBody("[{\"id\":1,\"date\":\"2026-10-12\",\"status\":\"MAYBE\"}]")));
+                .withBody("[{\"id\":1,\"date\":\"2026-10-13\",\"status\":\"MAYBE\"}]")));
 
         assertThatThrownBy(() -> client.fetchAbsences("nicola.wehrli"))
                 .isInstanceOf(UpstreamUnavailableException.class);

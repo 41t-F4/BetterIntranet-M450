@@ -54,14 +54,14 @@ class AbsenceSummaryCalculatorTest {
             "08:10, 09:45, 2",   // double lesson with the 5-minute break in between
             "08:10, 08:40, 1",   // left early: still one lesson
             "08:10, 09:10, 2",   // one hour overlaps two lessons
-            "13:15, 15:35, 3",   // triple lesson incl. two 5-minute breaks
+            "10:05, 12:30, 3",   // triple lesson incl. two 5-minute breaks
             "08:10, 08:10, 0",   // no duration
             "09:45, 08:10, 0"    // inconsistent upstream data is not counted negatively
     })
     @DisplayName("the duration is rounded up to whole 45-minute lessons")
     void countsLessonsOfOneAbsence(LocalTime start, LocalTime end, int expectedLessons) {
-        Absence absence = new Absence(1, LocalDate.of(2026, 10, 12), start, end, "Englisch", "MID", OPEN, null,
-                LocalDateTime.of(2026, 10, 12, 10, 0));
+        Absence absence = new Absence(1, LocalDate.of(2026, 10, 13), start, end, subjectAt(start), teacherAt(start), OPEN, null,
+                LocalDateTime.of(2026, 10, 13, 10, 0));
 
         assertThat(calculator.summarize(List.of(absence)).totalLessons()).isEqualTo(expectedLessons);
     }
@@ -72,7 +72,7 @@ class AbsenceSummaryCalculatorTest {
         List<Absence> absences = List.of(
                 absence(1, LocalTime.of(8, 10), LocalTime.of(9, 45), OPEN),
                 absence(2, LocalTime.of(10, 5), LocalTime.of(10, 50), EXCUSED),
-                absence(3, LocalTime.of(13, 15), LocalTime.of(15, 35), UNEXCUSED));
+                absence(3, LocalTime.of(10, 5), LocalTime.of(12, 30), UNEXCUSED));
 
         assertThat(calculator.summarize(absences).totalLessons()).isEqualTo(6);
     }
@@ -82,7 +82,23 @@ class AbsenceSummaryCalculatorTest {
     }
 
     private static Absence absence(long id, LocalTime start, LocalTime end, AbsenceStatus status) {
-        return new Absence(id, LocalDate.of(2026, 10, 12), start, end, "Englisch", "MID", status, null,
-                LocalDateTime.of(2026, 10, 12, 10, 0));
+        return new Absence(id, LocalDate.of(2026, 10, 13), start, end, subjectAt(start), teacherAt(start), status, null,
+                LocalDateTime.of(2026, 10, 13, 10, 0));
+    }
+
+    /** Subject of the Tuesday block of class AP 24b (HS 2026) that starts at {@code start}. */
+    private static String subjectAt(LocalTime start) {
+        if (start.isBefore(LocalTime.of(10, 0))) {
+            return "Englisch";
+        }
+        return start.isBefore(LocalTime.of(13, 0)) ? "Allgemeinbildung Gesellschaft" : "450 Applikationen testen";
+    }
+
+    /** Teacher of the Tuesday block of class AP 24b (HS 2026) that starts at {@code start}. */
+    private static String teacherAt(LocalTime start) {
+        if (start.isBefore(LocalTime.of(10, 0))) {
+            return "MID";
+        }
+        return start.isBefore(LocalTime.of(13, 0)) ? "RIA" : "VAJ";
     }
 }

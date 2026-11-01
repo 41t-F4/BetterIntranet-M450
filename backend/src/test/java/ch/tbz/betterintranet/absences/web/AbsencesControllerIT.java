@@ -36,9 +36,9 @@ import org.springframework.test.web.servlet.MockMvc;
 class AbsencesControllerIT {
 
     private static final List<Absence> ABSENCES = List.of(
-            absence(1, LocalDate.of(2026, 9, 14), LocalTime.of(8, 10), LocalTime.of(8, 55), UNEXCUSED, null),
-            absence(2, LocalDate.of(2026, 10, 12), LocalTime.of(8, 10), LocalTime.of(9, 45), OPEN, null),
-            absence(3, LocalDate.of(2026, 9, 28), LocalTime.of(13, 15), LocalTime.of(14, 50), EXCUSED, "Arztbesuch"));
+            absence(1, LocalDate.of(2026, 9, 15), LocalTime.of(8, 10), LocalTime.of(8, 55), UNEXCUSED, null),
+            absence(2, LocalDate.of(2026, 10, 13), LocalTime.of(8, 10), LocalTime.of(9, 45), OPEN, null),
+            absence(3, LocalDate.of(2026, 9, 29), LocalTime.of(13, 25), LocalTime.of(15, 0), EXCUSED, "Arztbesuch"));
 
     @Nested
     @SpringBootTest
@@ -66,14 +66,14 @@ class AbsencesControllerIT {
                     .andExpect(jsonPath("$.summary.totalLessons").value(5))
                     .andExpect(jsonPath("$.absences", hasSize(3)))
                     .andExpect(jsonPath("$.absences[0].id").value(2))
-                    .andExpect(jsonPath("$.absences[0].date").value("2026-10-12"))
+                    .andExpect(jsonPath("$.absences[0].date").value("2026-10-13"))
                     .andExpect(jsonPath("$.absences[0].lessonStart").value("08:10:00"))
                     .andExpect(jsonPath("$.absences[0].lessonEnd").value("09:45:00"))
                     .andExpect(jsonPath("$.absences[0].subject").value("Englisch"))
                     .andExpect(jsonPath("$.absences[0].teacher").value("MID"))
                     .andExpect(jsonPath("$.absences[0].status").value("OPEN"))
                     .andExpect(jsonPath("$.absences[0].reason").doesNotExist())
-                    .andExpect(jsonPath("$.absences[0].reportedAt").value("2026-10-12T10:00:00"))
+                    .andExpect(jsonPath("$.absences[0].reportedAt").value("2026-10-13T10:00:00"))
                     .andExpect(jsonPath("$.absences[1].id").value(3))
                     .andExpect(jsonPath("$.absences[1].reason").value("Arztbesuch"))
                     .andExpect(jsonPath("$.absences[2].id").value(1));
@@ -154,6 +154,23 @@ class AbsencesControllerIT {
 
     private static Absence absence(long id, LocalDate date, LocalTime start, LocalTime end, AbsenceStatus status,
                                    String reason) {
-        return new Absence(id, date, start, end, "Englisch", "MID", status, reason, date.atTime(10, 0));
+        return new Absence(id, date, start, end, subjectAt(start), teacherAt(start), status, reason,
+                date.atTime(10, 0));
+    }
+
+    /** Subject of the Tuesday block of class AP 24b (HS 2026) that starts at {@code start}. */
+    private static String subjectAt(LocalTime start) {
+        if (start.isBefore(LocalTime.of(10, 0))) {
+            return "Englisch";
+        }
+        return start.isBefore(LocalTime.of(13, 0)) ? "Allgemeinbildung Gesellschaft" : "450 Applikationen testen";
+    }
+
+    /** Teacher of the Tuesday block of class AP 24b (HS 2026) that starts at {@code start}. */
+    private static String teacherAt(LocalTime start) {
+        if (start.isBefore(LocalTime.of(10, 0))) {
+            return "MID";
+        }
+        return start.isBefore(LocalTime.of(13, 0)) ? "RIA" : "VAJ";
     }
 }

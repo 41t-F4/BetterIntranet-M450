@@ -11,7 +11,6 @@ package ch.tbz.schoolmock.api;
  * @param semester       semester the course runs in, e.g. {@code HS 2026}
  * @param lessonsPerWeek number of lessons per week
  * @param room           room the course usually takes place in
- * @param schoolPart     part of the school offering the course
  */
 public record Course(
 		String id,
@@ -20,6 +19,5 @@ public record Course(
 		String teacher,
 		String semester,
 		int lessonsPerWeek,
-		String room,
-		SchoolPart schoolPart) {
+		String room) {
 }

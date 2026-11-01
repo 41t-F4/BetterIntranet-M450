@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * backend.
  *
  * @param id         identifier of the assessment
- * @param schoolPart part of the school the subject belongs to
  * @param subject    subject or module name, e.g. {@code Modul 450 Applikationen testen}
  * @param semester   semester of the assessment, e.g. {@code HS 2026} or {@code FS 2026}
  * @param title      title of the assessment, e.g. {@code LB1 Testkonzept}
@@ -22,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 public record Grade(
 		long id,
-		SchoolPart schoolPart,
 		String subject,
 		String semester,
 		String title,

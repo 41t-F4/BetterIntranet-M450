@@ -1,46 +1,67 @@
 .page {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-5);
 }
 
 /* Status colours: set once per status, used by tiles and badges. */
 .open {
   --status-color: var(--color-warning);
+  --status-bg: var(--color-warning-soft);
 }
 
 .excused {
   --status-color: var(--color-success);
+  --status-bg: var(--color-success-soft);
 }
 
 .unexcused {
   --status-color: var(--color-danger);
+  --status-bg: var(--color-danger-soft);
 }
 
-/* Summary tiles */
+/* Summary: five figures in one row, separated by hairlines */
 .tiles {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: var(--space-3);
-  margin: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: var(--space-4) 0 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
 .tile {
-  background: var(--color-surface-muted);
-  border-left: 3px solid var(--status-color, var(--color-border));
-  border-radius: var(--radius-sm);
   padding: var(--space-3) var(--space-4);
 }
 
+.tile + .tile {
+  border-left: 1px solid var(--color-border);
+}
+
 .tileLabel {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-subtle);
+}
+
+.open .tileLabel::before,
+.excused .tileLabel::before,
+.unexcused .tileLabel::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--status-color);
 }
 
 .tileValue {
-  margin: 0;
+  margin: var(--space-1) 0 0;
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  color: var(--status-color, var(--color-text));
+  line-height: 1.2;
+  color: var(--color-text);
   font-variant-numeric: tabular-nums;
 }
 
@@ -49,44 +70,18 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .filterLabel {
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
-}
-
-.select {
-  font: inherit;
-  padding: var(--space-1) var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  color: var(--color-text);
+  color: var(--color-text-subtle);
 }
 
 /* Table */
 .tableWrap {
   width: 100%;
-}
-
-.table th,
-.table td {
-  text-align: left;
-  padding: var(--space-2) var(--space-3);
-  vertical-align: top;
-}
-
-.table th {
-  background: var(--color-surface-muted);
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-}
-
-.table td {
-  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
 }
 
 .nowrap {
@@ -95,32 +90,35 @@
 
 .badge {
   display: inline-block;
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--status-color);
-  color: var(--color-text-on-accent);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--status-bg);
+  color: var(--status-color);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
-  line-height: 1.7;
+  line-height: 1.4;
   white-space: nowrap;
 }
 
 /* States */
 .muted {
   margin: 0;
-  color: var(--color-text-muted);
+  color: var(--color-text-subtle);
 }
 
 .hint {
-  margin: var(--space-3) 0 0;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-warning-soft);
   font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  color: var(--color-warning);
 }
 
 .alert {
-  border-left: 3px solid var(--color-danger);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 35%, var(--color-border));
   border-radius: var(--radius-sm);
-  background: var(--color-surface-muted);
+  background: var(--color-danger-soft);
   padding: var(--space-3) var(--space-4);
 }
 
@@ -133,9 +131,23 @@
 }
 
 @media (max-width: 767px) {
-  .tableWrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
+  .tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tile + .tile {
+    border-left: 0;
+  }
+
+  .tile {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .tile:nth-child(-n + 2) {
+    border-top: 0;
+  }
+
+  .tile:nth-child(even) {
+    border-left: 1px solid var(--color-border);
   }
 }

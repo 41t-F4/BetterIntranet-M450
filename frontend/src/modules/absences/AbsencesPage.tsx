@@ -39,7 +39,7 @@ export function AbsencesPage() {
           <label htmlFor={selectId} className={styles.filterLabel}>
             Status
           </label>
-          <select id={selectId} className={styles.select} value={status ?? ''} onChange={onStatusChange}>
+          <select id={selectId} value={status ?? ''} onChange={onStatusChange}>
             <option value="">Alle</option>
             {ABSENCE_STATUSES.map((option) => (
               <option key={option} value={option}>
@@ -98,7 +98,7 @@ function SummaryTiles({ summary }: { summary: AbsencesSummary | null }) {
 function AbsencesTable({ absences, busy }: { absences: Absence[]; busy: boolean }) {
   return (
     <div className={styles.tableWrap} aria-busy={busy}>
-      <table className={styles.table}>
+      <table>
         <thead>
           <tr>
             <th scope="col">Datum</th>

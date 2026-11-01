@@ -3,11 +3,12 @@ package ch.tbz.betterintranet.dashboard.web;
 import ch.tbz.betterintranet.core.gateway.QueryGateway;
 import ch.tbz.betterintranet.core.web.CurrentUser;
 import ch.tbz.betterintranet.dashboard.api.Dashboard;
+import ch.tbz.betterintranet.dashboard.api.GetDashboardQuery;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** {@code GET /api/dashboard}: the home page content for the current user. */
+/** {@code GET /api/dashboard}: the home page content for the current user (from the {@code X-User} header). */
 @RestController
 @RequestMapping("/api/dashboard")
 public class DashboardController {
@@ -20,6 +21,6 @@ public class DashboardController {
 
     @GetMapping
     public Dashboard dashboard(CurrentUser user) {
-        throw new UnsupportedOperationException("not implemented");
+        return queries.ask(new GetDashboardQuery(user.username()));
     }
 }

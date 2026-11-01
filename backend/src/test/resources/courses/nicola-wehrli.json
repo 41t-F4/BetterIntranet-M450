@@ -1,0 +1,32 @@
+[
+  {
+    "id": "M450",
+    "code": "M450",
+    "name": "Applikationen testen",
+    "teacher": "STU",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-512",
+    "schoolPart": "TBZ"
+  },
+  {
+    "id": "BM-D",
+    "code": "D",
+    "name": "Deutsch",
+    "teacher": "WEB",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-305",
+    "schoolPart": "BMS"
+  },
+  {
+    "id": "UK335",
+    "code": "ÜK 335",
+    "name": "Mobile-Applikation realisieren",
+    "teacher": "ZLI-HUB",
+    "semester": "FS 2026",
+    "lessonsPerWeek": 8,
+    "room": "ZLI Zürich-Oerlikon",
+    "schoolPart": "UEK"
+  }
+]

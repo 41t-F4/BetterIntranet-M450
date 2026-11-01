@@ -25,3 +25,6 @@ coverage/
 
 # Test reports
 reports/
+
+# Claude Code worktrees
+.claude/worktrees/

@@ -1,35 +1,24 @@
 [
   {
     "id": 1,
-    "date": "2026-10-26",
+    "date": "2026-10-29",
     "lessonStart": "08:10",
     "lessonEnd": "09:45",
-    "subject": "Modul 117 Informatik- und Netzinfrastruktur für ein kleines Unternehmen realisieren",
+    "subject": "117 Informatik- und Netzinfrastruktur",
     "teacher": "CAL",
     "status": "OPEN",
     "reason": null,
-    "reportedAt": "2026-10-26T10:00:00"
+    "reportedAt": "2026-10-29T10:00:00"
   },
   {
     "id": 2,
-    "date": "2026-09-29",
+    "date": "2026-09-24",
     "lessonStart": "10:05",
-    "lessonEnd": "11:40",
+    "lessonEnd": "12:30",
     "subject": "Allgemeinbildung Gesellschaft",
     "teacher": "ROS",
     "status": "EXCUSED",
     "reason": "Krankheit",
-    "reportedAt": "2026-09-29T12:00:00"
-  },
-  {
-    "id": 3,
-    "date": "2026-09-08",
-    "lessonStart": "12:40",
-    "lessonEnd": "14:15",
-    "subject": "Modul 162 Daten analysieren und modellieren",
-    "teacher": "GRA",
-    "status": "UNEXCUSED",
-    "reason": null,
-    "reportedAt": "2026-09-08T14:30:00"
+    "reportedAt": "2026-09-24T12:45:00"
   }
 ]

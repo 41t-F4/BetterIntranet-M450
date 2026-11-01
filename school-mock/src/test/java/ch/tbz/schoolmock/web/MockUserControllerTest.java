@@ -1,5 +1,6 @@
 package ch.tbz.schoolmock.web;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -29,10 +30,11 @@ import ch.tbz.schoolmock.api.AbsenceStatus;
 import ch.tbz.schoolmock.api.Course;
 import ch.tbz.schoolmock.api.Grade;
 import ch.tbz.schoolmock.api.SchoolClass;
-import ch.tbz.schoolmock.api.SchoolPart;
 import ch.tbz.schoolmock.repository.FixtureLoadException;
 import ch.tbz.schoolmock.repository.UserFixtureRepository;
 import ch.tbz.schoolmock.repository.UserNotFoundException;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * Web-layer tests for {@link MockUserController} and {@link MockApiExceptionHandler}. The
@@ -43,6 +45,8 @@ import ch.tbz.schoolmock.repository.UserNotFoundException;
 class MockUserControllerTest {
 
 	private static final String NICOLA = "nicola.wehrli";
+
+	private static final ObjectMapper JSON = JsonMapper.builder().build();
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -71,48 +75,53 @@ class MockUserControllerTest {
 	@Test
 	void shouldReturnCoursesOfUserAsJson() throws Exception {
 		when(repository.findCourses(NICOLA)).thenReturn(List.of(
-				new Course("M450", "M450", "Applikationen testen", "STU", "HS 2026", 4, "AU-512", SchoolPart.TBZ),
-				new Course("UK335", "ÜK 335", "Mobile-Applikation realisieren", "ZLI-HUB", "HS 2026", 8,
-						"ZLI Zürich-Oerlikon", SchoolPart.UEK)));
+				fromJson(Course.class, """
+						{ "id": "450-HS26", "code": "450", "name": "Applikationen testen", "teacher": "VAJ",
+						  "semester": "HS 2026", "lessonsPerWeek": 4, "room": "AU-060" }"""),
+				fromJson(Course.class, """
+						{ "id": "ENG-HS26", "code": "ENG", "name": "Englisch", "teacher": "MID",
+						  "semester": "HS 2026", "lessonsPerWeek": 2, "room": "AU-512" }""")));
 
 		mockMvc.perform(get("/mock/users/{username}/courses", NICOLA))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.length()").value(2))
-				.andExpect(jsonPath("$[0].id").value("M450"))
-				.andExpect(jsonPath("$[0].code").value("M450"))
+				.andExpect(jsonPath("$[0].id").value("450-HS26"))
+				.andExpect(jsonPath("$[0].code").value("450"))
 				.andExpect(jsonPath("$[0].name").value("Applikationen testen"))
-				.andExpect(jsonPath("$[0].teacher").value("STU"))
+				.andExpect(jsonPath("$[0].teacher").value("VAJ"))
 				.andExpect(jsonPath("$[0].semester").value("HS 2026"))
 				.andExpect(jsonPath("$[0].lessonsPerWeek").value(4))
-				.andExpect(jsonPath("$[0].room").value("AU-512"))
-				.andExpect(jsonPath("$[0].schoolPart").value("TBZ"))
-				.andExpect(jsonPath("$[1].code").value("ÜK 335"))
-				.andExpect(jsonPath("$[1].schoolPart").value("UEK"));
+				.andExpect(jsonPath("$[0].room").value("AU-060"))
+				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
+				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder("id", "code", "name", "teacher", "semester",
+						"lessonsPerWeek", "room")))
+				.andExpect(jsonPath("$[1].code").value("ENG"))
+				.andExpect(jsonPath("$[1].name").value("Englisch"));
 	}
 
 	@Test
 	void shouldReturnAbsencesWithIsoDatesAndShortTimes() throws Exception {
 		when(repository.findAbsences(NICOLA)).thenReturn(List.of(
-				new Absence(1L, LocalDate.of(2026, 10, 12), LocalTime.of(8, 10), LocalTime.of(9, 45), "Englisch",
-						"MID", AbsenceStatus.OPEN, null, LocalDateTime.of(2026, 10, 12, 10, 0)),
-				new Absence(2L, LocalDate.of(2026, 9, 21), LocalTime.of(10, 5), LocalTime.of(11, 40),
-						"Modul 450 Applikationen testen", "STU", AbsenceStatus.EXCUSED, "Arztbesuch",
-						LocalDateTime.of(2026, 9, 21, 12, 0))));
+				new Absence(1L, LocalDate.of(2026, 10, 20), LocalTime.of(8, 10), LocalTime.of(9, 45), "Englisch",
+						"MID", AbsenceStatus.OPEN, null, LocalDateTime.of(2026, 10, 20, 10, 0)),
+				new Absence(3L, LocalDate.of(2026, 9, 15), LocalTime.of(10, 5), LocalTime.of(12, 30),
+						"Allgemeinbildung Gesellschaft", "RIA", AbsenceStatus.EXCUSED, "Arztbesuch",
+						LocalDateTime.of(2026, 9, 15, 12, 45))));
 
 		mockMvc.perform(get("/mock/users/{username}/absences", NICOLA))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.length()").value(2))
 				.andExpect(jsonPath("$[0].id").value(1))
-				.andExpect(jsonPath("$[0].date").value("2026-10-12"))
+				.andExpect(jsonPath("$[0].date").value("2026-10-20"))
 				.andExpect(jsonPath("$[0].lessonStart").value("08:10"))
 				.andExpect(jsonPath("$[0].lessonEnd").value("09:45"))
 				.andExpect(jsonPath("$[0].subject").value("Englisch"))
 				.andExpect(jsonPath("$[0].teacher").value("MID"))
 				.andExpect(jsonPath("$[0].status").value("OPEN"))
 				.andExpect(jsonPath("$[0].reason").value(nullValue()))
-				.andExpect(jsonPath("$[0].reportedAt").value("2026-10-12T10:00:00"))
+				.andExpect(jsonPath("$[0].reportedAt").value("2026-10-20T10:00:00"))
 				.andExpect(jsonPath("$[1].status").value("EXCUSED"))
 				.andExpect(jsonPath("$[1].reason").value("Arztbesuch"));
 	}
@@ -120,25 +129,29 @@ class MockUserControllerTest {
 	@Test
 	void shouldReturnGradesOfUserAsJson() throws Exception {
 		when(repository.findGrades(NICOLA)).thenReturn(List.of(
-				new Grade(1L, SchoolPart.TBZ, "Modul 450 Applikationen testen", "HS 2026", "LB1 Testkonzept",
-						LocalDate.of(2026, 9, 30), 5.5, 1.0),
-				new Grade(13L, SchoolPart.BMS, "Mathematik", "HS 2026", "Prüfung Trigonometrie",
-						LocalDate.of(2026, 9, 22), 3.5, 1.0)));
+				fromJson(Grade.class, """
+						{ "id": 1, "subject": "450 Applikationen testen", "semester": "HS 2026",
+						  "title": "LB1 Testkonzept", "date": "2026-09-29", "grade": 5.5, "weight": 1.0 }"""),
+				fromJson(Grade.class, """
+						{ "id": 9, "subject": "Allgemeinbildung Gesellschaft", "semester": "HS 2026",
+						  "title": "Prüfung Recht und Vertrag", "date": "2026-10-27", "grade": 3.5, "weight": 1.0 }""")));
 
 		mockMvc.perform(get("/mock/users/{username}/grades", NICOLA))
 				.andExpect(status().isOk())
 				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.length()").value(2))
 				.andExpect(jsonPath("$[0].id").value(1))
-				.andExpect(jsonPath("$[0].schoolPart").value("TBZ"))
-				.andExpect(jsonPath("$[0].subject").value("Modul 450 Applikationen testen"))
+				.andExpect(jsonPath("$[0].schoolPart").doesNotExist())
+				.andExpect(jsonPath("$[0].keys()", containsInAnyOrder("id", "subject", "semester", "title", "date",
+						"grade", "weight")))
+				.andExpect(jsonPath("$[0].subject").value("450 Applikationen testen"))
 				.andExpect(jsonPath("$[0].semester").value("HS 2026"))
 				.andExpect(jsonPath("$[0].title").value("LB1 Testkonzept"))
-				.andExpect(jsonPath("$[0].date").value("2026-09-30"))
+				.andExpect(jsonPath("$[0].date").value("2026-09-29"))
 				.andExpect(jsonPath("$[0].grade").value(5.5))
 				.andExpect(jsonPath("$[0].weight").value(1.0))
 				.andExpect(jsonPath("$[1].grade").value(3.5))
-				.andExpect(jsonPath("$[1].title").value("Prüfung Trigonometrie"));
+				.andExpect(jsonPath("$[1].title").value("Prüfung Recht und Vertrag"));
 	}
 
 	@Test
@@ -183,5 +196,9 @@ class MockUserControllerTest {
 				.andExpect(jsonPath("$.title").value("Fixture data unreadable"))
 				.andExpect(jsonPath("$.status").value(500))
 				.andExpect(jsonPath("$.detail").value("Cannot read grades.json"));
+	}
+
+	private static <T> T fromJson(Class<T> type, String json) {
+		return JSON.readValue(json, type);
 	}
 }

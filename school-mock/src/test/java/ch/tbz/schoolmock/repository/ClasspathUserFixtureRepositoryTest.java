@@ -13,7 +13,9 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.RecordComponent;
 import java.nio.charset.StandardCharsets;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,7 +32,6 @@ import ch.tbz.schoolmock.api.AbsenceStatus;
 import ch.tbz.schoolmock.api.Course;
 import ch.tbz.schoolmock.api.Grade;
 import ch.tbz.schoolmock.api.SchoolClass;
-import ch.tbz.schoolmock.api.SchoolPart;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -43,6 +44,12 @@ import tools.jackson.databind.json.JsonMapper;
 class ClasspathUserFixtureRepositoryTest {
 
 	private static final String NICOLA = "nicola.wehrli";
+
+	private static final List<String> NICOLA_SUBJECTS = List.of("Englisch", "Allgemeinbildung Gesellschaft",
+			"450 Applikationen testen", "306 IT-Kleinprojekt abwickeln", "320 Objektorientiert programmieren",
+			"322 Benutzerschnittstellen entwerfen und implementieren");
+
+	private static final List<String> NICOLA_COURSE_CODES = List.of("ENG", "GES", "450", "306", "320", "322");
 
 	private final ObjectMapper objectMapper = JsonMapper.builder().build();
 
@@ -66,24 +73,37 @@ class ClasspathUserFixtureRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("courses.json is mapped including the SchoolPart enum")
-	void shouldReadCoursesAndMapSchoolPart() {
+	@DisplayName("courses.json of nicola.wehrli contains only TBZ modules and Berufsschule subjects")
+	void shouldReadTbzCoursesOfKnownUser() {
 		List<Course> courses = repository.findCourses(NICOLA);
 
+		assertThat(courses).hasSize(8);
+		assertThat(courses).extracting(Course::code).allMatch(NICOLA_COURSE_CODES::contains);
+		assertThat(courses).extracting(Course::semester).containsOnly("HS 2026", "FS 2026");
+		assertThat(courses.getFirst()).isEqualTo(
+				courseFromJson("""
+						{ "id": "450-HS26", "code": "450", "name": "Applikationen testen", "teacher": "VAJ",
+						  "semester": "HS 2026", "lessonsPerWeek": 4, "room": "AU-060" }"""));
 		assertThat(courses)
-				.extracting(Course::schoolPart)
-				.contains(SchoolPart.TBZ, SchoolPart.BMS, SchoolPart.UEK);
-		assertThat(courses)
-				.filteredOn(course -> course.id().equals("M450"))
+				.filteredOn(course -> course.code().equals("ENG") && course.semester().equals("HS 2026"))
 				.singleElement()
 				.satisfies(course -> {
-					assertThat(course.code()).isEqualTo("M450");
-					assertThat(course.name()).isEqualTo("Applikationen testen");
-					assertThat(course.semester()).isEqualTo("HS 2026");
-					assertThat(course.lessonsPerWeek()).isEqualTo(4);
+					assertThat(course.name()).isEqualTo("Englisch");
+					assertThat(course.teacher()).isEqualTo("MID");
 					assertThat(course.room()).isEqualTo("AU-512");
-					assertThat(course.schoolPart()).isEqualTo(SchoolPart.TBZ);
+					assertThat(course.lessonsPerWeek()).isEqualTo(2);
 				});
+	}
+
+	@Test
+	@DisplayName("courses and grades carry no school part, the intranet only knows the TBZ Berufsschule")
+	void shouldExposeOnlyTbzFieldsOnCourseAndGradeRecords() {
+		assertThat(Course.class.getRecordComponents())
+				.extracting(RecordComponent::getName)
+				.containsExactly("id", "code", "name", "teacher", "semester", "lessonsPerWeek", "room");
+		assertThat(Grade.class.getRecordComponents())
+				.extracting(RecordComponent::getName)
+				.containsExactly("id", "subject", "semester", "title", "date", "grade", "weight");
 	}
 
 	@Test
@@ -91,48 +111,71 @@ class ClasspathUserFixtureRepositoryTest {
 	void shouldParseAbsenceDatesTimesAndStatus() {
 		List<Absence> absences = repository.findAbsences(NICOLA);
 
-		assertThat(absences).hasSizeBetween(6, 8);
+		assertThat(absences).hasSize(8);
 		assertThat(absences)
 				.extracting(Absence::status)
 				.contains(AbsenceStatus.OPEN, AbsenceStatus.EXCUSED, AbsenceStatus.UNEXCUSED);
 
 		Absence first = absences.getFirst();
 		assertThat(first.id()).isEqualTo(1L);
-		assertThat(first.date()).isEqualTo(LocalDate.of(2026, 10, 12));
+		assertThat(first.date()).isEqualTo(LocalDate.of(2026, 10, 20));
 		assertThat(first.lessonStart()).isEqualTo(LocalTime.of(8, 10));
 		assertThat(first.lessonEnd()).isEqualTo(LocalTime.of(9, 45));
 		assertThat(first.subject()).isEqualTo("Englisch");
 		assertThat(first.teacher()).isEqualTo("MID");
 		assertThat(first.status()).isEqualTo(AbsenceStatus.OPEN);
 		assertThat(first.reason()).isNull();
-		assertThat(first.reportedAt()).isEqualTo(LocalDateTime.of(2026, 10, 12, 10, 0, 0));
+		assertThat(first.reportedAt()).isEqualTo(LocalDateTime.of(2026, 10, 20, 10, 0, 0));
 
+		assertThat(absences).allSatisfy(absence -> {
+			assertThat(absence.subject()).isIn(NICOLA_SUBJECTS);
+			assertThat(absence.date().getDayOfWeek()).isEqualTo(DayOfWeek.TUESDAY);
+			assertThat(absence.date()).isBetween(LocalDate.of(2026, 8, 18), LocalDate.of(2026, 10, 27));
+		});
+		assertThat(absences)
+				.filteredOn(absence -> absence.status() != AbsenceStatus.EXCUSED)
+				.allSatisfy(absence -> assertThat(absence.reason()).isNull());
 		assertThat(absences)
 				.filteredOn(absence -> absence.status() == AbsenceStatus.EXCUSED)
 				.allSatisfy(absence -> assertThat(absence.reason()).isNotBlank());
 	}
 
 	@Test
-	@DisplayName("grades.json is a flat list of Swiss grades across semesters and school parts")
+	@DisplayName("grades.json is a flat list of Swiss grades of TBZ modules and Berufsschule subjects")
 	void shouldReadGradesAsFlatList() {
 		List<Grade> grades = repository.findGrades(NICOLA);
 
-		assertThat(grades).hasSizeBetween(20, 25);
-		assertThat(grades).extracting(Grade::semester).contains("FS 2026", "HS 2026");
-		assertThat(grades).extracting(Grade::schoolPart).contains(SchoolPart.TBZ, SchoolPart.BMS, SchoolPart.UEK);
+		assertThat(grades).hasSizeBetween(18, 22);
+		assertThat(grades).extracting(Grade::semester).containsOnly("FS 2026", "HS 2026");
+		assertThat(grades).extracting(Grade::subject).allMatch(NICOLA_SUBJECTS::contains);
 		assertThat(grades).allSatisfy(grade -> {
 			assertThat(grade.grade()).isBetween(1.0, 6.0);
-			assertThat(grade.weight()).isPositive();
+			assertThat(grade.weight()).isNotNegative();
 			assertThat(grade.date()).isNotNull();
 		});
+		assertThat(grades).anySatisfy(grade -> assertThat(grade.grade()).isLessThan(4.0));
+		assertThat(grades)
+				.filteredOn(grade -> grade.weight() == 0.0)
+				.extracting(Grade::title)
+				.containsExactly("Vokabeltest (freiwillig)");
+		assertThat(grades)
+				.filteredOn(grade -> grade.semester().equals("HS 2026"))
+				.allSatisfy(grade -> {
+					assertThat(grade.date().getDayOfWeek()).isEqualTo(DayOfWeek.TUESDAY);
+					assertThat(grade.date()).isBetween(LocalDate.of(2026, 8, 25), LocalDate.of(2026, 10, 27));
+				});
+		assertThat(grades)
+				.filteredOn(grade -> grade.semester().equals("FS 2026"))
+				.allSatisfy(grade -> assertThat(grade.date())
+						.isBetween(LocalDate.of(2026, 2, 17), LocalDate.of(2026, 6, 30)));
+		assertThat(grades).extracting(Grade::subject).doesNotContain("306 IT-Kleinprojekt abwickeln");
 
 		Grade first = grades.getFirst();
 		assertThat(first.id()).isEqualTo(1L);
-		assertThat(first.schoolPart()).isEqualTo(SchoolPart.TBZ);
-		assertThat(first.subject()).isEqualTo("Modul 450 Applikationen testen");
+		assertThat(first.subject()).isEqualTo("450 Applikationen testen");
 		assertThat(first.semester()).isEqualTo("HS 2026");
 		assertThat(first.title()).isEqualTo("LB1 Testkonzept");
-		assertThat(first.date()).isEqualTo(LocalDate.of(2026, 9, 30));
+		assertThat(first.date()).isEqualTo(LocalDate.of(2026, 9, 29));
 		assertThat(first.grade()).isEqualTo(5.5);
 		assertThat(first.weight()).isEqualTo(1.0);
 	}
@@ -146,6 +189,23 @@ class ClasspathUserFixtureRepositoryTest {
 			assertThat(schoolClass.id()).isEqualTo(7372);
 			assertThat(schoolClass.shortName()).isEqualTo("PE 26a");
 		});
+	}
+
+	@Test
+	@DisplayName("max.muster has TBZ courses, grades and absences only")
+	void shouldReadTbzDataOfSecondUser() {
+		List<String> subjects = List.of("117 Informatik- und Netzinfrastruktur", "Allgemeinbildung Gesellschaft",
+				"Englisch");
+
+		assertThat(repository.findCourses("max.muster")).hasSize(3)
+				.extracting(Course::code)
+				.containsExactly("117", "GES", "ENG");
+		assertThat(repository.findGrades("max.muster")).hasSize(4)
+				.extracting(Grade::subject)
+				.allMatch(subjects::contains);
+		assertThat(repository.findAbsences("max.muster")).hasSize(2)
+				.extracting(Absence::subject)
+				.allMatch(subjects::contains);
 	}
 
 	@Test
@@ -218,5 +278,9 @@ class ClasspathUserFixtureRepositoryTest {
 				.hasMessageContaining("courses.json")
 				.hasMessageContaining(NICOLA)
 				.hasCauseInstanceOf(JacksonException.class);
+	}
+
+	private Course courseFromJson(String json) {
+		return objectMapper.readValue(json, Course.class);
 	}
 }

@@ -1,90 +1,90 @@
 [
   {
     "id": 1,
-    "date": "2026-10-12",
+    "date": "2026-10-20",
     "lessonStart": "08:10",
     "lessonEnd": "09:45",
     "subject": "Englisch",
     "teacher": "MID",
     "status": "OPEN",
     "reason": null,
-    "reportedAt": "2026-10-12T10:00:00"
+    "reportedAt": "2026-10-20T10:00:00"
   },
   {
     "id": 2,
-    "date": "2026-09-30",
-    "lessonStart": "12:40",
-    "lessonEnd": "14:15",
-    "subject": "Modul 320 Objektorientiert programmieren",
-    "teacher": "KOL",
+    "date": "2026-10-27",
+    "lessonStart": "13:25",
+    "lessonEnd": "15:00",
+    "subject": "450 Applikationen testen",
+    "teacher": "VAJ",
     "status": "OPEN",
     "reason": null,
-    "reportedAt": "2026-09-30T14:30:00"
+    "reportedAt": "2026-10-27T15:15:00"
   },
   {
     "id": 3,
-    "date": "2026-09-21",
+    "date": "2026-09-15",
     "lessonStart": "10:05",
-    "lessonEnd": "11:40",
-    "subject": "Modul 450 Applikationen testen",
-    "teacher": "STU",
+    "lessonEnd": "12:30",
+    "subject": "Allgemeinbildung Gesellschaft",
+    "teacher": "RIA",
     "status": "EXCUSED",
     "reason": "Arztbesuch",
-    "reportedAt": "2026-09-21T12:00:00"
+    "reportedAt": "2026-09-15T12:45:00"
   },
   {
     "id": 4,
-    "date": "2026-09-14",
-    "lessonStart": "14:35",
-    "lessonEnd": "16:10",
-    "subject": "Mathematik",
-    "teacher": "FRE",
-    "status": "UNEXCUSED",
-    "reason": null,
-    "reportedAt": "2026-09-14T16:30:00"
+    "date": "2026-09-01",
+    "lessonStart": "15:20",
+    "lessonEnd": "16:55",
+    "subject": "450 Applikationen testen",
+    "teacher": "VAJ",
+    "status": "EXCUSED",
+    "reason": "Krankheit",
+    "reportedAt": "2026-09-01T17:10:00"
   },
   {
     "id": 5,
-    "date": "2026-08-31",
-    "lessonStart": "08:10",
-    "lessonEnd": "11:40",
-    "subject": "Modul 322 Benutzerschnittstellen implementieren",
-    "teacher": "BRA",
-    "status": "EXCUSED",
-    "reason": "Militärische Rekrutierung",
-    "reportedAt": "2026-08-31T12:00:00"
+    "date": "2026-08-25",
+    "lessonStart": "10:05",
+    "lessonEnd": "12:30",
+    "subject": "Allgemeinbildung Gesellschaft",
+    "teacher": "RIA",
+    "status": "UNEXCUSED",
+    "reason": null,
+    "reportedAt": "2026-08-25T12:45:00"
   },
   {
     "id": 6,
-    "date": "2026-06-15",
+    "date": "2026-09-22",
     "lessonStart": "08:10",
     "lessonEnd": "09:45",
-    "subject": "Deutsch",
-    "teacher": "WEB",
+    "subject": "Englisch",
+    "teacher": "MID",
     "status": "EXCUSED",
-    "reason": "Krankheit",
-    "reportedAt": "2026-06-15T10:15:00"
+    "reason": "Militär-Aushebung",
+    "reportedAt": "2026-09-22T10:00:00"
   },
   {
     "id": 7,
-    "date": "2026-05-27",
+    "date": "2026-09-22",
     "lessonStart": "10:05",
-    "lessonEnd": "11:40",
+    "lessonEnd": "12:30",
     "subject": "Allgemeinbildung Gesellschaft",
-    "teacher": "ROS",
-    "status": "UNEXCUSED",
-    "reason": null,
-    "reportedAt": "2026-05-27T12:00:00"
+    "teacher": "RIA",
+    "status": "EXCUSED",
+    "reason": "Militär-Aushebung",
+    "reportedAt": "2026-09-22T12:45:00"
   },
   {
     "id": 8,
-    "date": "2026-04-20",
-    "lessonStart": "12:40",
-    "lessonEnd": "14:15",
-    "subject": "Französisch",
-    "teacher": "DUB",
-    "status": "EXCUSED",
-    "reason": "Zahnarzt",
-    "reportedAt": "2026-04-20T14:30:00"
+    "date": "2026-08-18",
+    "lessonStart": "08:10",
+    "lessonEnd": "09:45",
+    "subject": "Englisch",
+    "teacher": "MID",
+    "status": "UNEXCUSED",
+    "reason": null,
+    "reportedAt": "2026-08-18T10:00:00"
   }
 ]

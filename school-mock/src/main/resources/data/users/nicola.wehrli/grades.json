@@ -1,27 +1,173 @@
 [
-  { "id": 1,  "schoolPart": "TBZ", "subject": "Modul 450 Applikationen testen",                    "semester": "HS 2026", "title": "LB1 Testkonzept",                              "date": "2026-09-30", "grade": 5.5, "weight": 1.0 },
-  { "id": 2,  "schoolPart": "TBZ", "subject": "Modul 450 Applikationen testen",                    "semester": "HS 2026", "title": "LB2 Unit Testing mit JUnit",                   "date": "2026-10-28", "grade": 5.0, "weight": 1.0 },
-  { "id": 3,  "schoolPart": "TBZ", "subject": "Modul 320 Objektorientiert programmieren",          "semester": "HS 2026", "title": "LB1 Klassendiagramm und Vererbung",            "date": "2026-09-23", "grade": 4.5, "weight": 1.0 },
-  { "id": 4,  "schoolPart": "TBZ", "subject": "Modul 320 Objektorientiert programmieren",          "semester": "HS 2026", "title": "LB2 Design Patterns",                          "date": "2026-10-21", "grade": 5.0, "weight": 2.0 },
-  { "id": 5,  "schoolPart": "TBZ", "subject": "Modul 322 Benutzerschnittstellen implementieren",   "semester": "HS 2026", "title": "LB1 Wireframes und Prototyp",                  "date": "2026-09-16", "grade": 5.5, "weight": 1.0 },
-  { "id": 6,  "schoolPart": "TBZ", "subject": "Modul 322 Benutzerschnittstellen implementieren",   "semester": "HS 2026", "title": "LB2 Responsive Layout",                        "date": "2026-10-26", "grade": 4.5, "weight": 1.0 },
-  { "id": 7,  "schoolPart": "TBZ", "subject": "Modul 323 Funktional programmieren",                "semester": "HS 2026", "title": "LB1 Lambdas und Streams",                      "date": "2026-10-07", "grade": 4.0, "weight": 1.0 },
-  { "id": 8,  "schoolPart": "TBZ", "subject": "Allgemeinbildung Gesellschaft",                     "semester": "HS 2026", "title": "Prüfung Staatskunde",                          "date": "2026-09-25", "grade": 5.0, "weight": 1.0 },
-  { "id": 9,  "schoolPart": "BMS", "subject": "Deutsch",                                           "semester": "HS 2026", "title": "Aufsatz Erörterung",                           "date": "2026-09-18", "grade": 4.5, "weight": 1.0 },
-  { "id": 10, "schoolPart": "BMS", "subject": "Deutsch",                                           "semester": "HS 2026", "title": "Literaturprüfung «Der Besuch der alten Dame»", "date": "2026-10-23", "grade": 5.0, "weight": 1.0 },
-  { "id": 11, "schoolPart": "BMS", "subject": "Englisch",                                          "semester": "HS 2026", "title": "Vocabulary and Grammar Test Unit 1",           "date": "2026-09-11", "grade": 5.5, "weight": 1.0 },
-  { "id": 12, "schoolPart": "BMS", "subject": "Englisch",                                          "semester": "HS 2026", "title": "Reading Comprehension",                        "date": "2026-10-30", "grade": 5.0, "weight": 1.0 },
-  { "id": 13, "schoolPart": "BMS", "subject": "Mathematik",                                        "semester": "HS 2026", "title": "Prüfung Trigonometrie",                        "date": "2026-09-22", "grade": 3.5, "weight": 1.0 },
-  { "id": 14, "schoolPart": "BMS", "subject": "Mathematik",                                        "semester": "HS 2026", "title": "Prüfung Exponentialfunktionen",                "date": "2026-10-27", "grade": 4.5, "weight": 1.0 },
-  { "id": 15, "schoolPart": "BMS", "subject": "Naturwissenschaften",                               "semester": "HS 2026", "title": "Prüfung Mechanik",                             "date": "2026-10-09", "grade": 4.5, "weight": 1.0 },
-  { "id": 16, "schoolPart": "UEK", "subject": "ÜK 335 Mobile-Applikation realisieren",             "semester": "HS 2026", "title": "Kompetenznachweis",                            "date": "2026-10-16", "grade": 5.0, "weight": 1.0 },
-  { "id": 17, "schoolPart": "TBZ", "subject": "Modul 426 Software mit agilen Methoden entwickeln", "semester": "FS 2026", "title": "LB1 Sprint Review",                            "date": "2026-03-20", "grade": 5.0, "weight": 1.0 },
-  { "id": 18, "schoolPart": "TBZ", "subject": "Modul 426 Software mit agilen Methoden entwickeln", "semester": "FS 2026", "title": "LB2 Projektdokumentation",                     "date": "2026-06-19", "grade": 5.5, "weight": 1.0 },
-  { "id": 19, "schoolPart": "TBZ", "subject": "Modul 183 Applikationssicherheit implementieren",   "semester": "FS 2026", "title": "LB1 OWASP Top 10",                             "date": "2026-04-24", "grade": 4.5, "weight": 1.0 },
-  { "id": 20, "schoolPart": "TBZ", "subject": "Modul 183 Applikationssicherheit implementieren",   "semester": "FS 2026", "title": "LB2 Secure Coding Review",                     "date": "2026-06-05", "grade": 5.0, "weight": 1.0 },
-  { "id": 21, "schoolPart": "TBZ", "subject": "Allgemeinbildung Gesellschaft",                     "semester": "FS 2026", "title": "Vortrag Mediennutzung",                        "date": "2026-05-13", "grade": 5.5, "weight": 1.0 },
-  { "id": 22, "schoolPart": "BMS", "subject": "Deutsch",                                           "semester": "FS 2026", "title": "Textanalyse",                                  "date": "2026-04-01", "grade": 4.5, "weight": 1.0 },
-  { "id": 23, "schoolPart": "BMS", "subject": "Englisch",                                          "semester": "FS 2026", "title": "Listening Test",                               "date": "2026-05-08", "grade": 5.0, "weight": 1.0 },
-  { "id": 24, "schoolPart": "BMS", "subject": "Mathematik",                                        "semester": "FS 2026", "title": "Prüfung Quadratische Funktionen",              "date": "2026-03-27", "grade": 4.0, "weight": 1.0 },
-  { "id": 25, "schoolPart": "UEK", "subject": "ÜK 306 Kleinprojekte im eigenen Berufsumfeld abwickeln", "semester": "FS 2026", "title": "Kompetenznachweis",                       "date": "2026-05-29", "grade": 5.5, "weight": 1.0 }
+  {
+    "id": 1,
+    "subject": "450 Applikationen testen",
+    "semester": "HS 2026",
+    "title": "LB1 Testkonzept",
+    "date": "2026-09-29",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 2,
+    "subject": "450 Applikationen testen",
+    "semester": "HS 2026",
+    "title": "LB2 Unit Testing mit JUnit",
+    "date": "2026-10-27",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 3,
+    "subject": "450 Applikationen testen",
+    "semester": "HS 2026",
+    "title": "Zwischentest Testarten",
+    "date": "2026-09-08",
+    "grade": 4.5,
+    "weight": 0.5
+  },
+  {
+    "id": 4,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Vocabulary Test Unit 1",
+    "date": "2026-09-01",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 5,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Vokabeltest (freiwillig)",
+    "date": "2026-09-15",
+    "grade": 6.0,
+    "weight": 0.0
+  },
+  {
+    "id": 6,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Reading Comprehension",
+    "date": "2026-10-20",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 7,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Prüfung Staatskunde",
+    "date": "2026-08-25",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 8,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Vertiefungsarbeit Exposé",
+    "date": "2026-09-22",
+    "grade": 4.5,
+    "weight": 0.5
+  },
+  {
+    "id": 9,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Prüfung Recht und Vertrag",
+    "date": "2026-10-27",
+    "grade": 3.5,
+    "weight": 1.0
+  },
+  {
+    "id": 10,
+    "subject": "Englisch",
+    "semester": "FS 2026",
+    "title": "Listening Test",
+    "date": "2026-03-10",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 11,
+    "subject": "Englisch",
+    "semester": "FS 2026",
+    "title": "Writing Task Formal Letter",
+    "date": "2026-05-19",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 12,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "FS 2026",
+    "title": "Vortrag Mediennutzung",
+    "date": "2026-04-14",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 13,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "FS 2026",
+    "title": "Prüfung Wirtschaft und Konsum",
+    "date": "2026-06-09",
+    "grade": 4.0,
+    "weight": 1.0
+  },
+  {
+    "id": 14,
+    "subject": "320 Objektorientiert programmieren",
+    "semester": "FS 2026",
+    "title": "LB1 Klassendiagramm und Vererbung",
+    "date": "2026-03-17",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 15,
+    "subject": "320 Objektorientiert programmieren",
+    "semester": "FS 2026",
+    "title": "Zwischentest Interfaces",
+    "date": "2026-04-21",
+    "grade": 3.75,
+    "weight": 1.0
+  },
+  {
+    "id": 16,
+    "subject": "320 Objektorientiert programmieren",
+    "semester": "FS 2026",
+    "title": "LB2 Design Patterns",
+    "date": "2026-05-26",
+    "grade": 5.0,
+    "weight": 2.0
+  },
+  {
+    "id": 17,
+    "subject": "322 Benutzerschnittstellen entwerfen und implementieren",
+    "semester": "FS 2026",
+    "title": "LB1 Wireframes und Prototyp",
+    "date": "2026-03-24",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 18,
+    "subject": "322 Benutzerschnittstellen entwerfen und implementieren",
+    "semester": "FS 2026",
+    "title": "LB2 Responsive Layout",
+    "date": "2026-06-16",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 19,
+    "subject": "322 Benutzerschnittstellen entwerfen und implementieren",
+    "semester": "FS 2026",
+    "title": "LB3 Usability-Test",
+    "date": "2026-06-30",
+    "grade": 5.25,
+    "weight": 1.0
+  }
 ]

@@ -2,15 +2,11 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, http } from 'msw'
 import { describe, expect, it } from 'vitest'
-import {
-  absencesResponseFixture,
-  absencesResponseForStatus,
-  emptyAbsencesResponse,
-  isAbsenceStatus,
-} from '../../test/fixtures/absences'
+import { absencesResponseFixture, absencesResponseForStatus, emptyAbsencesResponse } from '../../test/fixtures/absences'
 import { server } from '../../test/msw/server'
 import { renderWithRouter } from '../../test/render'
 import { AbsencesPage } from './AbsencesPage'
+import { isAbsenceStatus } from './lib/status'
 import type { AbsencesResponse } from './types'
 
 const HINT = 'Offene Absenzen müssen innert 14 Tagen entschuldigt werden.'
@@ -37,6 +33,19 @@ function dataRows(): HTMLElement[] {
 
 function respondWith(response: AbsencesResponse) {
   server.use(http.get('/api/absences', () => HttpResponse.json(response)))
+}
+
+/** Answers like the default handler but records every requested URL. */
+function recordRequests(): string[] {
+  const requestedUrls: string[] = []
+  server.use(
+    http.get('/api/absences', ({ request }) => {
+      requestedUrls.push(request.url)
+      const status = new URL(request.url).searchParams.get('status')
+      return HttpResponse.json(absencesResponseForStatus(isAbsenceStatus(status) ? status : null))
+    }),
+  )
+  return requestedUrls
 }
 
 describe('AbsencesPage', () => {
@@ -131,14 +140,7 @@ describe('AbsencesPage', () => {
     })
 
     it('refetches with ?status= and shows the narrowed list while the summary stays', async () => {
-      const requestedUrls: string[] = []
-      server.use(
-        http.get('/api/absences', ({ request }) => {
-          requestedUrls.push(request.url)
-          const status = new URL(request.url).searchParams.get('status')
-          return HttpResponse.json(absencesResponseForStatus(isAbsenceStatus(status) ? status : null))
-        }),
-      )
+      const requestedUrls = recordRequests()
       const user = userEvent.setup()
       renderPage()
       await screen.findByRole('table')
@@ -154,14 +156,7 @@ describe('AbsencesPage', () => {
     })
 
     it('requests the unfiltered list again when «Alle» is selected', async () => {
-      const requestedUrls: string[] = []
-      server.use(
-        http.get('/api/absences', ({ request }) => {
-          requestedUrls.push(request.url)
-          const status = new URL(request.url).searchParams.get('status')
-          return HttpResponse.json(absencesResponseForStatus(isAbsenceStatus(status) ? status : null))
-        }),
-      )
+      const requestedUrls = recordRequests()
       const user = userEvent.setup()
       renderPage()
       await screen.findByRole('table')

@@ -13,3 +13,8 @@ const LABELS: Record<AbsenceStatus, string> = {
 export function statusLabel(status: AbsenceStatus): string {
   return LABELS[status]
 }
+
+/** Whether a raw value (select option, query parameter) is one of the known statuses. */
+export function isAbsenceStatus(value: string | null | undefined): value is AbsenceStatus {
+  return ABSENCE_STATUSES.some((status) => status === value)
+}

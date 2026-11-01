@@ -1,5 +1,6 @@
 import { HttpResponse, http, type RequestHandler } from 'msw'
-import { absencesResponseForStatus, isAbsenceStatus } from '../fixtures/absences'
+import { isAbsenceStatus } from '../../modules/absences/lib/status'
+import { absencesResponseForStatus } from '../fixtures/absences'
 
 /** Default handlers of the absences module: `GET /api/absences` with optional `?status=` filter. */
 export const absencesHandlers: RequestHandler[] = [

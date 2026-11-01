@@ -101,12 +101,6 @@ export const emptyAbsencesResponse: AbsencesResponse = {
   absences: [],
 }
 
-const KNOWN_STATUSES: readonly string[] = ['OPEN', 'EXCUSED', 'UNEXCUSED']
-
-export function isAbsenceStatus(value: string | null): value is AbsenceStatus {
-  return value !== null && KNOWN_STATUSES.includes(value)
-}
-
 /**
  * `GET /api/absences?status=...` as the backend answers it: the list is narrowed to the status,
  * the summary still covers all absences.

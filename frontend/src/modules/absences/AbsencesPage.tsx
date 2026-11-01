@@ -3,9 +3,9 @@ import { ApiError } from '../../shared/api/client'
 import { Card } from '../../shared/ui/Card'
 import styles from './AbsencesPage.module.css'
 import { formatDate, formatDateTime, formatTimeRange } from './lib/format'
-import { ABSENCE_STATUSES, statusLabel } from './lib/status'
+import { ABSENCE_STATUSES, isAbsenceStatus, statusLabel } from './lib/status'
 import type { Absence, AbsenceStatus, AbsencesSummary } from './types'
-import { useAbsences } from './useAbsences'
+import { useAbsences, type AbsencesState } from './useAbsences'
 
 const OPEN_HINT = 'Offene Absenzen müssen innert 14 Tagen entschuldigt werden.'
 
@@ -19,11 +19,13 @@ const STATUS_CLASS: Record<AbsenceStatus, string> = {
 /** Absences of the logged-in user: summary tiles plus a filterable, read-only list. */
 export function AbsencesPage() {
   const [status, setStatus] = useState<AbsenceStatus | undefined>(undefined)
-  const { data, loading, error } = useAbsences(status)
+  const state = useAbsences(status)
+  const { data, error } = state
   const selectId = useId()
 
   const onStatusChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    setStatus(ABSENCE_STATUSES.find((candidate) => candidate === event.target.value))
+    const { value } = event.target
+    setStatus(isAbsenceStatus(value) ? value : undefined)
   }
 
   return (
@@ -47,22 +49,30 @@ export function AbsencesPage() {
           </select>
         </div>
 
-        {error ? (
-          <LoadError error={error} />
-        ) : data === null ? (
-          <p role="status" className={styles.muted}>
-            Absenzen werden geladen …
-          </p>
-        ) : data.absences.length === 0 ? (
-          <p className={styles.muted}>Keine Absenzen vorhanden.</p>
-        ) : (
-          <AbsencesTable absences={data.absences} busy={loading} />
-        )}
+        <EntriesContent {...state} />
 
         {data !== null && error === null && data.summary.open > 0 && <p className={styles.hint}>{OPEN_HINT}</p>}
       </Card>
     </div>
   )
+}
+
+/** Body of the «Einträge» card: error, initial loading, empty list or the table. */
+function EntriesContent({ data, loading, error }: AbsencesState) {
+  if (error !== null) {
+    return <LoadError error={error} />
+  }
+  if (data === null) {
+    return (
+      <p role="status" className={styles.muted}>
+        Absenzen werden geladen …
+      </p>
+    )
+  }
+  if (data.absences.length === 0) {
+    return <p className={styles.muted}>Keine Absenzen vorhanden.</p>
+  }
+  return <AbsencesTable absences={data.absences} busy={loading} />
 }
 
 function SummaryTiles({ summary }: { summary: AbsencesSummary | null }) {

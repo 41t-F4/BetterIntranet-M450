@@ -22,7 +22,7 @@ export interface SemesterGroup {
 
 /** Groups courses by semester, newest semester first, keeping the input order within a group. */
 export function groupBySemester(courses: readonly Course[]): SemesterGroup[] {
-  return courses.length === 0 ? [] : []
+  return distinctSemesters(courses).map((semester) => ({ semester, courses: filterBySemester(courses, semester) }))
 }
 
 /** Sort key of a semester such as `HS 2026`: year first, then term. Unknown terms sort before known ones. */

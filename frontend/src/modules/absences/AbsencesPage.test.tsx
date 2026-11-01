@@ -74,7 +74,7 @@ describe('AbsencesPage', () => {
       expect(tileValue('Offen')).toBe('2')
       expect(tileValue('Entschuldigt')).toBe('3')
       expect(tileValue('Unentschuldigt')).toBe('2')
-      expect(tileValue('Lektionen')).toBe('12')
+      expect(tileValue('Lektionen')).toBe('16')
     })
   })
 
@@ -100,11 +100,11 @@ describe('AbsencesPage', () => {
       await screen.findByRole('table')
 
       const row = dataRows()[0]!
-      expect(within(row).getByText('12.10.2026')).toBeInTheDocument()
+      expect(within(row).getByText('27.10.2026')).toBeInTheDocument()
       expect(within(row).getByText('08:10–09:45')).toBeInTheDocument()
       expect(within(row).getByText('Englisch')).toBeInTheDocument()
       expect(within(row).getByText('MID')).toBeInTheDocument()
-      expect(within(row).getByText('12.10.2026 10:00')).toBeInTheDocument()
+      expect(within(row).getByText('27.10.2026 10:00')).toBeInTheDocument()
     })
 
     it('shows the status as German badge label', async () => {
@@ -150,7 +150,7 @@ describe('AbsencesPage', () => {
       await waitFor(() => expect(requestedUrls.at(-1)).toMatch(/\/api\/absences\?status=EXCUSED$/))
       await waitFor(() => expect(dataRows()).toHaveLength(3))
       expect(screen.queryByText('Englisch')).not.toBeInTheDocument()
-      expect(within(screen.getByRole('table')).getByText('Deutsch')).toBeInTheDocument()
+      expect(within(screen.getByRole('table')).getByText('Allgemeinbildung Gesellschaft')).toBeInTheDocument()
       expect(tileValue('Total')).toBe('7')
       expect(tileValue('Entschuldigt')).toBe('3')
     })

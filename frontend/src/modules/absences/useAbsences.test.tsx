@@ -42,7 +42,10 @@ describe('useAbsences', () => {
     expect(result.current.loading).toBe(true)
     expect(result.current.data?.absences).toHaveLength(7)
     await waitFor(() => expect(result.current.loading).toBe(false))
-    expect(result.current.data?.absences.map((absence) => absence.subject)).toEqual(['Geschichte', 'Französisch'])
+    expect(result.current.data?.absences.map((absence) => absence.subject)).toEqual([
+      'Allgemeinbildung Gesellschaft',
+      '450 Applikationen testen',
+    ])
   })
 
   it('exposes the ApiError when the request fails', async () => {

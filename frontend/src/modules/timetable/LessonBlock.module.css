@@ -1,0 +1,67 @@
+.lesson {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-left: 4px solid var(--color-blue);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  font-size: var(--font-size-sm);
+}
+
+.time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.subjectLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.subject {
+  font-size: var(--font-size-md);
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.info {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-on-accent);
+  background: var(--color-warning);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-2);
+}
+
+.cancelled {
+  border-left-color: var(--color-text-muted);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+}
+
+.cancelled .subject {
+  text-decoration: line-through;
+}
+
+.cancelled .badge {
+  background: var(--color-danger);
+}
+
+.changed {
+  border-left-color: var(--color-warning);
+}

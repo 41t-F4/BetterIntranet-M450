@@ -1,32 +1,74 @@
 [
   {
-    "id": "M450",
-    "code": "M450",
-    "name": "Applikationen testen",
-    "teacher": "STU",
+    "id": "ENG-HS26",
+    "code": "ENG",
+    "name": "Englisch",
+    "teacher": "MID",
     "semester": "HS 2026",
-    "lessonsPerWeek": 4,
-    "room": "AU-512",
-    "schoolPart": "TBZ"
+    "lessonsPerWeek": 2,
+    "room": "AU-512"
   },
   {
-    "id": "BM-D",
-    "code": "D",
-    "name": "Deutsch",
-    "teacher": "WEB",
+    "id": "GES-HS26",
+    "code": "GES",
+    "name": "Allgemeinbildung Gesellschaft",
+    "teacher": "RIA",
     "semester": "HS 2026",
     "lessonsPerWeek": 3,
-    "room": "AU-305",
-    "schoolPart": "BMS"
+    "room": "AU-202"
   },
   {
-    "id": "UK335",
-    "code": "ÜK 335",
-    "name": "Mobile-Applikation realisieren",
-    "teacher": "ZLI-HUB",
+    "id": "450-HS26",
+    "code": "450",
+    "name": "Applikationen testen",
+    "teacher": "VAJ",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-060"
+  },
+  {
+    "id": "306-HS26",
+    "code": "306",
+    "name": "IT-Kleinprojekt abwickeln",
+    "teacher": "MUH",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-057"
+  },
+  {
+    "id": "ENG-FS26",
+    "code": "ENG",
+    "name": "Englisch",
+    "teacher": "MID",
     "semester": "FS 2026",
-    "lessonsPerWeek": 8,
-    "room": "ZLI Zürich-Oerlikon",
-    "schoolPart": "UEK"
+    "lessonsPerWeek": 2,
+    "room": "AU-512"
+  },
+  {
+    "id": "GES-FS26",
+    "code": "GES",
+    "name": "Allgemeinbildung Gesellschaft",
+    "teacher": "RIA",
+    "semester": "FS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-202"
+  },
+  {
+    "id": "320-FS26",
+    "code": "320",
+    "name": "Objektorientiert programmieren",
+    "teacher": "HEA",
+    "semester": "FS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-060"
+  },
+  {
+    "id": "322-FS26",
+    "code": "322",
+    "name": "Benutzerschnittstellen entwerfen und implementieren",
+    "teacher": "KAS",
+    "semester": "FS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-057"
   }
 ]

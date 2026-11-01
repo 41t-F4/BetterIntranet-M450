@@ -25,11 +25,11 @@ import org.springframework.test.web.servlet.MockMvc;
 /** Controller -> gateway -> handler with the school client mocked out. */
 class CoursesControllerIT {
 
-    private static final Course M450 = new Course("M450", "M450", "Applikationen testen", "STU", "HS 2026", 4,
-            "AU-512", "TBZ");
-    private static final Course BM_D = new Course("BM-D", "D", "Deutsch", "WEB", "HS 2026", 3, "AU-305", "BMS");
-    private static final Course UK335 = new Course("UK335", "ÜK 335", "Mobile-Applikation realisieren", "ZLI-HUB",
-            "FS 2026", 8, "ZLI Zürich-Oerlikon", "UEK");
+    private static final Course M450 = new Course("450-HS26", "450", "Applikationen testen", "VAJ", "HS 2026", 4,
+            "AU-060");
+    private static final Course ENG_HS26 = new Course("ENG-HS26", "ENG", "Englisch", "MID", "HS 2026", 2, "AU-512");
+    private static final Course M320_FS26 = new Course("320-FS26", "320", "Objektorientiert programmieren", "HEA",
+            "FS 2026", 4, "AU-060");
 
     @Nested
     @SpringBootTest
@@ -43,36 +43,36 @@ class CoursesControllerIT {
         private CoursesClient coursesClient;
 
         @Test
-        @DisplayName("GET /api/courses returns the sorted courses of the X-User as JSON")
+        @DisplayName("GET /api/courses returns the courses of the X-User as JSON, newest semester first")
         void returnsCoursesOfCurrentUser() throws Exception {
-            when(coursesClient.coursesOf("nicola.wehrli")).thenReturn(List.of(UK335, M450, BM_D));
+            when(coursesClient.coursesOf("nicola.wehrli")).thenReturn(List.of(M320_FS26, ENG_HS26, M450));
 
             mockMvc.perform(get("/api/courses").header("X-User", "nicola.wehrli"))
                     .andExpect(status().isOk())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                     .andExpect(jsonPath("$").value(hasSize(3)))
-                    .andExpect(jsonPath("$[0].id").value("BM-D"))
-                    .andExpect(jsonPath("$[0].code").value("D"))
-                    .andExpect(jsonPath("$[0].name").value("Deutsch"))
-                    .andExpect(jsonPath("$[0].teacher").value("WEB"))
+                    .andExpect(jsonPath("$[0].id").value("450-HS26"))
+                    .andExpect(jsonPath("$[0].code").value("450"))
+                    .andExpect(jsonPath("$[0].name").value("Applikationen testen"))
+                    .andExpect(jsonPath("$[0].teacher").value("VAJ"))
                     .andExpect(jsonPath("$[0].semester").value("HS 2026"))
-                    .andExpect(jsonPath("$[0].lessonsPerWeek").value(3))
-                    .andExpect(jsonPath("$[0].room").value("AU-305"))
-                    .andExpect(jsonPath("$[0].schoolPart").value("BMS"))
-                    .andExpect(jsonPath("$[1].id").value("M450"))
-                    .andExpect(jsonPath("$[2].id").value("UK335"));
+                    .andExpect(jsonPath("$[0].lessonsPerWeek").value(4))
+                    .andExpect(jsonPath("$[0].room").value("AU-060"))
+                    .andExpect(jsonPath("$[0].*").value(hasSize(7)))
+                    .andExpect(jsonPath("$[1].id").value("ENG-HS26"))
+                    .andExpect(jsonPath("$[2].id").value("320-FS26"));
         }
 
         @Test
         @DisplayName("GET /api/courses?semester=HS 2026 only returns courses of that semester")
         void filtersBySemester() throws Exception {
-            when(coursesClient.coursesOf("nicola.wehrli")).thenReturn(List.of(UK335, M450, BM_D));
+            when(coursesClient.coursesOf("nicola.wehrli")).thenReturn(List.of(M320_FS26, ENG_HS26, M450));
 
             mockMvc.perform(get("/api/courses").queryParam("semester", "HS 2026").header("X-User", "nicola.wehrli"))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$").value(hasSize(2)))
-                    .andExpect(jsonPath("$[0].id").value("BM-D"))
-                    .andExpect(jsonPath("$[1].id").value("M450"));
+                    .andExpect(jsonPath("$[0].id").value("450-HS26"))
+                    .andExpect(jsonPath("$[1].id").value("ENG-HS26"));
         }
 
         @Test
@@ -94,7 +94,7 @@ class CoursesControllerIT {
 
             mockMvc.perform(get("/api/courses"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].id").value("M450"));
+                    .andExpect(jsonPath("$[0].id").value("450-HS26"));
         }
 
         @Test
@@ -149,7 +149,7 @@ class CoursesControllerIT {
 
             mockMvc.perform(get("/api/courses"))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].id").value("M450"));
+                    .andExpect(jsonPath("$[0].id").value("450-HS26"));
 
             mockMvc.perform(get("/api/classes"))
                     .andExpect(status().isServiceUnavailable());

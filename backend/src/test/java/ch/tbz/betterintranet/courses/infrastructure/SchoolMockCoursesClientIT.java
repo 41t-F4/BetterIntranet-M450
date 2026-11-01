@@ -55,10 +55,15 @@ class SchoolMockCoursesClientIT {
         List<Course> courses = client.coursesOf("nicola.wehrli");
 
         assertThat(courses).containsExactly(
-                new Course("M450", "M450", "Applikationen testen", "STU", "HS 2026", 4, "AU-512", "TBZ"),
-                new Course("BM-D", "D", "Deutsch", "WEB", "HS 2026", 3, "AU-305", "BMS"),
-                new Course("UK335", "ÜK 335", "Mobile-Applikation realisieren", "ZLI-HUB", "FS 2026", 8,
-                        "ZLI Zürich-Oerlikon", "UEK"));
+                new Course("ENG-HS26", "ENG", "Englisch", "MID", "HS 2026", 2, "AU-512"),
+                new Course("GES-HS26", "GES", "Allgemeinbildung Gesellschaft", "RIA", "HS 2026", 3, "AU-202"),
+                new Course("450-HS26", "450", "Applikationen testen", "VAJ", "HS 2026", 4, "AU-060"),
+                new Course("306-HS26", "306", "IT-Kleinprojekt abwickeln", "MUH", "HS 2026", 4, "AU-057"),
+                new Course("ENG-FS26", "ENG", "Englisch", "MID", "FS 2026", 2, "AU-512"),
+                new Course("GES-FS26", "GES", "Allgemeinbildung Gesellschaft", "RIA", "FS 2026", 3, "AU-202"),
+                new Course("320-FS26", "320", "Objektorientiert programmieren", "HEA", "FS 2026", 4, "AU-060"),
+                new Course("322-FS26", "322", "Benutzerschnittstellen entwerfen und implementieren", "KAS",
+                        "FS 2026", 4, "AU-057"));
         schoolMock.verify(getRequestedFor(urlEqualTo("/mock/users/nicola.wehrli/courses")));
     }
 

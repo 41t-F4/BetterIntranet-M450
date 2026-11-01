@@ -19,13 +19,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class GetMyCoursesHandlerTest {
 
-    private static final Course M450 = course("M450", "M450", "TBZ", "HS 2026");
-    private static final Course M320 = course("M320", "M320", "TBZ", "HS 2026");
-    private static final Course M322 = course("M322", "M322", "TBZ", "FS 2026");
-    private static final Course BM_D = course("BM-D", "D", "BMS", "HS 2026");
-    private static final Course BM_E = course("BM-E", "E", "BMS", "FS 2026");
-    private static final Course UK335 = course("UK335", "ÜK 335", "UEK", "HS 2026");
-    private static final Course OTHER = course("X1", "A", "OTHER", "HS 2026");
+    private static final Course ENG_HS26 = course("ENG-HS26", "ENG", "HS 2026");
+    private static final Course GES_HS26 = course("GES-HS26", "GES", "HS 2026");
+    private static final Course M450_HS26 = course("450-HS26", "450", "HS 2026");
+    private static final Course M306_HS26 = course("306-HS26", "306", "HS 2026");
+    private static final Course ENG_FS26 = course("ENG-FS26", "ENG", "FS 2026");
+    private static final Course M320_FS26 = course("320-FS26", "320", "FS 2026");
+    private static final Course M322_FS26 = course("322-FS26", "322", "FS 2026");
+    private static final Course M117_HS25 = course("117-HS25", "117", "HS 2025");
+    private static final Course M231_FS27 = course("231-FS27", "231", "FS 2027");
+    private static final Course UNPARSEABLE_A = course("X-A", "A", "Sommerkurs");
+    private static final Course UNPARSEABLE_B = course("X-B", "B", null);
 
     @Mock
     private CoursesClient client;
@@ -36,43 +40,57 @@ class GetMyCoursesHandlerTest {
     @Test
     @DisplayName("asks the client for the courses of the queried user")
     void loadsCoursesOfQueriedUser() {
-        when(client.coursesOf("max.muster")).thenReturn(List.of(M450));
+        when(client.coursesOf("max.muster")).thenReturn(List.of(M450_HS26));
 
-        assertThat(handler.handle(new GetMyCoursesQuery("max.muster"))).containsExactly(M450);
+        assertThat(handler.handle(new GetMyCoursesQuery("max.muster"))).containsExactly(M450_HS26);
     }
 
     @Test
-    @DisplayName("sorts by school part in the order BMS, TBZ, UEK and then by code")
-    void sortsBySchoolPartOrderThenCode() {
-        when(client.coursesOf("nicola.wehrli")).thenReturn(List.of(UK335, M450, BM_E, M322, BM_D, M320));
+    @DisplayName("sorts the newest semester first and then by code")
+    void sortsNewestSemesterFirstThenCode() {
+        when(client.coursesOf("nicola.wehrli")).thenReturn(
+                List.of(ENG_FS26, M450_HS26, M322_FS26, GES_HS26, M320_FS26, ENG_HS26, M306_HS26));
 
         List<Course> result = handler.handle(new GetMyCoursesQuery("nicola.wehrli"));
 
-        assertThat(result).containsExactly(BM_D, BM_E, M320, M322, M450, UK335);
+        assertThat(result).containsExactly(
+                M306_HS26, M450_HS26, ENG_HS26, GES_HS26, M320_FS26, M322_FS26, ENG_FS26);
     }
 
     @Test
-    @DisplayName("an unknown school part is sorted after the known ones")
-    void unknownSchoolPartSortsLast() {
-        when(client.coursesOf("nicola.wehrli")).thenReturn(List.of(OTHER, UK335, BM_D));
+    @DisplayName("a higher year comes first and within the same year HS comes before FS")
+    void ordersSemestersByYearThenHalf() {
+        when(client.coursesOf("nicola.wehrli")).thenReturn(List.of(M117_HS25, ENG_FS26, M231_FS27, M450_HS26));
 
-        assertThat(handler.handle(new GetMyCoursesQuery("nicola.wehrli"))).containsExactly(BM_D, UK335, OTHER);
+        assertThat(handler.handle(new GetMyCoursesQuery("nicola.wehrli")))
+                .containsExactly(M231_FS27, M450_HS26, ENG_FS26, M117_HS25);
+    }
+
+    @Test
+    @DisplayName("courses with an unparseable or missing semester are sorted last and then by code")
+    void unparseableSemesterSortsLast() {
+        when(client.coursesOf("nicola.wehrli")).thenReturn(
+                List.of(UNPARSEABLE_B, M117_HS25, UNPARSEABLE_A, ENG_FS26));
+
+        assertThat(handler.handle(new GetMyCoursesQuery("nicola.wehrli")))
+                .containsExactly(ENG_FS26, M117_HS25, UNPARSEABLE_A, UNPARSEABLE_B);
     }
 
     @Test
     @DisplayName("filters by semester when one is given, keeping the sort order")
     void filtersBySemester() {
-        when(client.coursesOf("nicola.wehrli")).thenReturn(List.of(UK335, M450, BM_E, M322, BM_D, M320));
+        when(client.coursesOf("nicola.wehrli")).thenReturn(
+                List.of(ENG_FS26, M450_HS26, M322_FS26, GES_HS26, M320_FS26, ENG_HS26, M306_HS26));
 
         List<Course> result = handler.handle(new GetMyCoursesQuery("nicola.wehrli", "HS 2026"));
 
-        assertThat(result).containsExactly(BM_D, M320, M450, UK335);
+        assertThat(result).containsExactly(M306_HS26, M450_HS26, ENG_HS26, GES_HS26);
     }
 
     @Test
     @DisplayName("returns an empty list when no course matches the semester")
     void returnsEmptyListWhenNoCourseMatchesSemester() {
-        when(client.coursesOf("nicola.wehrli")).thenReturn(List.of(M450, BM_D));
+        when(client.coursesOf("nicola.wehrli")).thenReturn(List.of(M450_HS26, ENG_FS26));
 
         assertThat(handler.handle(new GetMyCoursesQuery("nicola.wehrli", "FS 2027"))).isEmpty();
     }
@@ -96,7 +114,7 @@ class GetMyCoursesHandlerTest {
                 .isInstanceOf(UpstreamUnavailableException.class);
     }
 
-    private static Course course(String id, String code, String schoolPart, String semester) {
-        return new Course(id, code, "Course " + code, "STU", semester, 4, "AU-512", schoolPart);
+    private static Course course(String id, String code, String semester) {
+        return new Course(id, code, "Course " + code, "VAJ", semester, 4, "AU-060");
     }
 }

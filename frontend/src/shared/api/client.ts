@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios, { isAxiosError, type AxiosResponse } from 'axios'
 import type { ModuleName, ProblemDetail } from './types'
 
-/** Error thrown by the API client for every non-2xx response. */
+/** Error thrown by the API client for every failed request. `status` is 0 when the server was not reachable. */
 export class ApiError extends Error {
   readonly status: number
   readonly title: string
@@ -18,24 +18,42 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * Performs a GET request against the backend (relative `/api/...` URL, proxied by Vite in
- * development and by nginx in the container) and returns the parsed JSON body.
- * Non-2xx responses are turned into an `ApiError` built from the RFC 9457 ProblemDetail body.
- */
-/** Shared axios instance for all backend calls (skeleton, wired up in the green step). */
-export const apiClient = axios.create()
+/** Query parameters of a GET request. */
+export type QueryParams = Record<string, string | number>
 
-export async function apiGet<T>(path: string, _params?: Record<string, string | number>): Promise<T> {
-  const response = await fetch(path, { headers: { Accept: 'application/json' } })
-  if (!response.ok) {
-    throw await toApiError(response)
+/**
+ * Shared axios instance for all backend calls. URLs are relative (`/api/...`) and proxied by Vite in
+ * development and by nginx in the container. Cross-cutting concerns (headers, interceptors) live here.
+ */
+export const apiClient = axios.create({
+  headers: { Accept: 'application/json' },
+})
+
+/**
+ * Performs a GET request against the backend and returns the parsed JSON body.
+ * Error responses are turned into an `ApiError` built from the RFC 9457 ProblemDetail body.
+ */
+export async function apiGet<T>(path: string, params?: QueryParams): Promise<T> {
+  try {
+    const response = await apiClient.get<T>(path, { params })
+    return response.data
+  } catch (error) {
+    throw toApiError(error)
   }
-  return (await response.json()) as T
 }
 
-async function toApiError(response: Response): Promise<ApiError> {
-  const problem = await readProblemDetail(response)
+function toApiError(error: unknown): unknown {
+  if (!isAxiosError(error)) {
+    return error
+  }
+  if (!error.response) {
+    return new ApiError(0, 'Netzwerkfehler', 'Der Server ist nicht erreichbar.')
+  }
+  return fromResponse(error.response)
+}
+
+function fromResponse(response: AxiosResponse): ApiError {
+  const problem = isProblemDetail(response.data) ? response.data : null
   const title = problem?.title ?? response.statusText ?? ''
   return new ApiError(
     response.status,
@@ -43,15 +61,6 @@ async function toApiError(response: Response): Promise<ApiError> {
     problem?.detail,
     problem?.module,
   )
-}
-
-async function readProblemDetail(response: Response): Promise<ProblemDetail | null> {
-  try {
-    const body: unknown = await response.json()
-    return isProblemDetail(body) ? body : null
-  } catch {
-    return null
-  }
 }
 
 function isProblemDetail(body: unknown): body is ProblemDetail {

@@ -154,4 +154,17 @@ describe('apiGet', () => {
     expect((error as ApiError).title).toBe('Netzwerkfehler')
     expect((error as ApiError).detail).toBe('Der Server ist nicht erreichbar.')
   })
+
+  it('rethrows errors that do not come from axios unchanged', async () => {
+    const failure = new Error('interceptor failed')
+    const interceptor = apiClient.interceptors.request.use(() => {
+      throw failure
+    })
+
+    try {
+      await expect(apiGet('/api/me')).rejects.toBe(failure)
+    } finally {
+      apiClient.interceptors.request.eject(interceptor)
+    }
+  })
 })

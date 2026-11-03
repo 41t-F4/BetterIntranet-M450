@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "date": "2026-10-13",
+    "lessonStart": "08:10",
+    "lessonEnd": "09:45",
+    "subject": "Englisch",
+    "teacher": "MID",
+    "status": "OPEN",
+    "reason": null,
+    "reportedAt": "2026-10-13T10:00:00"
+  },
+  {
+    "id": 2,
+    "date": "2026-10-13",
+    "lessonStart": "10:05",
+    "lessonEnd": "12:30",
+    "subject": "Allgemeinbildung Gesellschaft",
+    "teacher": "RIA",
+    "status": "OPEN",
+    "reason": null,
+    "reportedAt": "2026-10-13T12:45:00"
+  },
+  {
+    "id": 3,
+    "date": "2026-09-29",
+    "lessonStart": "13:25",
+    "lessonEnd": "16:55",
+    "subject": "450 Applikationen testen",
+    "teacher": "VAJ",
+    "status": "EXCUSED",
+    "reason": "Arztbesuch",
+    "reportedAt": "2026-09-30T08:30:00"
+  },
+  {
+    "id": 4,
+    "date": "2026-09-15",
+    "lessonStart": "08:10",
+    "lessonEnd": "08:55",
+    "subject": "Englisch",
+    "teacher": "MID",
+    "status": "UNEXCUSED",
+    "reason": null,
+    "reportedAt": "2026-09-15T09:00:00"
+  },
+  {
+    "id": 5,
+    "date": "2026-09-08",
+    "lessonStart": "13:25",
+    "lessonEnd": "15:00",
+    "subject": "450 Applikationen testen",
+    "teacher": "VAJ",
+    "status": "EXCUSED",
+    "reason": "Krankheit",
+    "reportedAt": "2026-09-09T07:45:00"
+  },
+  {
+    "id": 6,
+    "date": "2026-09-01",
+    "lessonStart": "10:05",
+    "lessonEnd": "11:40",
+    "subject": "Allgemeinbildung Gesellschaft",
+    "teacher": "RIA",
+    "status": "UNEXCUSED",
+    "reason": null,
+    "reportedAt": "2026-09-01T12:45:00"
+  },
+  {
+    "id": 7,
+    "date": "2026-08-25",
+    "lessonStart": "08:10",
+    "lessonEnd": "09:45",
+    "subject": "Englisch",
+    "teacher": "MID",
+    "status": "EXCUSED",
+    "reason": "Militär",
+    "reportedAt": "2026-08-26T09:15:00"
+  }
+]

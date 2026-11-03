@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -184,5 +185,35 @@ class MockUserControllerTest {
 				.andExpect(jsonPath("$.title").value("Fixture data unreadable"))
 				.andExpect(jsonPath("$.status").value(500))
 				.andExpect(jsonPath("$.detail").value("Cannot read grades.json"));
+	}
+
+	@Test
+	void shouldReturn500ProblemDetailWithoutInternalsForUnexpectedErrors() throws Exception {
+		when(repository.findGrades(NICOLA)).thenThrow(new IllegalStateException("secret internal state at line 42"));
+
+		mockMvc.perform(get("/mock/users/{username}/grades", NICOLA))
+				.andExpect(status().isInternalServerError())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+				.andExpect(jsonPath("$.type").value("urn:betterintranet:school-mock:internal-error"))
+				.andExpect(jsonPath("$.title").value("Internal error"))
+				.andExpect(jsonPath("$.status").value(500))
+				.andExpect(jsonPath("$.detail").value("The request could not be processed."))
+				.andExpect(jsonPath("$.instance").value("/mock/users/" + NICOLA + "/grades"));
+	}
+
+	@Test
+	void shouldKeep404AsProblemDetailForUnknownPaths() throws Exception {
+		mockMvc.perform(get("/mock/does-not-exist"))
+				.andExpect(status().isNotFound())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+				.andExpect(jsonPath("$.status").value(404));
+	}
+
+	@Test
+	void shouldKeep405AsProblemDetailForUnsupportedMethods() throws Exception {
+		mockMvc.perform(delete("/mock/users/{username}/grades", NICOLA))
+				.andExpect(status().isMethodNotAllowed())
+				.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
+				.andExpect(jsonPath("$.status").value(405));
 	}
 }

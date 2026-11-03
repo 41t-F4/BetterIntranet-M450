@@ -87,7 +87,9 @@ describe('App', () => {
     renderApp('/klassen-kurse')
 
     expect(await screen.findByRole('heading', { name: 'Klassen & Kurse' })).toBeInTheDocument()
-    expect(screen.queryByText('Dieses Modul ist zurzeit deaktiviert.')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Meine Klassen' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Meine Kurse' })).toBeInTheDocument()
+    expect(await screen.findByRole('row', { name: /AP 24b/ })).toBeInTheDocument()
   })
 
   it('shows the not-found page for an unknown path', async () => {

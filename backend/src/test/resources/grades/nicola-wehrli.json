@@ -1,0 +1,14 @@
+[
+  { "id": 1, "subject": "Englisch", "semester": "HS 2026", "title": "Unit 3 Vocabulary Test", "date": "2026-09-18", "grade": 5.0, "weight": 1.0 },
+  { "id": 2, "subject": "Englisch", "semester": "HS 2026", "title": "Presentation", "date": "2026-10-23", "grade": 5.5, "weight": 1.0 },
+  { "id": 3, "subject": "Allgemeinbildung Gesellschaft", "semester": "HS 2026", "title": "Vertragsrecht", "date": "2026-09-24", "grade": 4.5, "weight": 1.0 },
+  { "id": 4, "subject": "Allgemeinbildung Gesellschaft", "semester": "HS 2026", "title": "Vertiefungsarbeit Zwischenstand", "date": "2026-10-15", "grade": 5.0, "weight": 0.5 },
+  { "id": 5, "subject": "450 Applikationen testen", "semester": "HS 2026", "title": "LB1 Testkonzept", "date": "2026-09-29", "grade": 5.5, "weight": 1.0 },
+  { "id": 6, "subject": "450 Applikationen testen", "semester": "HS 2026", "title": "LB2 Projektarbeit", "date": "2026-10-27", "grade": 5.0, "weight": 2.0 },
+  { "id": 7, "subject": "Englisch", "semester": "FS 2026", "title": "Reading Comprehension", "date": "2026-03-12", "grade": 4.5, "weight": 1.0 },
+  { "id": 8, "subject": "Englisch", "semester": "FS 2026", "title": "Listening", "date": "2026-05-21", "grade": 5.0, "weight": 1.0 },
+  { "id": 9, "subject": "Allgemeinbildung Gesellschaft", "semester": "FS 2026", "title": "Steuern und Budget", "date": "2026-04-09", "grade": 3.5, "weight": 1.0 },
+  { "id": 10, "subject": "320 Objektorientiert programmieren", "semester": "FS 2026", "title": "Übung Interfaces (unbewertet)", "date": "2026-03-05", "grade": 4.0, "weight": 0.0 },
+  { "id": 11, "subject": "320 Objektorientiert programmieren", "semester": "FS 2026", "title": "LB1 Klassendesign", "date": "2026-04-02", "grade": 6.0, "weight": 1.0 },
+  { "id": 12, "subject": "322 Benutzerschnittstellen entwerfen und implementieren", "semester": "FS 2026", "title": "LB1 Prototyp", "date": "2026-06-04", "grade": 5.0, "weight": 1.0 }
+]

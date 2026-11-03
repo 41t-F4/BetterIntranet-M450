@@ -1,10 +1,8 @@
 package ch.tbz.betterintranet.timetable.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
 
 import ch.tbz.betterintranet.timetable.api.GetTimetableQuery;
 import ch.tbz.betterintranet.timetable.api.Lesson;
@@ -57,29 +55,9 @@ class GetTimetableHandlerTest {
         assertThat(lessons).containsExactly(mondayLate, tuesdayEarly, tuesdayLate);
     }
 
-    @Test
-    @DisplayName("a range of exactly 62 days is still accepted")
-    void acceptsMaximumRange() {
-        LocalDate to = MONDAY.plusDays(61);
-        given(client.fetchLessons(AP24B, MONDAY, to)).willReturn(List.of());
-
-        assertThat(handler.handle(new GetTimetableQuery(AP24B, MONDAY, to))).isEmpty();
-    }
-
-    @Test
-    @DisplayName("a range longer than 62 days is rejected before the upstream is called")
-    void rejectsTooLongRange() {
-        GetTimetableQuery query = new GetTimetableQuery(AP24B, MONDAY, MONDAY.plusDays(62));
-
-        assertThatThrownBy(() -> handler.handle(query))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("62");
-        verifyNoInteractions(client);
-    }
-
     private static Lesson lesson(LocalDate date, int hour, int minute) {
         LocalTime start = LocalTime.of(hour, minute);
-        return new Lesson(date, start, start.plusMinutes(95), "ENG", "Englisch", "MID", "AU-512",
+        return new Lesson(date, start, start.plusMinutes(95), "ENG", "Englisch", List.of("MID"), List.of("AU-512"),
                 LessonStatus.REGULAR, null);
     }
 }

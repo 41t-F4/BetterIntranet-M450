@@ -1,6 +1,9 @@
 package ch.tbz.betterintranet.timetable.infrastructure;
 
+import ch.tbz.betterintranet.core.error.UpstreamUnavailableException;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import ch.tbz.betterintranet.timetable.TimetableFixtures;
 import ch.tbz.betterintranet.timetable.api.Holiday;
@@ -44,11 +47,11 @@ class GeekzTimetableMapperTest {
 
             assertThat(lessons).hasSize(4);
             assertThat(lessons.get(0)).isEqualTo(new Lesson(TUESDAY, LocalTime.of(8, 10), LocalTime.of(9, 45),
-                    "ENG", "Englisch", "MID", "AU-512", LessonStatus.REGULAR, "oB"));
+                    "ENG", "Englisch", List.of("MID"), List.of("AU-512"), LessonStatus.REGULAR, "oB"));
             assertThat(lessons.get(1)).isEqualTo(new Lesson(TUESDAY, LocalTime.of(10, 5), LocalTime.of(12, 30),
-                    "GES", "Allgemeinbildung Gesellschaft", "RIA", "AU-202", LessonStatus.REGULAR, "oB"));
+                    "GES", "Allgemeinbildung Gesellschaft", List.of("RIA"), List.of("AU-202"), LessonStatus.REGULAR, "oB"));
             assertThat(lessons.get(2)).isEqualTo(new Lesson(TUESDAY, LocalTime.of(13, 25), LocalTime.of(15, 0),
-                    "450", "450 Applikationen testen", "VAJ", "AU-060", LessonStatus.REGULAR, "bili"));
+                    "450", "450 Applikationen testen", List.of("VAJ"), List.of("AU-060"), LessonStatus.REGULAR, "bili"));
             assertThat(lessons.get(3).start()).isEqualTo(LocalTime.of(15, 20));
         }
 
@@ -61,17 +64,17 @@ class GeekzTimetableMapperTest {
         }
 
         @Test
-        @DisplayName("empty or missing position arrays give null teacher, subject and room")
+        @DisplayName("empty or missing position arrays give no teachers or rooms and a null subject")
         void toleratesEmptyPositions() {
             GridEntry entry = new GridEntry(duration(8, 10, 9, 45), "REGULAR", List.of(), null, List.of(), null);
             GeekzEntriesResponse response = new GeekzEntriesResponse(List.of(day("REGULAR", List.of(entry))), null);
 
             Lesson lesson = mapper.toLessons(response).getFirst();
 
-            assertThat(lesson.teacher()).isNull();
+            assertThat(lesson.teachers()).isEmpty();
             assertThat(lesson.subject()).isNull();
             assertThat(lesson.subjectName()).isNull();
-            assertThat(lesson.room()).isNull();
+            assertThat(lesson.rooms()).isEmpty();
             assertThat(lesson.info()).isNull();
         }
 
@@ -83,12 +86,52 @@ class GeekzTimetableMapperTest {
         }
 
         @Test
+        @DisplayName("team teaching keeps every teacher and every room in upstream order")
+        void keepsAllTeachersAndRooms() {
+            GridEntry abu = new GridEntry(duration(10, 5, 12, 30), "REGULAR",
+                    List.of(position("ARS"), position("LUT")),
+                    List.of(position("GES")),
+                    List.of(position("AU-218"), position("AU-219")), null);
+            GeekzEntriesResponse response = new GeekzEntriesResponse(List.of(day("REGULAR", List.of(abu))), null);
+
+            Lesson lesson = mapper.toLessons(response).getFirst();
+
+            assertThat(lesson.teachers()).containsExactly("ARS", "LUT");
+            assertThat(lesson.rooms()).containsExactly("AU-218", "AU-219");
+        }
+
+        @Test
+        @DisplayName("an errorCode other than NOT_FOUND is an upstream failure, not an empty week")
+        void otherErrorCodeIsUpstreamFailure() {
+            GeekzEntriesResponse response = new GeekzEntriesResponse(null, "INTERNAL_ERROR");
+
+            assertThatThrownBy(() -> mapper.toLessons(response))
+                    .isInstanceOf(UpstreamUnavailableException.class)
+                    .hasMessageContaining("INTERNAL_ERROR");
+        }
+
+        @Test
+        @DisplayName("a lesson without duration is an upstream failure instead of a NullPointerException")
+        void missingDurationIsUpstreamFailure() {
+            GridEntry broken = new GridEntry(null, "REGULAR", List.of(), List.of(), List.of(), null);
+            GeekzEntriesResponse response = new GeekzEntriesResponse(List.of(day("REGULAR", List.of(broken))), null);
+
+            assertThatThrownBy(() -> mapper.toLessons(response))
+                    .isInstanceOf(UpstreamUnavailableException.class)
+                    .hasMessageContaining("duration");
+        }
+
+        @Test
         @DisplayName("the upstream grid status is carried into the lesson")
         void carriesStatus() {
             GridEntry cancelled = new GridEntry(duration(8, 10, 9, 45), "CANCELLED", List.of(), List.of(), List.of(), null);
             GeekzEntriesResponse response = new GeekzEntriesResponse(List.of(day("REGULAR", List.of(cancelled))), null);
 
             assertThat(mapper.toLessons(response).getFirst().status()).isEqualTo(LessonStatus.CANCELLED);
+        }
+
+        private Position position(String shortName) {
+            return new Position(new GeekzEntriesResponse.Resource(shortName, shortName));
         }
 
         private Day day(String status, List<GridEntry> entries) {

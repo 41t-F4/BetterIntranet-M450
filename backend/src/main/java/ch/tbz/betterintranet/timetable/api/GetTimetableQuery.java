@@ -13,6 +13,9 @@ import java.util.List;
  */
 public record GetTimetableQuery(long classId, LocalDate from, LocalDate to) implements Query<List<Lesson>> {
 
+    /** Longest accepted range in calendar days, both ends inclusive (roughly two months). */
+    public static final int MAX_RANGE_DAYS = 62;
+
     public GetTimetableQuery {
         if (to.isBefore(from)) {
             throw new IllegalArgumentException("'to' must not be before 'from'");

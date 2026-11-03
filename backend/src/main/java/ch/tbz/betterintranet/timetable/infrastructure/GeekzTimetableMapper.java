@@ -85,8 +85,8 @@ public class GeekzTimetableMapper {
                 entry.duration().end().toLocalTime(),
                 shortName(subject),
                 subject == null ? null : subject.longName(),
-                shortName(teacher),
-                shortName(room),
+                teacher == null ? List.of() : List.of(shortName(teacher)),
+                room == null ? List.of() : List.of(shortName(room)),
                 toStatus(entry.status()),
                 entry.lessonInfo());
     }

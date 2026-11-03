@@ -5,6 +5,7 @@ import ch.tbz.betterintranet.timetable.api.Holiday;
 import ch.tbz.betterintranet.timetable.api.Lesson;
 import ch.tbz.betterintranet.timetable.api.SchoolClass;
 import ch.tbz.betterintranet.timetable.application.TimetableClient;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -36,8 +37,11 @@ public class GeekzTimetableClient implements TimetableClient {
     private final RestClient restClient;
     private final GeekzTimetableMapper mapper = new GeekzTimetableMapper();
 
-    public GeekzTimetableClient(@Qualifier("timetableRestClient") RestClient restClient) {
+    private final Clock clock;
+
+    public GeekzTimetableClient(@Qualifier("timetableRestClient") RestClient restClient, Clock clock) {
         this.restClient = restClient;
+        this.clock = clock;
     }
 
     @Override

@@ -7,6 +7,7 @@ import { AppDataProvider } from '../../app/providers/AppDataProvider'
 import { server } from '../../test/msw/server'
 import { freezeClock, releaseClock } from '../../test/clock'
 import {
+  FIXTURE_TUESDAY,
   FIXTURE_WEEK_END,
   FIXTURE_WEEK_START,
   NEXT_WEEK_END,
@@ -109,7 +110,7 @@ describe('TimetablePage', () => {
     expect(within(tuesday).getByText('AU-512')).toBeInTheDocument()
     expect(within(tuesday).getByText('10:05 – 12:30')).toBeInTheDocument()
     expect(within(tuesday).getByText('GES')).toHaveAttribute('title', 'Allgemeinbildung Gesellschaft')
-    expect(within(tuesday).getByText('RIA')).toBeInTheDocument()
+    expect(within(tuesday).getByText('RIA, LUT')).toBeInTheDocument()
     expect(within(tuesday).getByText('AU-202')).toBeInTheDocument()
     expect(within(tuesday).getByText('13:25 – 15:00')).toBeInTheDocument()
     expect(within(tuesday).getByText('15:20 – 16:55')).toBeInTheDocument()
@@ -126,6 +127,32 @@ describe('TimetablePage', () => {
     expect(within(monday).queryAllByRole('listitem')).toHaveLength(0)
     expect(within(await findDay('Freitag, 6. Nov.')).queryAllByRole('listitem')).toHaveLength(0)
     expect(screen.queryByText('Keine Lektionen in dieser Woche.')).not.toBeInTheDocument()
+  })
+
+  it('shows every teacher of a team-taught lesson and nothing for a lesson without room', async () => {
+    server.use(
+      http.get('/api/timetable', () =>
+        HttpResponse.json([
+          {
+            date: FIXTURE_TUESDAY,
+            start: '10:05:00',
+            end: '12:30:00',
+            subject: 'GES',
+            subjectName: 'Allgemeinbildung Gesellschaft',
+            teachers: ['ARS', 'LUT'],
+            rooms: [],
+            status: 'REGULAR',
+            info: null,
+          },
+        ]),
+      ),
+    )
+    renderPage()
+
+    const tuesday = await findDay('Dienstag, 3. Nov.')
+    const lesson = within(tuesday).getByText('GES').closest('li') as HTMLElement
+    expect(within(lesson).getByText('ARS, LUT')).toBeInTheDocument()
+    expect(within(lesson).queryByText(/AU-/)).not.toBeInTheDocument()
   })
 
   it('shows the lesson info as additional text', async () => {

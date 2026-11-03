@@ -24,15 +24,22 @@ import tools.jackson.databind.ObjectMapper;
  *
  * <p>The four files of a user are parsed on first access and then kept in memory for the lifetime
  * of the application; fixtures are static, so there is no invalidation. Usernames are restricted to
- * plain identifiers so that a path such as {@code ../application} can never resolve to a resource
- * outside the fixture folder.
+ * name parts joined by single separators, so that neither {@code ../application} nor dot sequences
+ * such as {@code a..b} can ever reach the resource loader.
  */
 @Repository
 public class ClasspathUserFixtureRepository implements UserFixtureRepository {
 
 	private static final String FIXTURE_ROOT = "classpath:data/users/";
 
-	private static final Pattern USERNAME = Pattern.compile("[a-z0-9][a-z0-9._-]{0,63}");
+	/**
+	 * Name parts of lowercase letters and digits, joined by single {@code .}, {@code -} or
+	 * {@code _} (e.g. {@code nicola.wehrli}). Sequences like {@code ..}, leading or trailing
+	 * separators, slashes and encoded characters are rejected before any resource is resolved.
+	 */
+	private static final Pattern USERNAME = Pattern.compile("[a-z0-9]+(?:[._-][a-z0-9]+)*");
+
+	private static final int MAX_USERNAME_LENGTH = 64;
 
 	private final ObjectMapper objectMapper;
 
@@ -66,7 +73,7 @@ public class ClasspathUserFixtureRepository implements UserFixtureRepository {
 	}
 
 	private UserFixtures fixturesOf(String username) {
-		if (username == null || !USERNAME.matcher(username).matches()) {
+		if (username == null || username.length() > MAX_USERNAME_LENGTH || !USERNAME.matcher(username).matches()) {
 			throw new UserNotFoundException(username);
 		}
 		return cache.computeIfAbsent(username, this::load);

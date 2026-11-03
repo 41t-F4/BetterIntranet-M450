@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: betterintranet-backend
+  cache:
+    type: caffeine
+    cache-names: timetable-entries,timetable-classes,timetable-holidays
+    caffeine:
+      spec: expireAfterWrite=5m
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+betterintranet:
+  default-user: nicola.wehrli
+  timetable:
+    base-url: https://stundenplan.geekz.ch
+    default-class: AP 24b
+  school:
+    base-url: http://localhost:8081
+
+modules:
+  user:
+    enabled: true
+  dashboard:
+    enabled: true
+  timetable:
+    enabled: true
+  classes:
+    enabled: true
+  courses:
+    enabled: true
+  absences:
+    enabled: true
+  grades:
+    enabled: true

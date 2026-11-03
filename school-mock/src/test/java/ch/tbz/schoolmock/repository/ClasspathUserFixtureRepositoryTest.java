@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.endsWith;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -23,6 +24,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -227,6 +230,36 @@ class ClasspathUserFixtureRepositoryTest {
 				.isInstanceOf(UserNotFoundException.class);
 
 		verify(resourceLoader, times(0)).getResource(anyString());
+	}
+
+	@ParameterizedTest(name = "rejects \"{0}\" before touching the classpath")
+	@ValueSource(strings = { "..", "a..b", ".hidden", "nicola.", "nicola..wehrli", "-nicola", "nicola-", "nicola._wehrli",
+			"nicola/wehrli", "nicola\\wehrli", "nicola%2ewehrli", "Nicola.Wehrli" })
+	@DisplayName("dots, dashes and underscores are only allowed as single separators between name parts")
+	void shouldRejectUsernamesWithDotSequencesOrLeadingOrTrailingSeparators(String username) {
+		ResourceLoader resourceLoader = spy(new DefaultResourceLoader());
+		ClasspathUserFixtureRepository guarded = new ClasspathUserFixtureRepository(objectMapper, resourceLoader);
+
+		assertThatThrownBy(() -> guarded.findGrades(username)).isInstanceOf(UserNotFoundException.class);
+
+		verify(resourceLoader, times(0)).getResource(anyString());
+	}
+
+	@ParameterizedTest(name = "accepts \"{0}\" as a well-formed username")
+	@ValueSource(strings = { "nicola.wehrli", "max.muster", "anna-lena.meier", "jan_2", "x" })
+	@DisplayName("ordinary vorname.nachname usernames remain valid")
+	void shouldAcceptOrdinaryUsernames(String username) {
+		ResourceLoader resourceLoader = spy(new DefaultResourceLoader());
+		ClasspathUserFixtureRepository guarded = new ClasspathUserFixtureRepository(objectMapper, resourceLoader);
+
+		try {
+			guarded.findGrades(username);
+		}
+		catch (UserNotFoundException expectedForUsersWithoutFixtures) {
+			// only nicola.wehrli and max.muster have fixtures; the point is that the name was not rejected
+		}
+
+		verify(resourceLoader, atLeastOnce()).getResource(anyString());
 	}
 
 	@Test

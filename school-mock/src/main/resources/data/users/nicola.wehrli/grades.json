@@ -1,0 +1,173 @@
+[
+  {
+    "id": 1,
+    "subject": "450 Applikationen testen",
+    "semester": "HS 2026",
+    "title": "LB1 Testkonzept",
+    "date": "2026-09-29",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 2,
+    "subject": "450 Applikationen testen",
+    "semester": "HS 2026",
+    "title": "LB2 Unit Testing mit JUnit",
+    "date": "2026-10-27",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 3,
+    "subject": "450 Applikationen testen",
+    "semester": "HS 2026",
+    "title": "Zwischentest Testarten",
+    "date": "2026-09-08",
+    "grade": 4.5,
+    "weight": 0.5
+  },
+  {
+    "id": 4,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Vocabulary Test Unit 1",
+    "date": "2026-09-01",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 5,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Vokabeltest (freiwillig)",
+    "date": "2026-09-15",
+    "grade": 6.0,
+    "weight": 0.0
+  },
+  {
+    "id": 6,
+    "subject": "Englisch",
+    "semester": "HS 2026",
+    "title": "Reading Comprehension",
+    "date": "2026-10-20",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 7,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Prüfung Staatskunde",
+    "date": "2026-08-25",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 8,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Vertiefungsarbeit Exposé",
+    "date": "2026-09-22",
+    "grade": 4.5,
+    "weight": 0.5
+  },
+  {
+    "id": 9,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "HS 2026",
+    "title": "Prüfung Recht und Vertrag",
+    "date": "2026-10-27",
+    "grade": 3.5,
+    "weight": 1.0
+  },
+  {
+    "id": 10,
+    "subject": "Englisch",
+    "semester": "FS 2026",
+    "title": "Listening Test",
+    "date": "2026-03-10",
+    "grade": 5.0,
+    "weight": 1.0
+  },
+  {
+    "id": 11,
+    "subject": "Englisch",
+    "semester": "FS 2026",
+    "title": "Writing Task Formal Letter",
+    "date": "2026-05-19",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 12,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "FS 2026",
+    "title": "Vortrag Mediennutzung",
+    "date": "2026-04-14",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 13,
+    "subject": "Allgemeinbildung Gesellschaft",
+    "semester": "FS 2026",
+    "title": "Prüfung Wirtschaft und Konsum",
+    "date": "2026-06-09",
+    "grade": 4.0,
+    "weight": 1.0
+  },
+  {
+    "id": 14,
+    "subject": "320 Objektorientiert programmieren",
+    "semester": "FS 2026",
+    "title": "LB1 Klassendiagramm und Vererbung",
+    "date": "2026-03-17",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 15,
+    "subject": "320 Objektorientiert programmieren",
+    "semester": "FS 2026",
+    "title": "Zwischentest Interfaces",
+    "date": "2026-04-21",
+    "grade": 3.75,
+    "weight": 1.0
+  },
+  {
+    "id": 16,
+    "subject": "320 Objektorientiert programmieren",
+    "semester": "FS 2026",
+    "title": "LB2 Design Patterns",
+    "date": "2026-05-26",
+    "grade": 5.0,
+    "weight": 2.0
+  },
+  {
+    "id": 17,
+    "subject": "322 Benutzerschnittstellen entwerfen und implementieren",
+    "semester": "FS 2026",
+    "title": "LB1 Wireframes und Prototyp",
+    "date": "2026-03-24",
+    "grade": 5.5,
+    "weight": 1.0
+  },
+  {
+    "id": 18,
+    "subject": "322 Benutzerschnittstellen entwerfen und implementieren",
+    "semester": "FS 2026",
+    "title": "LB2 Responsive Layout",
+    "date": "2026-06-16",
+    "grade": 4.5,
+    "weight": 1.0
+  },
+  {
+    "id": 19,
+    "subject": "322 Benutzerschnittstellen entwerfen und implementieren",
+    "semester": "FS 2026",
+    "title": "LB3 Usability-Test",
+    "date": "2026-06-30",
+    "grade": 5.25,
+    "weight": 1.0
+  }
+]

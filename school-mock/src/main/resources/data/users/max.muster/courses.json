@@ -1,0 +1,29 @@
+[
+  {
+    "id": "117-HS26",
+    "code": "117",
+    "name": "Informatik- und Netzinfrastruktur",
+    "teacher": "CAL",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 4,
+    "room": "AU-U60"
+  },
+  {
+    "id": "GES-HS26",
+    "code": "GES",
+    "name": "Allgemeinbildung Gesellschaft",
+    "teacher": "ROS",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 3,
+    "room": "AU-203"
+  },
+  {
+    "id": "ENG-HS26",
+    "code": "ENG",
+    "name": "Englisch",
+    "teacher": "BRU",
+    "semester": "HS 2026",
+    "lessonsPerWeek": 2,
+    "room": "AU-410"
+  }
+]

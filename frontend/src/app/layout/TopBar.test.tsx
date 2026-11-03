@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { installMatchMedia } from '../../test/matchMedia'
 import { currentUserFixture } from '../../test/fixtures/currentUser'
 import { renderWithRouter } from '../../test/render'
 import { TopBar } from './TopBar'
@@ -43,5 +44,20 @@ describe('TopBar', () => {
     renderWithRouter(<TopBar user={currentUserFixture} />)
 
     expect(screen.getByRole('banner')).toBeInTheDocument()
+  })
+
+  describe('theme switch', () => {
+    afterEach(() => {
+      vi.unstubAllGlobals()
+      localStorage.clear()
+      delete document.documentElement.dataset.theme
+    })
+
+    it('offers a theme switch in the header', () => {
+      installMatchMedia(false)
+      renderWithRouter(<TopBar user={currentUserFixture} />)
+
+      expect(screen.getByRole('button', { name: 'Dunkles Design aktivieren' })).toBeInTheDocument()
+    })
   })
 })

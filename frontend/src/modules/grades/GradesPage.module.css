@@ -1,0 +1,18 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.status {
+  margin: 0;
+  padding: var(--space-4) 0;
+  color: var(--color-text-muted);
+}
+
+.alert {
+  background: var(--color-danger-soft);
+  border: 1px solid color-mix(in srgb, var(--color-danger) 35%, var(--color-border));
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+}

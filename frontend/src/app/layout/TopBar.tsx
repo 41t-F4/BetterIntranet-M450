@@ -1,14 +1,21 @@
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { CurrentUser } from '../../shared/api/types'
+import { ThemeToggle } from '../../shared/theme/ThemeToggle'
 import styles from './TopBar.module.css'
 
 export interface TopBarProps {
   /** Logged-in user, or `null` while loading / when unavailable. */
   user: CurrentUser | null
+  /** Main navigation, rendered between brand and user. */
+  children?: ReactNode
 }
 
-/** Dark top bar: product name, TBZ wordmark and the logged-in user with a (disabled) logout button. */
-export function TopBar({ user }: TopBarProps) {
+/**
+ * Header: TBZ wordmark and product name, the main navigation and the logged-in user with a (disabled)
+ * logout button. On narrow screens the navigation moves to its own scrollable row.
+ */
+export function TopBar({ user, children }: TopBarProps) {
   return (
     <header className={styles.topBar}>
       <div className={styles.inner}>
@@ -20,7 +27,14 @@ export function TopBar({ user }: TopBarProps) {
             BetterIntranet
           </Link>
         </div>
+        {children && <div className={styles.nav}>{children}</div>}
         <div className={styles.user}>
+          <ThemeToggle />
+          {user && (
+            <span className={styles.avatar} aria-hidden="true">
+              {initials(user.displayName)}
+            </span>
+          )}
           {user && (
             <span className={styles.identity}>
               <span className={styles.name}>{user.displayName}</span>
@@ -44,4 +58,13 @@ export function TopBar({ user }: TopBarProps) {
       </div>
     </header>
   )
+}
+
+function initials(displayName: string): string {
+  return displayName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('')
 }

@@ -11,7 +11,7 @@ export interface NewsCardProps {
 /** «Newsticker»: latest school news, newest first (order as delivered by the backend). */
 export function NewsCard({ news }: NewsCardProps) {
   return (
-    <Card title="Newsticker" className={`${shared.card} ${shared.accentTeal}`}>
+    <Card title="Newsticker" className={shared.card}>
       {news.length === 0 ? (
         <p className={shared.empty}>Zur Zeit liegen keine Nachrichten vor.</p>
       ) : (

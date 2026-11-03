@@ -1,46 +1,57 @@
 /*
- * Design tokens for BetterIntranet, derived from the "Marks" Figma board.
- * Every component references these variables; colours and spacing are never hard-coded.
+ * Design tokens for BetterIntranet.
+ * Calm, neutral surfaces with a single accent colour (TBZ blue). Status colours are only used where
+ * they carry meaning (absence status, insufficient grades). Components reference these variables and
+ * never hard-code colours, sizes or radii.
  */
 :root {
   /* Surfaces */
-  --color-bg: #f2f2f2;
+  --color-bg: #f5f6f8;
   --color-surface: #ffffff;
-  --color-surface-muted: #f7f7f7;
-  --color-topbar: #1f1f1f;
-  --color-topbar-text: #ffffff;
-  --color-border: #e3e3e3;
+  --color-surface-muted: #f3f4f6;
+  --color-surface-hover: #eef1f5;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
 
   /* Text */
-  --color-text: #1f1f1f;
-  --color-text-muted: #6b6b6b;
+  --color-text: #111827;
+  --color-text-muted: #4b5563;
+  --color-text-subtle: #6b7280;
   --color-text-on-accent: #ffffff;
 
-  /* Accents (chart series + actions) */
-  --color-teal: #2bb3c0;
-  --color-blue: #2f6fb6;
-  --color-violet: #7b61c9;
-  --color-primary: var(--color-blue);
-  --color-primary-hover: #275d99;
+  /* Accent */
+  --color-primary: #1f5fbf;
+  --color-primary-hover: #194e9e;
+  --color-primary-soft: #eaf1fb;
 
   /* Status */
-  --color-success: #2e9e5b;
-  --color-warning: #e3932b;
-  --color-danger: #d64545;
-  --color-info: var(--color-teal);
+  --color-success: #15803d;
+  --color-success-soft: #e8f5ec;
+  --color-warning: #b45309;
+  --color-warning-soft: #fdf3e6;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fdecec;
+  --color-holiday: #0e7490;
+  --color-holiday-soft: #e6f4f7;
+
+  /* Chart series: accent for the running average, neutral slate for the report grade */
+  --color-series-average: var(--color-primary);
+  --color-series-report: #9aa5b4;
 
   /* Typography */
   --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.75rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
-  --font-weight-bold: 700;
+  --font-weight-bold: 600;
+  --line-height: 1.5;
 
-  /* Spacing */
+  /* Spacing (4 px grid) */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -50,12 +61,47 @@
   --space-8: 3rem;
 
   /* Shape */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.04);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--color-primary) 35%, transparent);
 
   /* Layout */
-  --topbar-height: 56px;
-  --content-max-width: 1280px;
-  --breakpoint-md: 768px;
+  --header-height: 64px;
+  --content-max-width: 1200px;
+}
+
+/*
+ * Dark theme: same roles, lower luminance. Surfaces get lighter with elevation, the accent and status
+ * colours are lifted so they keep enough contrast on dark backgrounds. Applied via `data-theme` on
+ * the root element (see shared/theme).
+ */
+:root[data-theme='dark'] {
+  --color-bg: #0f1216;
+  --color-surface: #171b21;
+  --color-surface-muted: #1e232a;
+  --color-surface-hover: #252b33;
+  --color-border: #2a3039;
+  --color-border-strong: #3b424d;
+
+  --color-text: #e8eaed;
+  --color-text-muted: #b4bbc5;
+  --color-text-subtle: #8c95a1;
+  --color-text-on-accent: #0f1216;
+
+  --color-primary: #7aa9f5;
+  --color-primary-hover: #9bbff8;
+  --color-primary-soft: #1c2a40;
+
+  --color-success: #5fc98b;
+  --color-success-soft: #15291d;
+  --color-warning: #f0a856;
+  --color-warning-soft: #2f2312;
+  --color-danger: #f27a7a;
+  --color-danger-soft: #331a1b;
+  --color-holiday: #56c4d6;
+  --color-holiday-soft: #12292f;
+
+  --color-series-report: #5d6775;
 }

@@ -41,7 +41,6 @@ function CoursesContent({ courses }: { courses: Course[] }) {
         <label htmlFor={selectId}>Semester</label>
         <select
           id={selectId}
-          className={styles.select}
           value={semester}
           onChange={(event) => setSemester(event.target.value)}
         >

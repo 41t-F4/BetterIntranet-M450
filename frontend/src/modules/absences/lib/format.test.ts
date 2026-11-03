@@ -34,3 +34,31 @@ describe('formatTimeRange', () => {
     expect(formatTimeRange('13:15', '14:50')).toBe('13:15–14:50')
   })
 })
+
+describe('invalid input', () => {
+  it.each(['', 'invalid', '2026-10', '12.10.2026', '2026-13-01', '2026-02-30'])(
+    'formatDate rejects %j instead of printing garbage',
+    (value) => {
+      expect(() => formatDate(value)).toThrow(RangeError)
+      expect(() => formatDate(value)).toThrow(`Ungültiges Datum: "${value}"`)
+    },
+  )
+
+  it.each(['', 'invalid', '2026-10-12', '2026-10-12T', '2026-10-12T25:00', 'T10:00'])(
+    'formatDateTime rejects %j',
+    (value) => {
+      expect(() => formatDateTime(value)).toThrow(RangeError)
+    },
+  )
+
+  it.each([
+    ['', '09:45'],
+    ['08:10', ''],
+    ['invalid', '09:45'],
+    ['8:10', '09:45'],
+    ['08:60', '09:45'],
+  ])('formatTimeRange rejects %j – %j', (start, end) => {
+    expect(() => formatTimeRange(start, end)).toThrow(RangeError)
+    expect(() => formatTimeRange(start, end)).toThrow('Ungültige Uhrzeit')
+  })
+})

@@ -1,7 +1,8 @@
 import { renderHook, waitFor } from '@testing-library/react'
-import { HttpResponse, http } from 'msw'
+import { HttpResponse, delay, http } from 'msw'
 import { describe, expect, it } from 'vitest'
 import { ApiError } from '../../shared/api/client'
+import { absencesResponseForStatus } from '../../test/fixtures/absences'
 import { server } from '../../test/msw/server'
 import type { AbsenceStatus } from './types'
 import { useAbsences } from './useAbsences'
@@ -79,5 +80,28 @@ describe('useAbsences', () => {
     await waitFor(() => expect(result.current.loading).toBe(false))
     expect(result.current.error).toBeNull()
     expect(result.current.data?.absences).toHaveLength(2)
+  })
+
+  it('shows the result of the last selected filter even if an older response arrives later', async () => {
+    // OPEN answers slowly, EXCUSED immediately: the OPEN response arrives after the EXCUSED one.
+    server.use(
+      http.get('/api/absences', async ({ request }) => {
+        const status = new URL(request.url).searchParams.get('status') as AbsenceStatus | null
+        if (status === 'OPEN') {
+          await delay(80)
+        }
+        return HttpResponse.json(absencesResponseForStatus(status))
+      }),
+    )
+    const { result, rerender } = renderHook(({ status }: { status?: AbsenceStatus }) => useAbsences(status), {
+      initialProps: { status: 'OPEN' as AbsenceStatus },
+    })
+
+    rerender({ status: 'EXCUSED' })
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    await delay(150)
+
+    expect(result.current.data?.absences.map((absence) => absence.status)).toEqual(['EXCUSED', 'EXCUSED', 'EXCUSED'])
+    expect(result.current.loading).toBe(false)
   })
 })

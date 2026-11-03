@@ -19,6 +19,12 @@ import ch.tbz.betterintranet.timetable.api.LessonStatus;
 import ch.tbz.betterintranet.timetable.api.SchoolClass;
 import ch.tbz.betterintranet.timetable.application.TimetableClient;
 import java.time.DayOfWeek;
+import java.time.Clock;
+import java.time.Instant;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -42,9 +48,21 @@ class TimetableControllerIT {
     private static final LocalDate TUESDAY = LocalDate.of(2026, 11, 3);
     private static final LocalDate FRIDAY = LocalDate.of(2026, 11, 6);
 
+    /** Replaces the application clock with Wednesday 2026-11-04, 10:00 in Zurich. */
+    @TestConfiguration
+    static class FixedClock {
+
+        @Bean
+        @Primary
+        Clock fixedClock() {
+            return Clock.fixed(Instant.parse("2026-11-04T09:00:00Z"), ZoneId.of("Europe/Zurich"));
+        }
+    }
+
     @Nested
     @SpringBootTest
     @AutoConfigureMockMvc
+    @Import(FixedClock.class)
     class ModuleEnabled {
 
         @Autowired
@@ -75,9 +93,9 @@ class TimetableControllerIT {
         @DisplayName("GET /api/timetable?classId&from&to returns the lessons of that range as ISO dates and times")
         void listsLessonsOfRange() throws Exception {
             given(client.fetchLessons(AP24B, MONDAY, FRIDAY)).willReturn(List.of(
-                    new Lesson(TUESDAY, LocalTime.of(8, 10), LocalTime.of(9, 45), "ENG", "Englisch", "MID", "AU-512",
+                    new Lesson(TUESDAY, LocalTime.of(8, 10), LocalTime.of(9, 45), "ENG", "Englisch", List.of("MID"), List.of("AU-512"),
                             LessonStatus.REGULAR, "oB"),
-                    new Lesson(TUESDAY, LocalTime.of(10, 5), LocalTime.of(12, 30), "GES", "Geschichte", "RIA", null,
+                    new Lesson(TUESDAY, LocalTime.of(10, 5), LocalTime.of(12, 30), "GES", "Geschichte", List.of("RIA"), List.of(),
                             LessonStatus.CANCELLED, null)));
 
             mockMvc.perform(get("/api/timetable")
@@ -91,12 +109,12 @@ class TimetableControllerIT {
                     .andExpect(jsonPath("$[0].end").value("09:45:00"))
                     .andExpect(jsonPath("$[0].subject").value("ENG"))
                     .andExpect(jsonPath("$[0].subjectName").value("Englisch"))
-                    .andExpect(jsonPath("$[0].teacher").value("MID"))
-                    .andExpect(jsonPath("$[0].room").value("AU-512"))
+                    .andExpect(jsonPath("$[0].teachers[0]").value("MID"))
+                    .andExpect(jsonPath("$[0].rooms[0]").value("AU-512"))
                     .andExpect(jsonPath("$[0].status").value("REGULAR"))
                     .andExpect(jsonPath("$[0].info").value("oB"))
                     .andExpect(jsonPath("$[1].status").value("CANCELLED"))
-                    .andExpect(jsonPath("$[1].room").doesNotExist());
+                    .andExpect(jsonPath("$[1].rooms").isEmpty());
         }
 
         @Test
@@ -111,10 +129,9 @@ class TimetableControllerIT {
             ArgumentCaptor<LocalDate> from = ArgumentCaptor.forClass(LocalDate.class);
             ArgumentCaptor<LocalDate> to = ArgumentCaptor.forClass(LocalDate.class);
             verify(client).fetchLessons(eq(AP24B), from.capture(), to.capture());
-            LocalDate today = LocalDate.now(ZoneId.of("Europe/Zurich"));
-            assertThat(from.getValue().getDayOfWeek()).isEqualTo(DayOfWeek.MONDAY);
-            assertThat(to.getValue()).isEqualTo(from.getValue().plusDays(4));
-            assertThat(today).isBetween(from.getValue(), from.getValue().plusDays(6));
+            // The clock is fixed to Wednesday 2026-11-04 (see FixedClock), so the week is known exactly.
+            assertThat(from.getValue()).isEqualTo(MONDAY);
+            assertThat(to.getValue()).isEqualTo(FRIDAY);
         }
 
         @Test
@@ -143,6 +160,7 @@ class TimetableControllerIT {
                     .andExpect(status().isBadRequest())
                     .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON))
                     .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.type").value("urn:betterintranet:invalid-request"))
                     .andExpect(jsonPath("$.detail").value("'to' must not be before 'from'"));
             verifyNoInteractions(client);
         }
@@ -155,8 +173,21 @@ class TimetableControllerIT {
                             .queryParam("from", "2026-08-17")
                             .queryParam("to", "2027-07-16"))
                     .andExpect(status().isBadRequest())
-                    .andExpect(jsonPath("$.status").value(400));
+                    .andExpect(jsonPath("$.type").value("urn:betterintranet:invalid-request"))
+                    .andExpect(jsonPath("$.detail").value("The range must not be longer than 62 days, but was 334"));
             verifyNoInteractions(client);
+        }
+
+        @Test
+        @DisplayName("an IllegalArgumentException from deeper layers is a 500 without internal details, not a 400")
+        void internalIllegalArgumentIsNotBadRequest() throws Exception {
+            given(client.fetchLessons(anyLong(), any(), any()))
+                    .willThrow(new IllegalArgumentException("internal detail: parser state 17"));
+
+            mockMvc.perform(get("/api/timetable").queryParam("classId", "7471"))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.type").value("urn:betterintranet:internal"))
+                    .andExpect(jsonPath("$.detail").value("The request could not be processed."));
         }
 
         @Test

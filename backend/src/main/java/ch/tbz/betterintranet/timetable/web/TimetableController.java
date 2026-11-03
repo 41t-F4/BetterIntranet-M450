@@ -7,14 +7,10 @@ import ch.tbz.betterintranet.timetable.api.GetTimetableQuery;
 import ch.tbz.betterintranet.timetable.api.Holiday;
 import ch.tbz.betterintranet.timetable.api.Lesson;
 import ch.tbz.betterintranet.timetable.api.SchoolClass;
-import java.net.URI;
+import java.time.Clock;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST entry point of the timetable module. Thin by design: every request becomes a query on the
- * {@link QueryGateway}, which also enforces the module switch.
+ * {@link QueryGateway}, which also enforces the module switch. Invalid ranges are rejected by
+ * {@link GetTimetableQuery} and answered centrally by the core as HTTP 400.
  *
  * <pre>
  * GET /api/timetable/classes
@@ -34,12 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/timetable")
 public class TimetableController {
 
-    private static final ZoneId SCHOOL_ZONE = ZoneId.of("Europe/Zurich");
-
     private final QueryGateway queries;
+    private final Clock clock;
 
-    public TimetableController(QueryGateway queries) {
+    public TimetableController(QueryGateway queries, Clock clock) {
         this.queries = queries;
+        this.clock = clock;
     }
 
     @GetMapping("/classes")
@@ -55,7 +52,7 @@ public class TimetableController {
     public List<Lesson> timetable(@RequestParam long classId,
                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
                                   @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        LocalDate start = from != null ? from : WeekRange.containing(LocalDate.now(SCHOOL_ZONE)).from();
+        LocalDate start = from != null ? from : WeekRange.containing(LocalDate.now(clock)).from();
         LocalDate end = to != null ? to : WeekRange.startingAt(start).to();
         return queries.ask(new GetTimetableQuery(classId, start, end));
     }
@@ -63,14 +60,5 @@ public class TimetableController {
     @GetMapping("/holidays")
     public List<Holiday> holidays() {
         return queries.ask(new GetHolidaysQuery());
-    }
-
-    /** Invalid ranges (inverted or too long) are client errors, not server errors. */
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ProblemDetail invalidRequest(IllegalArgumentException ex) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
-        problem.setType(URI.create("urn:betterintranet:invalid-request"));
-        problem.setTitle("Invalid request");
-        return problem;
     }
 }

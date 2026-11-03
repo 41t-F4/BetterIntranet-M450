@@ -44,6 +44,14 @@ public class GlobalExceptionHandler {
                 "The request could not be processed.");
     }
 
+    public ProblemDetail invalidRequest(InvalidRequestException ex) {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
+    public ProblemDetail unexpected(Exception ex) {
+        throw new UnsupportedOperationException("not implemented");
+    }
+
     private static ProblemDetail problem(HttpStatus status, String type, String title, String detail) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
         problem.setType(URI.create(TYPE_PREFIX + type));

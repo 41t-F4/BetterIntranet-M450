@@ -53,4 +53,25 @@ class GlobalExceptionHandlerTest {
         assertThat(problem.getStatus()).isEqualTo(500);
         assertThat(problem.getDetail()).doesNotContain("java.lang.String");
     }
+
+    @Test
+    @DisplayName("an invalid request becomes 400 with the client-facing message")
+    void invalidRequest() {
+        ProblemDetail problem = handler.invalidRequest(new InvalidRequestException("'to' must not be before 'from'"));
+
+        assertThat(problem.getStatus()).isEqualTo(400);
+        assertThat(problem.getType()).isEqualTo(URI.create("urn:betterintranet:invalid-request"));
+        assertThat(problem.getTitle()).isEqualTo("Invalid request");
+        assertThat(problem.getDetail()).isEqualTo("'to' must not be before 'from'");
+    }
+
+    @Test
+    @DisplayName("any other exception becomes 500 without leaking its message")
+    void unexpected() {
+        ProblemDetail problem = handler.unexpected(new IllegalStateException("db password is hunter2"));
+
+        assertThat(problem.getStatus()).isEqualTo(500);
+        assertThat(problem.getType()).isEqualTo(URI.create("urn:betterintranet:internal"));
+        assertThat(problem.getDetail()).doesNotContain("hunter2");
+    }
 }

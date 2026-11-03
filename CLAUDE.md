@@ -23,6 +23,12 @@ Das bestehende Intranet bietet (siehe Screenshot im Projekt-Kickoff):
 | Meine Links           | Meine Kurse, Absenzen: Einträge                                         |
 | Quick Links           | Service Desk, Absenzen, Dateiablage, Hilfe, Mediothek, OrgWeb, Tagesagenda, M365 |
 
+**Inhaltlicher Scope:** Es ist das Intranet der **Berufsschule TBZ**. Es enthält die ICT-Module
+(z.B. «450 Applikationen testen», «306 IT-Kleinprojekt abwickeln») und Berufsschulfächer wie ABU
+(«Allgemeinbildung Gesellschaft») und Englisch. **BMS** (Berufsmaturitätsschule) und **ÜK**
+(überbetriebliche Kurse) gehören nicht dazu und erscheinen nirgends, weder in Noten, Kursen noch
+Absenzen. Massgebend für die Fächer ist der echte Stundenplan der Klasse.
+
 Das neue Intranet muss mindestens diese Funktionen abdecken:
 
 1. **Dashboard / Home** mit Newsticker, Terminen, Prävention, Meine Links, Quick Links
@@ -58,7 +64,7 @@ Features mit dünnen Tests.
 
 | Schicht                 | Technologie                                                       |
 |-------------------------|-------------------------------------------------------------------|
-| Frontend                | React + TypeScript (Vite), React Router, Vitest + React Testing Library, MSW für API-Mocks |
+| Frontend                | React + TypeScript (Vite), React Router, axios (zentrale Instanz in `shared/api`), Vitest + React Testing Library, MSW für API-Mocks |
 | Backend (Hauptsystem)   | Spring Boot 3 + Java 21, Maven (über Maven Wrapper `./mvnw`, keine lokale Installation nötig), JUnit 5, Mockito, AssertJ, Spring Boot Test, WireMock für externe HTTP-Schnittstellen, JaCoCo für Coverage |
 | Backend (Mock-Server)   | Zweiter, eigenständiger Spring-Boot-Service («school-mock»), der die Schnittstellen der Schulsysteme simuliert: Meine Klassen, Meine Kurse, Absenzen, Noten |
 | Externe Schnittstelle   | `https://stundenplan.geekz.ch` (Stundenplan + Ferien), nur vom Backend aufgerufen, nie direkt vom Frontend |
@@ -192,17 +198,18 @@ Das Frontend übernimmt den Stil des Projekts «Marks» (Figma-Board vom Team). 
 
 - **Top-Bar** dunkel (fast schwarz, ca. `#1f1f1f`), Logo/Projektname links bzw. zentriert,
   rechts der angemeldete Benutzer mit Dropdown. Darunter eine **Breadcrumb**-Zeile
-  (`Home > Noten > BMS`).
+  (`Home > Noten`).
 - **Seitenhintergrund** hellgrau (ca. `#f2f2f2`), Inhalte in **weissen Karten** mit kleinem Radius
   (6 bis 8 px) und sehr dezentem Schatten. Viel Weissraum, keine Rahmen um Tabellen.
 - **Akzentfarben** aus den Diagrammen: Türkis `#2bb3c0`, Blau `#2f6fb6`, Violett `#7b61c9`.
   Primäre Aktion (Buttons, FAB) in Blau. Status-Farben: Grün für entschuldigt/bestanden, Rot für
   unentschuldigt/ungenügend (< 4.0), Orange für offen.
 - **Typografie**: eine neutrale Sans-Serif (Inter oder System-Stack), Kartentitel fett,
-  Kennzahlen (Durchschnitte) gross neben dem Titel (`Deutsch  5.75`).
-- **Noten-Seite**: oben eine Karte «Notendurchschnitte» mit Balkendiagramm (Serien: Prüfungen,
-  Durchschnitt, Zeugnis) und Legende. Darunter Abschnitte pro Schulteil (BMS, TBZ, ÜK) mit
-  Gesamtdurchschnitt, darin je Fach eine Karte mit Tabelle (Titel, Datum, Note, Gewichtung).
+  Kennzahlen (Durchschnitte) gross neben dem Titel (`Englisch  5.25`).
+- **Noten-Seite**: oben eine Karte «Notendurchschnitte» mit Gesamtdurchschnitt, Semesterwahl und
+  Balkendiagramm pro Fach des Semesters (Serien: Durchschnitt, Zeugnis) mit Legende. Darunter
+  Abschnitte pro Semester (neuestes zuerst) mit Semesterdurchschnitt, darin je Fach eine Karte mit
+  Tabelle (Titel, Datum, Note, Gewichtung).
 - **Stundenplan**: Wochenraster, Lektionen als farbige Blöcke mit Fach, Lehrperson, Raum;
   Ausfälle durchgestrichen/grau, Ferien als ganze Spalte markiert.
 - **Dashboard**: Kartenraster wie im alten Intranet (Newsticker, Termine, Prävention, Meine Links,
@@ -471,6 +478,11 @@ eines Moduls, Testbenennung) trifft Claude selbst.
    Branches und eröffnet PRs, merged aber nicht.
 8. **Qualität:** Production-ready nach Best Practices, keine Abkürzungen bei Tests, Fehlerbehandlung
    und Struktur.
+9. **Nur Berufsschule TBZ:** Keine BMS- und keine ÜK-Inhalte, kein Konzept «Schulteil». Noten und
+   Kurse werden nach Semester gruppiert. Mock-Daten von `nicola.wehrli` bilden den echten Stundenplan
+   von AP 24b ab (Englisch, Allgemeinbildung Gesellschaft, Modul 450, Modul 306).
+10. **HTTP-Client:** axios statt `fetch` (Review-Feedback auf PR #11). Eine gemeinsame Instanz
+    `apiClient`, Basispfade als Konstanten, Query-Parameter über `params`.
 
 ---
 
@@ -495,7 +507,9 @@ eines Moduls, Testbenennung) trifft Claude selbst.
 
 - Funktionale Komponenten, Hooks, kein Class-Component.
 - Strikte TypeScript-Konfiguration (`strict: true`), keine `any`.
-- Daten-Fetching über einen zentralen API-Client in `shared/api`, pro Modul ein Hook (`useGrades`).
+- Daten-Fetching über den zentralen axios-Client in `shared/api` (`apiGet`, Instanz `apiClient`), pro Modul ein Hook (`useGrades`).
+- Jedes Modul definiert seinen Basispfad als Konstante (`TIMETABLE_API = '/api/timetable'`) und übergibt Query-Parameter als axios-`params`, nie als selbst gebauten String.
+- Tests hängen nie vom echten Datum oder echten Systemen ab: Uhr über `test/clock.ts` einfrieren, Daten aus Fixtures ableiten, API über MSW beantworten.
 - Tests neben der Komponente: `GradesPage.test.tsx`. Queries über Rollen/Texte, nicht über CSS-Klassen.
 
 ### Dokumentation

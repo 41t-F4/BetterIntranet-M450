@@ -26,8 +26,8 @@ export function LessonBlock({ lesson }: LessonBlockProps) {
         {badge && <span className={styles.badge}>{badge}</span>}
       </span>
       <span className={styles.meta}>
-        <span>{lesson.teacher}</span>
-        <span>{lesson.room}</span>
+        <span>{lesson.teachers[0]}</span>
+        <span>{lesson.rooms[0]}</span>
       </span>
       {lesson.info && <small className={styles.info}>{lesson.info}</small>}
     </li>

@@ -22,8 +22,10 @@ export interface Lesson {
   end: string
   subject: string
   subjectName: string
-  teacher: string
-  room: string
+  /** Short names of all teachers; two or more for team teaching. */
+  teachers: string[]
+  /** All rooms of the lesson. */
+  rooms: string[]
   status: LessonStatus
   info: string | null
 }

@@ -21,8 +21,11 @@ import ch.tbz.betterintranet.timetable.api.SchoolClass;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +44,9 @@ class GeekzTimetableClientIT {
     private static final long AP24B = 7471;
     private static final LocalDate MONDAY = LocalDate.of(2026, 11, 2);
     private static final LocalDate FRIDAY = LocalDate.of(2026, 11, 6);
+    /** Wednesday of the autumn holidays: the class list must still be requested for «today». */
+    private static final Clock IN_AUTUMN_HOLIDAYS =
+            Clock.fixed(Instant.parse("2026-10-07T08:00:00Z"), ZoneId.of("Europe/Zurich"));
 
     @RegisterExtension
     static WireMockExtension upstream = WireMockExtension.newInstance()
@@ -52,7 +58,7 @@ class GeekzTimetableClientIT {
     @BeforeEach
     void createClient() {
         upstream.resetAll();
-        client = new GeekzTimetableClient(RestClient.builder().baseUrl(upstream.baseUrl()).build());
+        client = new GeekzTimetableClient(RestClient.builder().baseUrl(upstream.baseUrl()).build(), IN_AUTUMN_HOLIDAYS);
     }
 
     @Nested
@@ -64,8 +70,8 @@ class GeekzTimetableClientIT {
             upstream.stubFor(get(urlPathEqualTo(FILTER))
                     .withQueryParam("resourceType", equalTo("CLASS"))
                     .withQueryParam("timetableType", equalTo("STANDARD"))
-                    .withQueryParam("start", matching(ISO_DATE))
-                    .withQueryParam("end", matching(ISO_DATE))
+                    .withQueryParam("start", equalTo("2026-10-07"))
+                    .withQueryParam("end", equalTo("2026-10-13"))
                     .willReturn(okJson(TimetableFixtures.read(TimetableFixtures.CLASSES))));
 
             List<SchoolClass> classes = client.fetchClasses();
@@ -88,7 +94,7 @@ class GeekzTimetableClientIT {
 
             assertThat(lessons).hasSize(4);
             assertThat(lessons.getFirst()).isEqualTo(new Lesson(LocalDate.of(2026, 11, 3), LocalTime.of(8, 10),
-                    LocalTime.of(9, 45), "ENG", "Englisch", "MID", "AU-512", LessonStatus.REGULAR, "oB"));
+                    LocalTime.of(9, 45), "ENG", "Englisch", List.of("MID"), List.of("AU-512"), LessonStatus.REGULAR, "oB"));
             upstream.verify(getRequestedFor(urlPathEqualTo(ENTRIES))
                     .withQueryParam("start", equalTo("2026-11-02"))
                     .withQueryParam("end", equalTo("2026-11-06"))
@@ -141,6 +147,50 @@ class GeekzTimetableClientIT {
     class Failures {
 
         @Test
+        @DisplayName("a 4xx answer is our fault: an internal error, not «upstream unavailable»")
+        void clientErrorIsNotUnavailable() {
+            upstream.stubFor(get(urlPathEqualTo(ENTRIES)).willReturn(aResponse().withStatus(400)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody("{\"errorCode\":\"BAD_REQUEST\",\"errorMessage\":\"no valid value\"}")));
+
+            assertThatThrownBy(() -> client.fetchLessons(AP24B, MONDAY, FRIDAY))
+                    .isInstanceOf(IllegalStateException.class)
+                    .isNotInstanceOf(UpstreamUnavailableException.class)
+                    .hasMessageContaining("400");
+        }
+
+        @Test
+        @DisplayName("a 404 is only «no lessons» for the entries endpoint; elsewhere it is an internal error")
+        void notFoundOnOtherEndpointsIsNotEmpty() {
+            upstream.stubFor(get(urlPathEqualTo(HOLIDAYS)).willReturn(aResponse().withStatus(404)));
+
+            assertThatThrownBy(() -> client.fetchHolidays())
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessageContaining("404");
+        }
+
+        @Test
+        @DisplayName("an errorCode other than NOT_FOUND in a 200 body is reported as unavailable")
+        void otherErrorCodeIsUpstreamUnavailable() {
+            upstream.stubFor(get(urlPathEqualTo(ENTRIES))
+                    .willReturn(okJson("{\"errorCode\":\"INTERNAL_ERROR\"}")));
+
+            assertThatThrownBy(() -> client.fetchLessons(AP24B, MONDAY, FRIDAY))
+                    .isInstanceOf(UpstreamUnavailableException.class)
+                    .hasMessageContaining("INTERNAL_ERROR");
+        }
+
+        @Test
+        @DisplayName("a lesson without duration is reported as unavailable instead of a raw 500")
+        void incompleteLessonIsUpstreamUnavailable() {
+            upstream.stubFor(get(urlPathEqualTo(ENTRIES)).willReturn(okJson(
+                    "{\"days\":[{\"date\":\"2026-11-03\",\"status\":\"REGULAR\",\"gridEntries\":[{\"status\":\"REGULAR\"}]}]}")));
+
+            assertThatThrownBy(() -> client.fetchLessons(AP24B, MONDAY, FRIDAY))
+                    .isInstanceOf(UpstreamUnavailableException.class);
+        }
+
+        @Test
         @DisplayName("a 5xx answer is reported as upstream unavailable")
         void serverErrorIsUpstreamUnavailable() {
             upstream.stubFor(get(urlPathEqualTo(HOLIDAYS)).willReturn(serverError()));
@@ -178,7 +228,7 @@ class GeekzTimetableClientIT {
                 unusedPort = socket.getLocalPort();
             }
             GeekzTimetableClient unreachable = new GeekzTimetableClient(
-                    RestClient.builder().baseUrl("http://localhost:" + unusedPort).build());
+                    RestClient.builder().baseUrl("http://localhost:" + unusedPort).build(), IN_AUTUMN_HOLIDAYS);
 
             assertThatThrownBy(unreachable::fetchHolidays)
                     .isInstanceOfSatisfying(UpstreamUnavailableException.class,

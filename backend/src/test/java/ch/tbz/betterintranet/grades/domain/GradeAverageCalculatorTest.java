@@ -150,5 +150,28 @@ class GradeAverageCalculatorTest {
         void shouldRoundToNearestSwissHalfGrade(double value, double expected) {
             assertThat(GradeAverageCalculator.roundToSwissHalf(value)).isEqualTo(expected);
         }
+
+        @Test
+        @DisplayName("every average from 1.00 to 6.00 yields a Zeugnisnote on the Swiss scale in half steps")
+        void shouldAlwaysStayOnTheSwissScale() {
+            for (int hundredths = 100; hundredths <= 600; hundredths++) {
+                double average = hundredths / 100.0;
+
+                double reportGrade = GradeAverageCalculator.roundToSwissHalf(average);
+
+                assertThat(reportGrade).as("Zeugnisnote of %s", average).isBetween(1.0, 6.0);
+                assertThat(reportGrade * 2).as("Zeugnisnote of %s is a half step", average)
+                        .isEqualTo(Math.rint(reportGrade * 2));
+            }
+        }
+
+        @ParameterizedTest(name = "{0} is not a grade and is rejected")
+        @ValueSource(doubles = { 0.99, 0.0, -1.0, 6.01, 7.0, Double.NaN, Double.POSITIVE_INFINITY,
+                Double.NEGATIVE_INFINITY })
+        void shouldRejectValuesOutsideTheSwissScale(double value) {
+            assertThatThrownBy(() -> GradeAverageCalculator.roundToSwissHalf(value))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("1.0 and 6.0");
+        }
     }
 }

@@ -14,14 +14,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 /**
  * {@link TimetableClient} backed by {@code stundenplan.geekz.ch}. Every answer is cached for a few minutes (see
- * {@code spring.cache} in {@code application.yml}). Network problems, 5xx answers and bodies that cannot be read
- * surface as {@link UpstreamUnavailableException}; a {@code NOT_FOUND} answer of the entries endpoint means that
- * there simply are no lessons.
+ * {@code spring.cache} in {@code application.yml}).
+ *
+ * <ul>
+ *   <li>Network problems, 5xx answers, bodies that cannot be read and answers with an unexpected shape surface as
+ *       {@link UpstreamUnavailableException} (HTTP 502).</li>
+ *   <li>A 4xx answer means our request was wrong; it surfaces as {@link IllegalStateException} and becomes an
+ *       internal error (HTTP 500), because retrying will not help.</li>
+ *   <li>Only for the entries endpoint does 404 / {@code NOT_FOUND} mean «no lessons in this range».</li>
+ * </ul>
+ *
+ * <p>The class list is requested for the week starting today (from the injected {@link Clock}). The upstream
+ * returns all classes for any week, including holidays, so the range only has to be valid.
  */
 @Component
 public class GeekzTimetableClient implements TimetableClient {
@@ -47,7 +57,7 @@ public class GeekzTimetableClient implements TimetableClient {
     @Override
     @Cacheable("timetable-classes")
     public List<SchoolClass> fetchClasses() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(clock);
         GeekzClassesResponse response = call(FILTER_PATH, () -> restClient.get()
                 .uri(uri -> uri.path(FILTER_PATH)
                         .queryParam("resourceType", RESOURCE_TYPE_CLASS)
@@ -57,7 +67,7 @@ public class GeekzTimetableClient implements TimetableClient {
                         .build())
                 .retrieve()
                 .body(GeekzClassesResponse.class));
-        return mapper.toSchoolClasses(response);
+        return mapped(FILTER_PATH, () -> mapper.toSchoolClasses(response));
     }
 
     @Override
@@ -77,7 +87,7 @@ public class GeekzTimetableClient implements TimetableClient {
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.NOT_FOUND, (request, answer) -> { })
                 .body(GeekzEntriesResponse.class));
-        return mapper.toLessons(response);
+        return mapped(ENTRIES_PATH, () -> mapper.toLessons(response));
     }
 
     @Override
@@ -87,13 +97,16 @@ public class GeekzTimetableClient implements TimetableClient {
                 .uri(HOLIDAYS_PATH)
                 .retrieve()
                 .body(GeekzHolidayResponse[].class));
-        return mapper.toHolidays(Arrays.asList(response));
+        return mapped(HOLIDAYS_PATH, () -> mapper.toHolidays(Arrays.asList(response)));
     }
 
     private static <T> T call(String path, Supplier<T> request) {
         T body;
         try {
             body = request.get();
+        } catch (HttpClientErrorException ex) {
+            throw new IllegalStateException("stundenplan.geekz.ch rejected GET " + path + " with "
+                    + ex.getStatusCode().value() + ": " + ex.getResponseBodyAsString(), ex);
         } catch (RestClientException ex) {
             throw new UpstreamUnavailableException(UPSTREAM, "GET " + path + " failed: " + ex.getMessage(), ex);
         }
@@ -101,5 +114,19 @@ public class GeekzTimetableClient implements TimetableClient {
             throw new UpstreamUnavailableException(UPSTREAM, "GET " + path + " returned an empty body");
         }
         return body;
+    }
+
+    /**
+     * Runs the mapping of a received body. The mapper reports known contract violations itself; anything else it
+     * trips over (a field of an unexpected type, a missing nested object) is equally an unusable answer.
+     */
+    private static <T> T mapped(String path, Supplier<T> mapping) {
+        try {
+            return mapping.get();
+        } catch (UpstreamUnavailableException ex) {
+            throw ex;
+        } catch (RuntimeException ex) {
+            throw new UpstreamUnavailableException(UPSTREAM, "GET " + path + " returned an unexpected shape", ex);
+        }
     }
 }

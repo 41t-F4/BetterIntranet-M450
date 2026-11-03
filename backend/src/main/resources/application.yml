@@ -23,19 +23,20 @@ betterintranet:
     default-class: AP 24b
   school:
     base-url: http://localhost:8081
-
-modules:
-  user:
-    enabled: true
-  dashboard:
-    enabled: true
-  timetable:
-    enabled: true
-  classes:
-    enabled: true
-  courses:
-    enabled: true
-  absences:
-    enabled: true
-  grades:
-    enabled: true
+  # Every feature module can be switched off here. A disabled module answers HTTP 503
+  # and disappears from the frontend navigation.
+  modules:
+    user:
+      enabled: true
+    dashboard:
+      enabled: true
+    timetable:
+      enabled: true
+    classes:
+      enabled: true
+    courses:
+      enabled: true
+    absences:
+      enabled: true
+    grades:
+      enabled: true

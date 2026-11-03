@@ -14,7 +14,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      BETTERINTRANET_SCHOOL_BASE_URL: http://school-mock:8081
+      BETTERINTRANET_SCHOOL_BASEURL: http://school-mock:8081
     depends_on:
       school-mock:
         condition: service_healthy

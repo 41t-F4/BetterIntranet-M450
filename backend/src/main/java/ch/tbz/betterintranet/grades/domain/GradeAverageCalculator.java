@@ -61,8 +61,18 @@ public final class GradeAverageCalculator {
     /**
      * Rounds to the nearest half grade as printed on a Swiss report card (Zeugnisnote):
      * {@code 5.24 -> 5.0}, {@code 5.25 -> 5.5}, {@code 5.74 -> 5.5}, {@code 5.75 -> 6.0}.
+     *
+     * <p>Only values on the Swiss scale are accepted. For those the result is always between 1.0 and 6.0:
+     * the arithmetic is done in {@link BigDecimal}, so there are no binary rounding effects, and rounding a
+     * value in [1.0, 6.0] to the nearest half step cannot leave that range.
+     *
+     * @throws IllegalArgumentException if {@code value} is not a finite number between 1.0 and 6.0
      */
     public static double roundToSwissHalf(double value) {
+        if (!Double.isFinite(value) || value < WeightedGrade.MIN_GRADE || value > WeightedGrade.MAX_GRADE) {
+            throw new IllegalArgumentException("a Zeugnisnote can only be derived from values between 1.0 and 6.0 but was "
+                    + value);
+        }
         return BigDecimal.valueOf(value)
                 .multiply(BigDecimal.TWO)
                 .setScale(0, ROUNDING)

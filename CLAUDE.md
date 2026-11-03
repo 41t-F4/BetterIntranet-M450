@@ -64,7 +64,7 @@ Features mit dünnen Tests.
 
 | Schicht                 | Technologie                                                       |
 |-------------------------|-------------------------------------------------------------------|
-| Frontend                | React + TypeScript (Vite), React Router, Vitest + React Testing Library, MSW für API-Mocks |
+| Frontend                | React + TypeScript (Vite), React Router, axios (zentrale Instanz in `shared/api`), Vitest + React Testing Library, MSW für API-Mocks |
 | Backend (Hauptsystem)   | Spring Boot 3 + Java 21, Maven (über Maven Wrapper `./mvnw`, keine lokale Installation nötig), JUnit 5, Mockito, AssertJ, Spring Boot Test, WireMock für externe HTTP-Schnittstellen, JaCoCo für Coverage |
 | Backend (Mock-Server)   | Zweiter, eigenständiger Spring-Boot-Service («school-mock»), der die Schnittstellen der Schulsysteme simuliert: Meine Klassen, Meine Kurse, Absenzen, Noten |
 | Externe Schnittstelle   | `https://stundenplan.geekz.ch` (Stundenplan + Ferien), nur vom Backend aufgerufen, nie direkt vom Frontend |
@@ -481,6 +481,8 @@ eines Moduls, Testbenennung) trifft Claude selbst.
 9. **Nur Berufsschule TBZ:** Keine BMS- und keine ÜK-Inhalte, kein Konzept «Schulteil». Noten und
    Kurse werden nach Semester gruppiert. Mock-Daten von `nicola.wehrli` bilden den echten Stundenplan
    von AP 24b ab (Englisch, Allgemeinbildung Gesellschaft, Modul 450, Modul 306).
+10. **HTTP-Client:** axios statt `fetch` (Review-Feedback auf PR #11). Eine gemeinsame Instanz
+    `apiClient`, Basispfade als Konstanten, Query-Parameter über `params`.
 
 ---
 
@@ -505,7 +507,9 @@ eines Moduls, Testbenennung) trifft Claude selbst.
 
 - Funktionale Komponenten, Hooks, kein Class-Component.
 - Strikte TypeScript-Konfiguration (`strict: true`), keine `any`.
-- Daten-Fetching über einen zentralen API-Client in `shared/api`, pro Modul ein Hook (`useGrades`).
+- Daten-Fetching über den zentralen axios-Client in `shared/api` (`apiGet`, Instanz `apiClient`), pro Modul ein Hook (`useGrades`).
+- Jedes Modul definiert seinen Basispfad als Konstante (`TIMETABLE_API = '/api/timetable'`) und übergibt Query-Parameter als axios-`params`, nie als selbst gebauten String.
+- Tests hängen nie vom echten Datum oder echten Systemen ab: Uhr über `test/clock.ts` einfrieren, Daten aus Fixtures ableiten, API über MSW beantworten.
 - Tests neben der Komponente: `GradesPage.test.tsx`. Queries über Rollen/Texte, nicht über CSS-Klassen.
 
 ### Dokumentation
